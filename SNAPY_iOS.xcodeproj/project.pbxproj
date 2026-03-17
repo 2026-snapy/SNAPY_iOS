@@ -6,6 +6,21 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BC1DC2EE2F68CF730016A4CD /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2D22F68CF730016A4CD /* TokenStorage.swift */; };
+		BC1DC2F12F68CF730016A4CD /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2CD2F68CF730016A4CD /* Color+Extensions.swift */; };
+		BC1DC2F22F68CF730016A4CD /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2DD2F68CF730016A4CD /* AuthAPI.swift */; };
+		BC1DC2F92F68CF730016A4CD /* UserDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2D92F68CF730016A4CD /* UserDTO.swift */; };
+		BC1DC2FB2F68CF730016A4CD /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2E52F68CF730016A4CD /* AuthService.swift */; };
+		BC1DC2FC2F68CF730016A4CD /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2CE2F68CF730016A4CD /* Date+Extensions.swift */; };
+		BC1DC2FE2F68CF730016A4CD /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2EB2F68CF730016A4CD /* ImagePicker.swift */; };
+		BC1DC2FF2F68CF730016A4CD /* AuthDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2D72F68CF730016A4CD /* AuthDTO.swift */; };
+		BCD8158B2F68DF9B0028AE50 /* CombineMoya in Frameworks */ = {isa = PBXBuildFile; productRef = BCD8158A2F68DF9B0028AE50 /* CombineMoya */; };
+		BCD8158D2F68DF9B0028AE50 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = BCD8158C2F68DF9B0028AE50 /* Moya */; };
+		BCD8158F2F68DF9B0028AE50 /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = BCD8158E2F68DF9B0028AE50 /* ReactiveMoya */; };
+		BCD815912F68DF9B0028AE50 /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = BCD815902F68DF9B0028AE50 /* RxMoya */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		BC5AFECC2F68670100273744 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,13 +39,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BC1DC2CD2F68CF730016A4CD /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
+		BC1DC2CE2F68CF730016A4CD /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		BC1DC2D22F68CF730016A4CD /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
+		BC1DC2D72F68CF730016A4CD /* AuthDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDTO.swift; sourceTree = "<group>"; };
+		BC1DC2D92F68CF730016A4CD /* UserDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDTO.swift; sourceTree = "<group>"; };
+		BC1DC2DD2F68CF730016A4CD /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
+		BC1DC2E52F68CF730016A4CD /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		BC1DC2EB2F68CF730016A4CD /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		BC5AFEBE2F6866FF00273744 /* SNAPY_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SNAPY_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC5AFECB2F68670100273744 /* SNAPY_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SNAPY_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC5AFED52F68670100273744 /* SNAPY_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SNAPY_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BC5AFEC02F6866FF00273744 /* SNAPY_iOS */ = {
+		BC1DC2C82F68CF490016A4CD /* SNAPY_iOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SNAPY_iOS;
 			sourceTree = "<group>";
@@ -52,6 +75,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCD8158D2F68DF9B0028AE50 /* Moya in Frameworks */,
+				BCD8158B2F68DF9B0028AE50 /* CombineMoya in Frameworks */,
+				BCD815912F68DF9B0028AE50 /* RxMoya in Frameworks */,
+				BCD8158F2F68DF9B0028AE50 /* ReactiveMoya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,13 +99,101 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BC1DC2CF2F68CF730016A4CD /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2CD2F68CF730016A4CD /* Color+Extensions.swift */,
+				BC1DC2CE2F68CF730016A4CD /* Date+Extensions.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		BC1DC2D12F68CF730016A4CD /* Analyze */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Analyze;
+			sourceTree = "<group>";
+		};
+		BC1DC2D32F68CF730016A4CD /* Token */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2D22F68CF730016A4CD /* TokenStorage.swift */,
+			);
+			path = Token;
+			sourceTree = "<group>";
+		};
+		BC1DC2DA2F68CF730016A4CD /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2D72F68CF730016A4CD /* AuthDTO.swift */,
+				BC1DC2D92F68CF730016A4CD /* UserDTO.swift */,
+			);
+			path = DTO;
+			sourceTree = "<group>";
+		};
+		BC1DC2DE2F68CF730016A4CD /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2DD2F68CF730016A4CD /* AuthAPI.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		BC1DC2E12F68CF730016A4CD /* API */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2D12F68CF730016A4CD /* Analyze */,
+				BC1DC2D32F68CF730016A4CD /* Token */,
+				BC1DC2DA2F68CF730016A4CD /* DTO */,
+				BC1DC2DE2F68CF730016A4CD /* Auth */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		BC1DC2E82F68CF730016A4CD /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2E52F68CF730016A4CD /* AuthService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		BC1DC2E92F68CF730016A4CD /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2E12F68CF730016A4CD /* API */,
+				BC1DC2E82F68CF730016A4CD /* Service */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		BC1DC2EA2F68CF730016A4CD /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2CF2F68CF730016A4CD /* Extension */,
+				BC1DC2E92F68CF730016A4CD /* Network */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		BC1DC2EC2F68CF730016A4CD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BC1DC2EA2F68CF730016A4CD /* Core */,
+				BC1DC2EB2F68CF730016A4CD /* ImagePicker.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		BC5AFEB52F6866FF00273744 = {
 			isa = PBXGroup;
 			children = (
-				BC5AFEC02F6866FF00273744 /* SNAPY_iOS */,
+				BC1DC2C82F68CF490016A4CD /* SNAPY_iOS */,
 				BC5AFECE2F68670100273744 /* SNAPY_iOSTests */,
 				BC5AFED82F68670100273744 /* SNAPY_iOSUITests */,
 				BC5AFEBF2F6866FF00273744 /* Products */,
+				BC1DC2EC2F68CF730016A4CD /* Model */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,10 +223,14 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				BC5AFEC02F6866FF00273744 /* SNAPY_iOS */,
+				BC1DC2C82F68CF490016A4CD /* SNAPY_iOS */,
 			);
 			name = SNAPY_iOS;
 			packageProductDependencies = (
+				BCD8158A2F68DF9B0028AE50 /* CombineMoya */,
+				BCD8158C2F68DF9B0028AE50 /* Moya */,
+				BCD8158E2F68DF9B0028AE50 /* ReactiveMoya */,
+				BCD815902F68DF9B0028AE50 /* RxMoya */,
 			);
 			productName = SNAPY_iOS;
 			productReference = BC5AFEBE2F6866FF00273744 /* SNAPY_iOS.app */;
@@ -195,6 +314,9 @@
 			);
 			mainGroup = BC5AFEB52F6866FF00273744;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				BCD815892F68DF9B0028AE50 /* XCRemoteSwiftPackageReference "Moya" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BC5AFEBF2F6866FF00273744 /* Products */;
 			projectDirPath = "";
@@ -236,6 +358,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC1DC2EE2F68CF730016A4CD /* TokenStorage.swift in Sources */,
+				BC1DC2F12F68CF730016A4CD /* Color+Extensions.swift in Sources */,
+				BC1DC2F22F68CF730016A4CD /* AuthAPI.swift in Sources */,
+				BC1DC2F92F68CF730016A4CD /* UserDTO.swift in Sources */,
+				BC1DC2FB2F68CF730016A4CD /* AuthService.swift in Sources */,
+				BC1DC2FC2F68CF730016A4CD /* Date+Extensions.swift in Sources */,
+				BC1DC2FE2F68CF730016A4CD /* ImagePicker.swift in Sources */,
+				BC1DC2FF2F68CF730016A4CD /* AuthDTO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,6 +710,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BCD815892F68DF9B0028AE50 /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BCD8158A2F68DF9B0028AE50 /* CombineMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BCD815892F68DF9B0028AE50 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = CombineMoya;
+		};
+		BCD8158C2F68DF9B0028AE50 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BCD815892F68DF9B0028AE50 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		BCD8158E2F68DF9B0028AE50 /* ReactiveMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BCD815892F68DF9B0028AE50 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = ReactiveMoya;
+		};
+		BCD815902F68DF9B0028AE50 /* RxMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BCD815892F68DF9B0028AE50 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = RxMoya;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BC5AFEB62F6866FF00273744 /* Project object */;
 }

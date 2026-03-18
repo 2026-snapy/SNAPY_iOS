@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SnapyLoginView: View {
     let title: String
+    var onLoginTap: () -> Void
     @EnvironmentObject var authVM: AuthViewModel
 
     var body: some View {
@@ -87,28 +88,11 @@ struct SnapyLoginView: View {
                 Spacer()
 
                 // 로그인 버튼
-                ZStack {
-                    Text(title)
-                        .font(.system(size: 14, weight: .bold))
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(authVM.isLoginValid ? Color.customGray500: Color.textWhite)
-
-                    HStack {
-                        Image("Login_Logo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 22)
-                            .padding(.leading, 20)
-                        Spacer()
+                SnapyButton(title: "SNAPY로 로그인") {
+                    withAnimation {
+                        onLoginTap()
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(authVM.isLoginValid ? Color.textWhite : Color.customGray500)
-                .foregroundColor(authVM.isLoginValid ? .black : .gray)
-                .cornerRadius(28)
-                .disabled(!authVM.isLoginValid || authVM.isLoading)
-                .padding(.horizontal, 24)
                 .padding(.bottom, 24)
             }
         }
@@ -120,7 +104,7 @@ struct SnapyLoginView: View {
 
 struct SnapyLoginView_Preview: PreviewProvider {
     static var previews: some View {
-        SnapyLoginView(title: "SNAPY 로그인")
+        SnapyLoginView(title: "SNAPY 로그인", onLoginTap: {})
             .environmentObject(AuthViewModel())
     }
 }

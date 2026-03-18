@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    var onStartTap: () -> Void
     var body: some View {
         ZStack {
             Color.BackgroundBlack
@@ -61,7 +62,7 @@ struct OnboardingView: View {
                 // 하단 버튼
                 SnapyButton(title: "SNAPY 시작하기") {
                     withAnimation {
-                        print("SNAPY 시작하기")
+                        onStartTap()
                     }
                 }
                 .padding(.bottom, 24)
@@ -72,7 +73,7 @@ struct OnboardingView: View {
 
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
-        OnboardingView()
+        OnboardingView(onStartTap: {})
     }
 }
 

@@ -19,26 +19,26 @@ struct SnapyTextField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: 12, weight: .medium))
                 .foregroundColor(isFocused ? Color.mainYellow : .customGray300)
                 .animation(.easeInOut(duration: 0.2), value: isFocused)
 
             ZStack(alignment: .leading) {
                 if text.isEmpty {
                     Text(placeholder)
-                        .font(.system(size: 20))
+                        .font(.system(size: 18))
                         .foregroundColor(isFocused ? Color.textWhite : .customGray300)
                         .animation(.easeInOut(duration: 0.2), value: isFocused)
                 }
 
                 if isSecure {
                     SecureField("", text: $text)
-                        .font(.system(size: 20))
+                        .font(.system(size: 18))
                         .foregroundColor(Color.textWhite)
                         .focused($isFocused)
                 } else {
                     TextField("", text: $text)
-                        .font(.system(size: 20))
+                        .font(.system(size: 18))
                         .foregroundColor(.white)
                         .keyboardType(keyboardType)
                         .autocapitalization(.none)

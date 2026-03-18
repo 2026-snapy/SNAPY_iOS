@@ -9,6 +9,7 @@ import SwiftUI
 import Combine
 
 struct LoginView: View {
+    var onSnapyTap: () -> Void
     @EnvironmentObject var authVM: AuthViewModel
     // 현재 선택된 이미지 인덱스
     @State private var selectedIndex: Int = 0
@@ -123,7 +124,7 @@ struct LoginView: View {
                 // 하단 버튼
                 SnapyButton(title: "SNAPY로 계속하기") {
                     withAnimation {
-                        print("SNAPY로 계속하기 클릭")
+                        onSnapyTap()
                     }
                 }
                 .padding(.bottom, 24)
@@ -142,7 +143,7 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        LoginView(onSnapyTap: {})
             .environmentObject(AuthViewModel())
     }
 }

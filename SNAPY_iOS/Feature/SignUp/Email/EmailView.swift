@@ -17,24 +17,13 @@ struct EmailView: View {
             Color.black.ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 0) {
-                // Header
-                HStack(spacing: 12) {
-                    Image("Login_Logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 34)
-                    
-                    Image("Login_TextLogo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 130, height: 28)
-                }
-                .padding(.top, 34)
-                .padding(.horizontal, 24)
-
+                
+                Spacer()
+                    .frame(height: 40)
+                
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("로그인하여 친구들의 SNAPY를\n확인해보세요!")
-                        .font(.system(size: 18, weight: .semibold))
+                    Text("이름을 입력해주세요")
+                        .font(.system(size: 20, weight: .bold))
                         .foregroundColor(Color.textWhite)
                         .lineSpacing(12)
                 }
@@ -48,33 +37,9 @@ struct EmailView: View {
                         text: $authVM.loginEmail,
                         keyboardType: .emailAddress
                     )
-
-                    SnapyTextField(
-                        label: "비밀번호",
-                        placeholder: "비밀번호를 입력해주세요",
-                        text: $authVM.loginPassword,
-                        isSecure: true
-                    )
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 40)
-
-                
-                HStack(spacing: 8){
-                    Text("아직 회원이 아니신가요?")
-                        .font(.system(size: 14, weight: .medium))
-                    Button {
-                        withAnimation {
-                            authVM.authFlow = .registerEmail
-                        }
-                    } label: {
-                            Text("회원가입")
-                                .foregroundColor(Color.mainYellow)
-                                .font(.system(size: 14, weight: .semibold))
-                    }
-                }
-                .padding(.top, 28)
-                .frame(maxWidth: .infinity)
                 
 
                 if let error = authVM.errorMessage {
@@ -88,7 +53,10 @@ struct EmailView: View {
                 Spacer()
 
                 // 로그인 버튼
-                SnapyButton(title: "SNAPY로 로그인") {
+                SignUpButton(
+                    title: "확인",
+                    isEnabled: !authVM.loginEmail.isEmpty
+                ) {
                     withAnimation {
                         onLoginTap()
                     }
@@ -104,7 +72,7 @@ struct EmailView: View {
 
 struct EmailView_Preview: PreviewProvider {
     static var previews: some View {
-        EmailView(title: "SNAPY 로그인", onLoginTap: {})
+        EmailView(title: "확인", onLoginTap: {})
             .environmentObject(AuthViewModel())
     }
 }

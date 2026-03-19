@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC01FFA52F6BBA6600A85201 /* SignUpButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC01FFA42F6BBA6600A85201 /* SignUpButton.swift */; };
 		BC1DC2EE2F68CF730016A4CD /* TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2D22F68CF730016A4CD /* TokenStorage.swift */; };
 		BC1DC2F12F68CF730016A4CD /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2CD2F68CF730016A4CD /* Color+Extensions.swift */; };
 		BC1DC2F22F68CF730016A4CD /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC2DD2F68CF730016A4CD /* AuthAPI.swift */; };
@@ -75,6 +76,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BC01FFA42F6BBA6600A85201 /* SignUpButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpButton.swift; sourceTree = "<group>"; };
 		BC1DC2CD2F68CF730016A4CD /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
 		BC1DC2CE2F68CF730016A4CD /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		BC1DC2D22F68CF730016A4CD /* TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStorage.swift; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 		BCD816C62F6A40F20028AE50 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				BC01FFA42F6BBA6600A85201 /* SignUpButton.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -665,6 +668,7 @@
 				BCD816CC2F6A414D0028AE50 /* HomeViewModel.swift in Sources */,
 				BCD816D62F6A418A0028AE50 /* FriendView.swift in Sources */,
 				BCD816CA2F6A41470028AE50 /* HomeView.swift in Sources */,
+				BC01FFA52F6BBA6600A85201 /* SignUpButton.swift in Sources */,
 				BCD816C12F69AA6B0028AE50 /* AppleLoginButton.swift in Sources */,
 				BCD816D22F6A416F0028AE50 /* CameraView.swift in Sources */,
 				BCD815AB2F69343D0028AE50 /* RootView.swift in Sources */,

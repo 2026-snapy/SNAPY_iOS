@@ -34,7 +34,7 @@ final class AuthViewModel: ObservableObject {
     @Published var registerPasswordConfirm = ""
     @Published var registerCarrier = "SKT"
     @Published var registerPhone = ""
-    @Published var registerVerificationCode = ""
+    @Published var registerUserID = ""
     @Published var registerUsername = ""
     @Published var registerName = ""
 
@@ -55,7 +55,7 @@ final class AuthViewModel: ObservableObject {
     }
 
     var isPhoneValid: Bool {
-        !registerPhone.isEmpty && !registerVerificationCode.isEmpty
+        !registerPhone.isEmpty && !registerUserID.isEmpty
     }
 
     var isProfileValid: Bool {
@@ -153,7 +153,7 @@ final class AuthViewModel: ObservableObject {
         registerPassword = ""
         registerPasswordConfirm = ""
         registerPhone = ""
-        registerVerificationCode = ""
+        registerUserID = ""
         registerUsername = ""
         registerName = ""
     }

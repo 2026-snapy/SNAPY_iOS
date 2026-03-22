@@ -37,9 +37,9 @@ struct CameraView: View {
     private var cameraContentView: some View {
         VStack(spacing: 0) {
             Text("추억이 남을 사진을 찍어보세요!")
-                .font(.system(size: 18, weight: .bold))
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(.white)
-                .padding(.top, 40)
+                .padding(.top, 50)
 
             Spacer()
 
@@ -105,12 +105,9 @@ struct CameraView: View {
             Text(cameraVM.photoCountText)
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(.white)
-                .padding(.top, 20)
+                .padding(.top, 30)
             
-            HStack(spacing: 60) {
-                Spacer()
-
-                // 촬영버튼
+            ZStack {
                 Button {
                     cameraVM.capturePhoto()
                 } label: {
@@ -125,19 +122,25 @@ struct CameraView: View {
                 }
                 .disabled(cameraVM.capturedPhotos.count >= cameraVM.maxPhotos)
 
-                // 카메라 전 후면 바꾸기 - 임시 버튼
-                // TODO: 카메라 전후면 바꾸기 로직 구현
-                ZStack {
-                    Circle()
-                        .fill(Color(white: 0.2))
-                        .frame(width: 44, height: 44)
-                    Image(systemName: "arrow.triangle.2.circlepath.camera")
-                        .foregroundColor(.white)
-                        .font(.system(size: 18))
+                HStack {
+                    Spacer()
+                        .frame(width: 200)
+                    
+                    Button {
+                        // TODO: 카메라 전환
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .fill(Color(white: 0.2))
+                                .frame(width: 48, height: 48)
+                            Image(systemName: "arrow.triangle.2.circlepath.camera")
+                                .foregroundColor(.textWhite)
+                                .font(.system(size: 20))
+                        }
+                    }
                 }
-
-                Spacer()
             }
+            .padding(.horizontal, 24)
             .padding(.top, 24)
             .padding(.bottom, 40)
         }

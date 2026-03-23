@@ -12,7 +12,7 @@ struct PhotoPreviewView: View {
             Text(cameraVM.capturedTimeText)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(.white)
-                .padding(.top, 50)
+                .padding(.top, 40)
 
             Spacer()
                 .frame(height: 30)

@@ -27,6 +27,9 @@ final class CameraViewModel: ObservableObject {
     @Published var latestFrontImage: UIImage?
     @Published var backPreviewLayer: AVCaptureVideoPreviewLayer?
     @Published var frontPreviewLayer: AVCaptureVideoPreviewLayer?
+    // false: 메인 = 후면, 소형 = 전면
+    // true: 메인 = 전면, 소형 = 후면
+    @Published var isCameraSwapped = false
 
     let dualCamera = DualCameraService()
     let maxPhotos = 1
@@ -98,7 +101,11 @@ final class CameraViewModel: ObservableObject {
                     // 촬영 실패 시 (연결 끊김 등) 무시
                     guard backImage != nil || frontImage != nil else { return }
                     self?.capturedAt = Date()
-                    self?.capturedPhotos.append((front: frontImage, back: backImage))
+                    let swapped = self?.isCameraSwapped ?? false
+                    self?.capturedPhotos.append((
+                        front: swapped ? backImage : frontImage,
+                        back: swapped ? frontImage : backImage
+                    ))
                     DispatchQueue.main.async {
                         self?.showPreview = true
                     }
@@ -109,7 +116,10 @@ final class CameraViewModel: ObservableObject {
             let placeholderBack = createPlaceholderImage(text: "후면 \(capturedPhotos.count + 1)", color: .darkGray)
             let placeholderFront = createPlaceholderImage(text: "전면 \(capturedPhotos.count + 1)", color: .gray)
             capturedAt = Date()
-            capturedPhotos.append((front: placeholderFront, back: placeholderBack))
+            capturedPhotos.append((
+                front: isCameraSwapped ? placeholderBack : placeholderFront,
+                back: isCameraSwapped ? placeholderFront : placeholderBack
+            ))
             DispatchQueue.main.async { [weak self] in
                 self?.showPreview = true
             }

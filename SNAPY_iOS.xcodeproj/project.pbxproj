@@ -185,13 +185,6 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		BC1DC2D12F68CF730016A4CD /* Analyze */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Analyze;
-			sourceTree = "<group>";
-		};
 		BC1DC2D32F68CF730016A4CD /* Token */ = {
 			isa = PBXGroup;
 			children = (
@@ -220,7 +213,6 @@
 		BC1DC2E12F68CF730016A4CD /* API */ = {
 			isa = PBXGroup;
 			children = (
-				BC1DC2D12F68CF730016A4CD /* Analyze */,
 				BC1DC2D32F68CF730016A4CD /* Token */,
 				BC1DC2DA2F68CF730016A4CD /* DTO */,
 				BC1DC2DE2F68CF730016A4CD /* Auth */,

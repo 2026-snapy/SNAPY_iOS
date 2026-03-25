@@ -1,10 +1,36 @@
 //
-//  LoginResponse.swift
+//  AuthDTO.swift
 //  Qiri
 //
 //  Created by 김은찬 on 5/25/25.
 //
+
 import Foundation
+
+// Base Response
+struct BaseResponse<T: Codable>: Codable {
+    let success: Bool
+    let data: T?
+    let message: String
+}
+
+// 회원가입 Request
+struct SignUpRequest: Codable {
+    let username: String
+    let handle: String
+    let email: String
+    let phone: String
+    let password: String
+}
+
+// 회원가입 Response
+struct SignUpData: Codable {
+    let handle: String
+    let username: String
+    let email: String?
+}
+
+typealias SignUpResponse = BaseResponse<SignUpData>
 
 // 로그인 Request
 struct LoginRequest: Codable {
@@ -12,32 +38,18 @@ struct LoginRequest: Codable {
     let password: String
 }
 
-// 로그인 Response
-struct LoginResponse: Codable {
-    let refreshToken: String
+// 로그인 Response Data
+struct LoginData: Codable {
     let accessToken: String
 }
 
-// 회원가입 Request
-struct SignUpRequest: Codable {
-    let firstName: String
-    let lastName: String
-    let email: String
-    let password: String
-}
-
-// 회원가입 Response
-struct SignUpResponse: Codable {
-    let message: String
-}
-
-// 토큰 재발급 Request
-struct RefreshRequest: Codable {
-    let refreshToken: String
-}
+typealias LoginResponse = BaseResponse<LoginData>
 
 // 토큰 재발급 Response
-struct RefreshResponse: Codable {
-    let refreshToken: String
-    let accessToken: String
-}
+typealias RefreshResponse = BaseResponse<LoginData>
+
+// 로그아웃 Response
+typealias LogoutResponse = BaseResponse<EmptyData>
+
+// data가 null일 떄 사용
+struct EmptyData: Codable {} 

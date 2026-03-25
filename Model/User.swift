@@ -13,9 +13,9 @@ struct User: Codable, Identifiable {
     let handle: String
     let username: String
     let password: String
+    let phone: String?
     let profileImageUrl: String?
     let backgroundImageUrl: String?
-    let phone: String?
     let postCount: Int?
     let friendCount: Int?
     let streakCount: Int?

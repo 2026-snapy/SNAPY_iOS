@@ -7,13 +7,21 @@
 
 import Foundation
 
-/// 내 정보 조회 응답 DTO
+
 struct UserMeDTO: Codable {
-    let id: Int
-    let email: String
+    let username: Int
+    let handle: String
     let firstName: String
     let lastName: String
     let createdAt: String?
     let updatedAt: String?
 }
+
+//{
+//"username": "강백호",
+//"handle": "kangbaekho",
+//"email": "[kbh081004@gmail.com](mailto:kbh081004@gmail.com)",
+//"phone": "01023844982",
+//"password": "hellohellohello"
+//}
 

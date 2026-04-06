@@ -30,6 +30,7 @@
 		BC6676CD2F840615009CBF8D /* ProfileEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676CC2F840613009CBF8D /* ProfileEditSheet.swift */; };
 		BC6676D42F8406D1009CBF8D /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676D12F84066B009CBF8D /* ProfileHeaderView.swift */; };
 		BC6676D52F8406EB009CBF8D /* ProfileFeedGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676CE2F84062E009CBF8D /* ProfileFeedGrid.swift */; };
+		BC6676D72F840F70009CBF8D /* ImageViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676D62F840F6B009CBF8D /* ImageViewerView.swift */; };
 		BCCAD5822F6ABB4B00ED71E0 /* SnapyLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD5812F6ABB3D00ED71E0 /* SnapyLoginView.swift */; };
 		BCCAD5842F6ABB5F00ED71E0 /* SnapyLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD5832F6ABB5800ED71E0 /* SnapyLoginViewModel.swift */; };
 		BCCAD5FE2F6ABC3000ED71E0 /* SnapyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD5FD2F6ABC2F00ED71E0 /* SnapyTextField.swift */; };
@@ -116,6 +117,7 @@
 		BC6676CC2F840613009CBF8D /* ProfileEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditSheet.swift; sourceTree = "<group>"; };
 		BC6676CE2F84062E009CBF8D /* ProfileFeedGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFeedGrid.swift; sourceTree = "<group>"; };
 		BC6676D12F84066B009CBF8D /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
+		BC6676D62F840F6B009CBF8D /* ImageViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewerView.swift; sourceTree = "<group>"; };
 		BCCAD5812F6ABB3D00ED71E0 /* SnapyLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapyLoginView.swift; sourceTree = "<group>"; };
 		BCCAD5832F6ABB5800ED71E0 /* SnapyLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapyLoginViewModel.swift; sourceTree = "<group>"; };
 		BCCAD5FD2F6ABC2F00ED71E0 /* SnapyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapyTextField.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 		BCD816D02F6A415B0028AE50 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				BC6676D62F840F6B009CBF8D /* ImageViewerView.swift */,
 				BC6676D12F84066B009CBF8D /* ProfileHeaderView.swift */,
 				BC6676CE2F84062E009CBF8D /* ProfileFeedGrid.swift */,
 				BC6676CC2F840613009CBF8D /* ProfileEditSheet.swift */,
@@ -727,6 +730,7 @@
 				BCD816E52F6A437D0028AE50 /* AlbumView.swift in Sources */,
 				BC1DC2F92F68CF730016A4CD /* UserDTO.swift in Sources */,
 				BCD8162D2F6937940028AE50 /* SnapyButton.swift in Sources */,
+				BC6676D72F840F70009CBF8D /* ImageViewerView.swift in Sources */,
 				BCD815A72F692FB50028AE50 /* LoginViewModel.swift in Sources */,
 				BC6676C92F833C2B009CBF8D /* ImageCarousel.swift in Sources */,
 				BC6676C02F7D7086009CBF8D /* AlbumMissCard.swift in Sources */,

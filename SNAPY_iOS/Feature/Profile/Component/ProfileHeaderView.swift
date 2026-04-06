@@ -11,12 +11,17 @@ import PhotosUI
 struct ProfileHeaderView: View {
     @ObservedObject var viewModel: ProfileViewModel
 
+    @State private var showBannerViewer = false
+    @State private var showProfileViewer = false
+
     var body: some View {
         VStack(spacing: 0) {
-            // 배너 이미지
+            // 배너 + 프로필 이미지
             ZStack(alignment: .bottomLeading) {
-                // 배너
-                PhotosPicker(selection: $viewModel.bannerPickerItem, matching: .images) {
+                // 배너 (탭하면 확대 보기)
+                Button {
+                    showBannerViewer = true
+                } label: {
                     if let bannerImage = viewModel.bannerImage {
                         Image(uiImage: bannerImage)
                             .resizable()
@@ -31,12 +36,11 @@ struct ProfileHeaderView: View {
                             .clipped()
                     }
                 }
-                .onChange(of: viewModel.bannerPickerItem) { _, _ in
-                    Task { await viewModel.loadBannerImage() }
-                }
 
-                // 프로필 이미지 (배너 위에 겹침)
-                PhotosPicker(selection: $viewModel.profilePickerItem, matching: .images) {
+                // 프로필 이미지 (탭하면 확대 보기)
+                Button {
+                    showProfileViewer = true
+                } label: {
                     Group {
                         if let profileImage = viewModel.profileImage {
                             Image(uiImage: profileImage)
@@ -53,14 +57,10 @@ struct ProfileHeaderView: View {
                     .overlay(Circle().stroke(Color.backgroundBlack, lineWidth: 3))
                 }
                 .offset(x: 16, y: 40)
-                .onChange(of: viewModel.profilePickerItem) { _, _ in
-                    Task { await viewModel.loadProfileImage() }
-                }
             }
 
             // 프로필 정보
             VStack(alignment: .leading, spacing: 8) {
-                // 이름 + 통계
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(viewModel.username)
@@ -70,12 +70,10 @@ struct ProfileHeaderView: View {
 
                     Spacer()
 
-                    // 게시물 / 친구 / 스트릭
                     HStack(spacing: 20) {
                         statItem(value: viewModel.postCount, label: "게시물")
                         statItem(value: viewModel.friendCount, label: "친구")
 
-                        // 스트릭 (불꽃 아이콘)
                         VStack(spacing: 2) {
                             HStack(spacing: 2) {
                                 Image(systemName: "flame.fill")
@@ -89,18 +87,15 @@ struct ProfileHeaderView: View {
                     }
                 }
 
-                // 겹치는 친구
                 Text(viewModel.mutualFriendsText)
                     .font(.system(size: 12))
                     .foregroundColor(.customGray300)
                     .lineLimit(1)
 
-                // 핸들
                 Text("@\(viewModel.handle)")
                     .font(.system(size: 14))
                     .foregroundColor(.customGray300)
 
-                // 버튼 영역
                 HStack(spacing: 12) {
                     Button {
                         viewModel.startEdit()
@@ -128,6 +123,20 @@ struct ProfileHeaderView: View {
             }
             .padding(.top, 48)
             .padding(.horizontal, 16)
+        }
+        // 배너 확대 보기
+        .fullScreenCover(isPresented: $showBannerViewer) {
+            ImageViewerView(
+                image: viewModel.bannerImage,
+                assetName: "Banner_img"
+            )
+        }
+        // 프로필 확대 보기
+        .fullScreenCover(isPresented: $showProfileViewer) {
+            ImageViewerView(
+                image: viewModel.profileImage,
+                assetName: "Profile_img"
+            )
         }
     }
 

@@ -14,6 +14,7 @@ struct GuestbookAddView: View {
     @State private var galleryItem: PhotosPickerItem?
     @State private var pickedImage: UIImage?
     @State private var showPicker = false
+    @State private var didAutoPresent = false   // 진입 시 1회만 자동 표시
 
     let onPicked: (UIImage) -> Void
 
@@ -102,8 +103,11 @@ struct GuestbookAddView: View {
         }
         .photosPicker(isPresented: $showPicker, selection: $galleryItem, matching: .images)
         .onAppear {
-            // 진입 시 자동으로 갤러리 열기
-            if pickedImage == nil {
+            // 진입 시 1회만 자동으로 갤러리 열기
+            // (photosPicker 가 dismiss 되면 underlying 뷰의 onAppear 가 다시 호출되어
+            //  플래그가 없으면 무한히 다시 열린다)
+            if !didAutoPresent {
+                didAutoPresent = true
                 showPicker = true
             }
         }

@@ -10,6 +10,7 @@ import SwiftUI
 struct ImageViewerView: View {
     let image: UIImage?
     let assetName: String
+    var horizontalPadding: CGFloat = 0
 
     @Environment(\.dismiss) private var dismiss
     @State private var scale: CGFloat = 1.0
@@ -33,6 +34,7 @@ struct ImageViewerView: View {
                         .scaledToFit()
                 }
             }
+            .padding(.horizontal, horizontalPadding)
             .scaleEffect(scale)
             .offset(offset)
             .gesture(

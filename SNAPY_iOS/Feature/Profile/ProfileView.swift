@@ -61,20 +61,34 @@ struct ProfileView: View {
                 }
                 .ignoresSafeArea(edges: .top)
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        // 설정 (나중에 구현)
-                    } label: {
-                        Image(systemName: "gearshape")
-                            .font(.system(size: 18))
-                            .foregroundColor(.textWhite)
+            .safeAreaInset(edge: .top) {
+                HStack {
+                    Spacer()
+                    HStack(spacing: 8) {
+                        ShareLink(item: "SNAPY 프로필: @\(viewModel.handle)\nhttps://snapy.app/@\(viewModel.handle)") {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundStyle(Color.primary)
+                        }
+                        .buttonStyle(.glass)
+
+                        Button {
+                            // 설정 (나중에 구현)
+                        } label: {
+                            Image(systemName: "gearshape")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundStyle(Color.primary)
+                        }
+                        .buttonStyle(.glass)
                     }
-                    .buttonStyle(.glass)
+                    .padding(.trailing, 16)
+                    .padding(.top, 4)
                 }
+                .background(Color.clear)
             }
-            .sheet(isPresented: $viewModel.showEditProfile) {
-                ProfileEditSheet(viewModel: viewModel)
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(isPresented: $viewModel.showEditProfile) {
+                ProfileEditView(viewModel: viewModel)
             }
         }
     }

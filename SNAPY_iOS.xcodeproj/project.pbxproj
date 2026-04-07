@@ -27,7 +27,7 @@
 		BC6676C02F7D7086009CBF8D /* AlbumMissCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676BF2F7D707C009CBF8D /* AlbumMissCard.swift */; };
 		BC6676C92F833C2B009CBF8D /* ImageCarousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676C82F833C20009CBF8D /* ImageCarousel.swift */; };
 		BC6676CB2F8405F8009CBF8D /* GuestbookSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676CA2F8405F3009CBF8D /* GuestbookSection.swift */; };
-		BC6676CD2F840615009CBF8D /* ProfileEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676CC2F840613009CBF8D /* ProfileEditSheet.swift */; };
+		BC6676CD2F840615009CBF8D /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676CC2F840613009CBF8D /* ProfileEditView.swift */; };
 		BC6676D42F8406D1009CBF8D /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676D12F84066B009CBF8D /* ProfileHeaderView.swift */; };
 		BC6676D52F8406EB009CBF8D /* ProfileFeedGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676CE2F84062E009CBF8D /* ProfileFeedGrid.swift */; };
 		BC6676D72F840F70009CBF8D /* ImageViewerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6676D62F840F6B009CBF8D /* ImageViewerView.swift */; };
@@ -114,7 +114,7 @@
 		BC6676BF2F7D707C009CBF8D /* AlbumMissCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumMissCard.swift; sourceTree = "<group>"; };
 		BC6676C82F833C20009CBF8D /* ImageCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCarousel.swift; sourceTree = "<group>"; };
 		BC6676CA2F8405F3009CBF8D /* GuestbookSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestbookSection.swift; sourceTree = "<group>"; };
-		BC6676CC2F840613009CBF8D /* ProfileEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditSheet.swift; sourceTree = "<group>"; };
+		BC6676CC2F840613009CBF8D /* ProfileEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditView.swift; sourceTree = "<group>"; };
 		BC6676CE2F84062E009CBF8D /* ProfileFeedGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFeedGrid.swift; sourceTree = "<group>"; };
 		BC6676D12F84066B009CBF8D /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
 		BC6676D62F840F6B009CBF8D /* ImageViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewerView.swift; sourceTree = "<group>"; };
@@ -503,7 +503,7 @@
 				BC6676D62F840F6B009CBF8D /* ImageViewerView.swift */,
 				BC6676D12F84066B009CBF8D /* ProfileHeaderView.swift */,
 				BC6676CE2F84062E009CBF8D /* ProfileFeedGrid.swift */,
-				BC6676CC2F840613009CBF8D /* ProfileEditSheet.swift */,
+				BC6676CC2F840613009CBF8D /* ProfileEditView.swift */,
 				BC6676CA2F8405F3009CBF8D /* GuestbookSection.swift */,
 			);
 			path = Component;
@@ -694,7 +694,7 @@
 				BCD815A32F6929550028AE50 /* SplashView.swift in Sources */,
 				BC6674E72F73A564009CBF8D /* AlbumStrick.swift in Sources */,
 				BCD816DC2F6A41A50028AE50 /* ProfileViewModel.swift in Sources */,
-				BC6676CD2F840615009CBF8D /* ProfileEditSheet.swift in Sources */,
+				BC6676CD2F840615009CBF8D /* ProfileEditView.swift in Sources */,
 				BC1DC2F12F68CF730016A4CD /* Color+Extensions.swift in Sources */,
 				BCCAD60C2F6B062F00ED71E0 /* PasswordView.swift in Sources */,
 				BCD815AF2F69346D0028AE50 /* MainTabView.swift in Sources */,

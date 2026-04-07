@@ -26,13 +26,13 @@ struct ProfileHeaderView: View {
                         Image(uiImage: bannerImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 160)
+                            .frame(height: 180)
                             .clipped()
                     } else {
                         Image("Banner_img")
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 160)
+                            .frame(height: 180)
                             .clipped()
                     }
                 }
@@ -66,7 +66,7 @@ struct ProfileHeaderView: View {
                         .frame(width: 30)
                     
                     // 사용자 이름
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 6) {
                         Text(viewModel.username)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundColor(.textWhite)
@@ -87,6 +87,7 @@ struct ProfileHeaderView: View {
                             .padding(.bottom, 8)
                         }
                     }
+                    .padding(.top, 10)
                 }
 
                 // 겹지인 목록
@@ -128,18 +129,20 @@ struct ProfileHeaderView: View {
             .padding(.top, 48)
             .padding(.horizontal, 16)
         }
-        // 배너 확대 보기
+        // 배너 확대 보기 (원본 크기)
         .fullScreenCover(isPresented: $showBannerViewer) {
             ImageViewerView(
                 image: viewModel.bannerImage,
-                assetName: "Banner_img"
+                assetName: "Banner_img",
+                horizontalPadding: 0
             )
         }
-        // 프로필 확대 보기
+        // 프로필 확대 보기 (좌우 60 여백)
         .fullScreenCover(isPresented: $showProfileViewer) {
             ImageViewerView(
                 image: viewModel.profileImage,
-                assetName: "Profile_img"
+                assetName: "Profile_img",
+                horizontalPadding: 60
             )
         }
     }

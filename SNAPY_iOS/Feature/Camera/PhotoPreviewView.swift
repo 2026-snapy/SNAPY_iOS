@@ -65,12 +65,13 @@ struct PhotoPreviewView: View {
                 Spacer()
 
                 Button {
-                    cameraVM.savePhoto()
+                    Task { await cameraVM.savePhoto() }
                 } label: {
-                    Text("저장하기")
+                    Text(cameraVM.isUploading ? "업로드 중..." : "저장하기")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.white)
                 }
+                .disabled(cameraVM.isUploading)
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 40)

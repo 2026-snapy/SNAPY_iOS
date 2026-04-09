@@ -1,6 +1,6 @@
 //
 //  AuthDTO.swift
-//  Qiri
+//  SNAPY_iOS
 //
 //  Created by 김은찬 on 5/25/25.
 //

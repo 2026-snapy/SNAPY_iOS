@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AlbumTimeSlotCard: View {
     let slot: AlbumSlot
-    let photo: SavedPhoto?
+    let photo: PhotoData?
     let emptyState: EmptySlotState
     var onTapSnap: () -> Void
 

@@ -29,14 +29,15 @@ final class AlbumViewModel: ObservableObject {
         selectedDate.albumDateString
     }
 
-    func photo(for slot: AlbumSlot) -> SavedPhoto? {
-        guard let album = PhotoStore.shared.album(for: selectedDate) else { return nil }
-        return album.photo(for: slot)
+    /// 오늘 앨범에서 해당 슬롯의 사진 (서버 응답 기반)
+    func photo(for slot: AlbumSlot) -> PhotoData? {
+        guard Calendar.current.isDateInToday(selectedDate) else { return nil }
+        return PhotoStore.shared.todayPhoto(for: slot)
     }
 
     var streakCount: Int {
-        guard let album = PhotoStore.shared.album(for: selectedDate) else { return 0 }
-        return min(album.photoCount, 5)
+        guard Calendar.current.isDateInToday(selectedDate) else { return 0 }
+        return min(PhotoStore.shared.todayPhotoCount, 5)
     }
 
     /// 찍을 수 있냐 없냐 여부
@@ -58,8 +59,7 @@ final class AlbumViewModel: ObservableObject {
         case .evening:
             return .canTake
         case .extra1, .extra2:
-            let album = PhotoStore.shared.album(for: selectedDate)
-            let count = album?.photoCount ?? 0
+            let count = PhotoStore.shared.todayPhotoCount
             return count < 5 ? .canTake : .missed
         }
     }
@@ -79,5 +79,10 @@ final class AlbumViewModel: ObservableObject {
                 selectedDate = tomorrow
             }
         }
+    }
+
+    /// 화면 진입 / 새로고침 시 호출 — 오늘 앨범을 서버에서 다시 받아온다.
+    func refreshToday() async {
+        await PhotoStore.shared.loadToday()
     }
 }

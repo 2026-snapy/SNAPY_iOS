@@ -139,17 +139,31 @@ final class CameraViewModel: ObservableObject {
 
     @Published var shouldDismiss = false
 
-    func savePhoto() {
-        // 마지막 촬영 사진을 PhotoStore에 저장
-        if let lastPhoto = capturedPhotos.last {
-            PhotoStore.shared.savePhoto(
-                front: lastPhoto.front,
-                back: lastPhoto.back,
+    /// 마지막 촬영 사진을 백엔드로 업로드하고 today 앨범을 새로고침한다.
+    /// 호출부에서 `Task { await cameraVM.savePhoto() }` 형태로 사용.
+    func savePhoto() async {
+        guard let lastPhoto = capturedPhotos.last,
+              let front = lastPhoto.front,
+              let back = lastPhoto.back else {
+            errorMessage = "촬영된 사진이 없습니다."
+            return
+        }
+
+        isUploading = true
+        errorMessage = nil
+        defer { isUploading = false }
+
+        do {
+            try await PhotoStore.shared.uploadPhoto(
+                front: front,
+                back: back,
                 capturedAt: capturedAt ?? Date()
             )
+            dualCamera.stopSession()
+            shouldDismiss = true
+        } catch {
+            errorMessage = error.localizedDescription
         }
-        dualCamera.stopSession()
-        shouldDismiss = true
     }
 
     func resetCamera() {

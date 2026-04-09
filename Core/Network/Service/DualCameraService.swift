@@ -102,7 +102,7 @@ final class DualCameraService: NSObject, ObservableObject {
             }
         }
 
-        // Preview layer 생성 및 연결 - 세션 큐에서 연결 추가 (중요!)
+        // Preview layer 생성 및 연결 - 세션 큐에서 연결 추가 
         let backLayer = AVCaptureVideoPreviewLayer(sessionWithNoConnection: session)
         backLayer.videoGravity = .resizeAspectFill
         if let port = backInput.ports(for: .video, sourceDeviceType: backCamera.deviceType, sourceDevicePosition: .back).first {

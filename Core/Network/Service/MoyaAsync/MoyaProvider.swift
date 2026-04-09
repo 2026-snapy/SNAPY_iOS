@@ -1,8 +1,8 @@
 //
-//  MoyaProvider.swift
-//  JeepChak
+//  MoyaProvider2.swift
+//  SNAPY_iOS
 //
-//  Created by 김은찬 on 12/4/25.
+//  Created by 김은찬 on 4/9/26.
 //
 
 import Moya

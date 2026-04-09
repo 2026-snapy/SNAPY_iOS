@@ -11,8 +11,8 @@ import Foundation
 
 enum AlbumType: String, Codable, CaseIterable {
     case morning   = "MORNING"
-    case afternoon = "AFTERNOON"
-    case evening   = "EVENING"
+    case afternoon = "LUNCH"
+    case evening   = "DINNER"
     case free1     = "FREE_1"
     case free2     = "FREE_2"
 

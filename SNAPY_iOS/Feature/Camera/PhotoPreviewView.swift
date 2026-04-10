@@ -76,5 +76,13 @@ struct PhotoPreviewView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 40)
         }
+        .alert("업로드 실패", isPresented: .init(
+            get: { cameraVM.errorMessage != nil },
+            set: { if !$0 { cameraVM.errorMessage = nil } }
+        )) {
+            Button("확인") { cameraVM.errorMessage = nil }
+        } message: {
+            Text(cameraVM.errorMessage ?? "")
+        }
     }
 }

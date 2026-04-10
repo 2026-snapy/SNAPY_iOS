@@ -25,15 +25,23 @@ struct AlbumCalendarView: View {
         ZStack {
             Color.backgroundBlack.ignoresSafeArea()
 
-            ScrollView {
-                LazyVStack(spacing: 32) {
-                    ForEach(months, id: \.self) { month in
-                        monthView(for: month)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 32) {
+                        ForEach(months, id: \.self) { month in
+                            monthView(for: month)
+                                .id(month)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+                    .padding(.bottom, 40)
+                }
+                .onChange(of: months) { _, newMonths in
+                    if let last = newMonths.last {
+                        proxy.scrollTo(last, anchor: .bottom)
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-                .padding(.bottom, 40)
             }
         }
         .navigationBarBackButtonHidden(true)

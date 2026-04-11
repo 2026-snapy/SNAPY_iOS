@@ -288,6 +288,7 @@
 			children = (
 				BCD8162A2F6936700028AE50 /* User.swift */,
 				BC1DC2EB2F68CF730016A4CD /* ImagePicker.swift */,
+				BC1DC2EA2F68CF730016A4CD /* Core */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -297,8 +298,6 @@
 			children = (
 				BCD815972F69285F0028AE50 /* SNAPY_iOS */,
 				BC5AFEBF2F6866FF00273744 /* Products */,
-				BC1DC2EA2F68CF730016A4CD /* Core */,
-				BC1DC2EC2F68CF730016A4CD /* Model */,
 				BC5AFECE2F68670100273744 /* SNAPY_iOSTests */,
 				BC5AFED82F68670100273744 /* SNAPY_iOSUITests */,
 			);
@@ -411,6 +410,7 @@
 				BCD815922F69285F0028AE50 /* App */,
 				BCD815932F69285F0028AE50 /* Feature */,
 				BCD815942F69285F0028AE50 /* Assets.xcassets */,
+				BC1DC2EC2F68CF730016A4CD /* Model */,
 			);
 			path = SNAPY_iOS;
 			sourceTree = "<group>";

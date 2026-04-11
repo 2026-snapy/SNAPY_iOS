@@ -106,7 +106,7 @@ final class PhotoStore: ObservableObject {
             todayAlbum = data
         } catch {
             errorMessage = error.localizedDescription
-            // today 가 없으면 nil 처리 (서버가 빈 응답 줄 수도 있음)
+            // today 가 없으면 nil 처리
             todayAlbum = nil
         }
         isLoading = false

@@ -21,7 +21,7 @@ struct FriendView: View {
                         showFriendRequest = true
                     }
 
-                    // 검색바 (글래스) + X 분리
+                    // 검색바
                     HStack(spacing: 10) {
                         HStack(spacing: 10) {
                             Image(systemName: "magnifyingglass")
@@ -49,8 +49,9 @@ struct FriendView: View {
                                 .overlay(Circle().stroke(Color(white: 0.4), lineWidth: 0.5))
                         }
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
+                    .padding(.top, 10)
+                    .padding(.horizontal, 22)
+                    .padding(.bottom, 30)
 
                     // MARK: 추천 친구 리스트
                     if viewModel.filteredFriends.isEmpty {
@@ -64,7 +65,7 @@ struct FriendView: View {
                             VStack(alignment: .leading, spacing: 0) {
                                 Text("추천 친구")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.customGray300)
+                                    .foregroundColor(.textWhite)
                                     .padding(.horizontal, 20)
                                     .padding(.bottom, 12)
 

@@ -20,7 +20,7 @@ struct SuggestedFriend: Identifiable {
 }
 
 enum FriendRequestState {
-    case none       // 기본: [추가] [X]
+    case none       // 기본: [추가]
     case requested  // 요청 보냄: [취소]
 }
 

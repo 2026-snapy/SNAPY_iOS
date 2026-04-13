@@ -64,7 +64,7 @@ struct SuggestedFriendRow: View {
                             .foregroundColor(.mainYellow)
                             .padding(.horizontal, 18)
                             .padding(.vertical, 8)
-                            .background(Color(white: 0.2), in: RoundedRectangle(cornerRadius: 8))
+                            .background(Color.customDarkGray, in: RoundedRectangle(cornerRadius: 30))
                     }
 
                     Button(action: onHide) {
@@ -82,7 +82,7 @@ struct SuggestedFriendRow: View {
                         .foregroundColor(.customGray300)
                         .padding(.horizontal, 18)
                         .padding(.vertical, 8)
-                        .background(Color(white: 0.2), in: RoundedRectangle(cornerRadius: 8))
+                        .background(Color.customDarkGray, in: RoundedRectangle(cornerRadius: 30))
                 }
             }
         }

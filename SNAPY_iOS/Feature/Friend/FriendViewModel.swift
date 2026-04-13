@@ -33,8 +33,8 @@ final class FriendViewModel: ObservableObject {
     init() {
         // 임시 목 데이터 5개
         suggestedFriends = [
-            SuggestedFriend(name: "김무기", handle: "david_18", profileImageUrl: nil, mutualText: "김은찬 외 4명과 친구"),
-            SuggestedFriend(name: "김은찬", handle: "silver_c.ld", profileImageUrl: nil, mutualText: "김은찬 외 4명과 친구"),
+            SuggestedFriend(name: "김무기", handle: "david_18", profileImageUrl: nil, mutualText: "zhvcx_flii, kimikhnа0816님 외 32명 친구 중 입니다"),
+            SuggestedFriend(name: "김은찬", handle: "silver_c.ld", profileImageUrl: nil, mutualText: "zhvcx_flii, kimikhnа0816님 외 32명 친구 중 입니다"),
             SuggestedFriend(name: "홍길동", handle: "hong_gd", profileImageUrl: nil, mutualText: nil),
             SuggestedFriend(name: "권재현", handle: "kwon_jh", profileImageUrl: nil, mutualText: nil),
             SuggestedFriend(name: "문종은", handle: "moon_je", profileImageUrl: nil, mutualText: nil),

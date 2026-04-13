@@ -14,6 +14,8 @@ struct FriendProfileView: View {
     let handle: String
     let profileImageUrl: String?
     var isFriend: Bool = false
+    var mutualFriendsText: String? = nil     // "김은찬 외 4명과 친구"
+    var contactText: String? = nil            // "연락처에 있는 친구"
 
     // 목 데이터
     private let postCount = 5
@@ -24,11 +26,13 @@ struct FriendProfileView: View {
     @State private var showFriendSheet = false
     @State private var currentFriend: Bool
 
-    init(name: String, handle: String, profileImageUrl: String?, isFriend: Bool = false) {
+    init(name: String, handle: String, profileImageUrl: String?, isFriend: Bool = false, mutualFriendsText: String? = nil, contactText: String? = nil) {
         self.name = name
         self.handle = handle
         self.profileImageUrl = profileImageUrl
         self.isFriend = isFriend
+        self.mutualFriendsText = mutualFriendsText
+        self.contactText = contactText
         self._currentFriend = State(initialValue: isFriend)
     }
 
@@ -87,6 +91,21 @@ struct FriendProfileView: View {
                                 }
                             }
                             .padding(.top, 10)
+                        }
+
+                        // 겹친구 (친구인 경우) / 연락처 친구 (비친구인 경우)
+                        if currentFriend {
+                            if let mutual = mutualFriendsText {
+                                Text(mutual)
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundColor(.textWhite)
+                            }
+                        } else {
+                            if let contact = contactText {
+                                Text(contact)
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundColor(.customGray300)
+                            }
                         }
 
                         // @handle
@@ -249,7 +268,8 @@ struct FriendProfileView: View {
             name: "김무기",
             handle: "david_18",
             profileImageUrl: nil,
-            isFriend: false
+            isFriend: false,
+            contactText: "연락처에 있는 친구"
         )
     }
 }
@@ -260,7 +280,8 @@ struct FriendProfileView: View {
             name: "김무기",
             handle: "david_18",
             profileImageUrl: nil,
-            isFriend: true
+            isFriend: true,
+            mutualFriendsText: "zhvcx_flii, kimikhnа0816님 외 32명 친구 중 입니다"
         )
     }
 }

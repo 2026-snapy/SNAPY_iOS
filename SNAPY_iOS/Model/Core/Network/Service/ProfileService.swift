@@ -18,7 +18,10 @@ final class ProfileService {
     // MARK: - 내 프로필 조회
 
     func fetchMyProfile() async throws -> ProfileData {
+        print("[ProfileService] 내 프로필 조회")
         let response = try await requestWithRefresh(.fetchMyProfile)
+        print("[ProfileService] 응답 코드 \(response.statusCode)")
+        if let body = String(data: response.data, encoding: .utf8) { print("[ProfileService] 응답 \(body)") }
         guard (200..<300).contains(response.statusCode) else {
             throw ProfileError.serverError(extractMessage(from: response))
         }
@@ -46,7 +49,10 @@ final class ProfileService {
     // MARK: - 프로필 이미지 변경
 
     func updateProfileImage(_ image: UIImage) async throws -> String? {
+        print("[ProfileService] 프로필 이미지 업로드")
         let response = try await requestWithRefresh(.updateProfileImage(image: image))
+        print("[ProfileService] 응답 코드 \(response.statusCode)")
+        if let body = String(data: response.data, encoding: .utf8) { print("[ProfileService] 응답 \(body)") }
         guard (200..<300).contains(response.statusCode) else {
             throw ProfileError.serverError(extractMessage(from: response))
         }
@@ -60,7 +66,10 @@ final class ProfileService {
     // MARK: - 배경 이미지 변경
 
     func updateBackgroundImage(_ image: UIImage) async throws -> String? {
+        print("[ProfileService] 배경 이미지 업로드")
         let response = try await requestWithRefresh(.updateBackgroundImage(image: image))
+        print("[ProfileService] 응답 코드 \(response.statusCode)")
+        if let body = String(data: response.data, encoding: .utf8) { print("[ProfileService] 응답 \(body)") }
         guard (200..<300).contains(response.statusCode) else {
             throw ProfileError.serverError(extractMessage(from: response))
         }

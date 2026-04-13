@@ -61,7 +61,10 @@ struct ProfileView: View {
                 ProfileEditView(viewModel: viewModel)
             }
             .task {
-                await viewModel.loadProfile()
+                // 저장된 URL 이 없을 때만 서버에서 가져옴 (이미 있으면 바로 표시)
+                if viewModel.profileImageUrl == nil && viewModel.bannerImageUrl == nil {
+                    await viewModel.loadProfile()
+                }
             }
         }
     }

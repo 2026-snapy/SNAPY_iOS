@@ -51,11 +51,15 @@ final class ProfileViewModel: ObservableObject {
     @Published var streakCount: Int = 2
     @Published var mutualFriendsText: String = "zhvcx_flii, kimikhnа0816님 외 32명 친구 중 입니다"
 
-    // 프로필/배너 이미지 (URL — 서버에서 받아옴)
-    @Published var profileImageUrl: String? = nil
-    @Published var bannerImageUrl: String? = nil
+    // 프로필/배너 이미지 URL (UserDefaults 에 저장 → 앱 재시작해도 유지)
+    @Published var profileImageUrl: String? {
+        didSet { UserDefaults.standard.set(profileImageUrl, forKey: "profileImageUrl") }
+    }
+    @Published var bannerImageUrl: String? {
+        didSet { UserDefaults.standard.set(bannerImageUrl, forKey: "bannerImageUrl") }
+    }
 
-    // 로컬 선택 이미지 (피커에서 선택 후 서버 업로드 전까지 표시용)
+    // 로컬 선택 이미지 (피커에서 선택 → 즉시 표시 + 서버 업로드)
     @Published var profileImage: UIImage? = nil
     @Published var bannerImage: UIImage? = nil
 

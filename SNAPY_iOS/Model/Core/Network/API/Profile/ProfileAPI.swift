@@ -26,7 +26,7 @@ extension ProfileAPI: TargetType {
     var path: String {
         switch self {
         case .fetchMyProfile:
-            return "/api/users/me/profile"
+            return "/api/users/me"
         case .fetchUserProfile(let handle):
             return "/api/users/\(handle)/profile"
         case .updateProfileImage:

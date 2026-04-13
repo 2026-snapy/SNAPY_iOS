@@ -26,7 +26,7 @@ struct ProfileHeaderView: View {
                         Image(uiImage: bannerImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 180)
+                            .frame(height: 200)
                             .clipped()
                     } else if let url = viewModel.bannerImageUrl {
                         AsyncImage(url: URL(string: url)) { phase in
@@ -34,17 +34,14 @@ struct ProfileHeaderView: View {
                             case .success(let image):
                                 image.resizable().scaledToFill()
                             default:
-                                Image("Banner_img").resizable().scaledToFill()
+                                Color.customDarkGray
                             }
                         }
-                        .frame(height: 180)
+                        .frame(height: 200)
                         .clipped()
                     } else {
-                        Image("Banner_img")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(height: 170)
-                            .clipped()
+                        Color.customDarkGray
+                            .frame(height: 200)
                     }
                 }
             }
@@ -68,13 +65,11 @@ struct ProfileHeaderView: View {
                                     case .success(let image):
                                         image.resizable().scaledToFill()
                                     default:
-                                        Image("Profile_img").resizable().scaledToFill()
+                                        Color.customDarkGray
                                     }
                                 }
                             } else {
-                                Image("Profile_img")
-                                    .resizable()
-                                    .scaledToFill()
+                                Color.customDarkGray
                             }
                         }
                         .frame(width: 96, height: 96)

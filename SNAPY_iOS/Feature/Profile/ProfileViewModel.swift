@@ -59,9 +59,26 @@ final class ProfileViewModel: ObservableObject {
         didSet { UserDefaults.standard.set(bannerImageUrl, forKey: "bannerImageUrl") }
     }
 
-    // 로컬 선택 이미지 (피커에서 선택 → 즉시 표시 + 서버 업로드)
+    // 프로필/배너 이미지 (디스크 캐시 → 즉시 표시, 로딩 없음)
     @Published var profileImage: UIImage? = nil
     @Published var bannerImage: UIImage? = nil
+
+    // 디스크 캐시 경로
+    private static let profileCachePath = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("profile_image.jpg")
+    private static let bannerCachePath = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("banner_image.jpg")
+
+    /// 이미지를 디스크에 저장
+    private func saveImageToDisk(_ image: UIImage, path: URL) {
+        if let data = image.jpegData(compressionQuality: 0.9) {
+            try? data.write(to: path)
+        }
+    }
+
+    /// 디스크에서 이미지 로드
+    private static func loadImageFromDisk(_ path: URL) -> UIImage? {
+        guard let data = try? Data(contentsOf: path) else { return nil }
+        return UIImage(data: data)
+    }
 
     // 수정 모드
     @Published var showEditProfile = false
@@ -74,6 +91,13 @@ final class ProfileViewModel: ObservableObject {
 
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
+
+    init() {
+        profileImageUrl = UserDefaults.standard.string(forKey: "profileImageUrl")
+        bannerImageUrl = UserDefaults.standard.string(forKey: "bannerImageUrl")
+        profileImage = Self.loadImageFromDisk(Self.profileCachePath)
+        bannerImage = Self.loadImageFromDisk(Self.bannerCachePath)
+    }
 
     // 방명록 목데이터
     @Published var guestbookEntries: [GuestbookEntry] = [
@@ -134,8 +158,8 @@ final class ProfileViewModel: ObservableObject {
         guard let item = profilePickerItem else { return }
         if let data = try? await item.loadTransferable(type: Data.self),
            let image = UIImage(data: data) {
-            profileImage = image  // 즉시 로컬 표시
-            // 서버 업로드
+            profileImage = image
+            saveImageToDisk(image, path: Self.profileCachePath)
             do {
                 let url = try await ProfileService.shared.updateProfileImage(image)
                 profileImageUrl = url
@@ -151,8 +175,8 @@ final class ProfileViewModel: ObservableObject {
         guard let item = bannerPickerItem else { return }
         if let data = try? await item.loadTransferable(type: Data.self),
            let image = UIImage(data: data) {
-            bannerImage = image  // 즉시 로컬 표시
-            // 서버 업로드
+            bannerImage = image
+            saveImageToDisk(image, path: Self.bannerCachePath)
             do {
                 let url = try await ProfileService.shared.updateBackgroundImage(image)
                 bannerImageUrl = url

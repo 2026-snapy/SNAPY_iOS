@@ -148,16 +148,18 @@ struct ProfileHeaderView: View {
         .fullScreenCover(isPresented: $showBannerViewer) {
             ImageViewerView(
                 image: viewModel.bannerImage,
+                imageUrl: viewModel.bannerImageUrl,
                 assetName: "Banner_img",
-                horizontalPadding: 0
+                isCircle: false
             )
         }
         // 프로필 확대 보기
         .fullScreenCover(isPresented: $showProfileViewer) {
             ImageViewerView(
                 image: viewModel.profileImage,
+                imageUrl: viewModel.profileImageUrl,
                 assetName: "Profile_img",
-                horizontalPadding: 60
+                isCircle: true
             )
         }
     }

@@ -20,7 +20,6 @@ struct ProfileView: View {
                         ProfileHeaderView(viewModel: viewModel)
 
                         GuestbookSection(viewModel: viewModel)
-                            .padding(.bottom, 10)
 
                             Divider()
                                 .background(Color.Gray500)

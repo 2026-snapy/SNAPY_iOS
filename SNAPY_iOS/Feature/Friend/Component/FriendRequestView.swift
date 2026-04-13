@@ -48,33 +48,37 @@ struct FriendRequestView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.top, 30)
                         .padding(.bottom, 30)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                     } else {
                         // 요청 있음
                         ForEach(requests) { request in
                             FriendRequestRow(
                                 request: request,
-                                onAccept: { acceptRequest(request) },
-                                onReject: { rejectRequest(request) }
+                                onAccept: { withAnimation(.easeInOut(duration: 0.3)) { acceptRequest(request) } },
+                                onReject: { withAnimation(.easeInOut(duration: 0.3)) { rejectRequest(request) } }
                             )
+                            .transition(.opacity.combined(with: .offset(x: -50)))
                         }
                         .padding(.top, 16)
                     }
 
-                    // MARK: 추천 친구 섹션
-                    Text("추천 친구")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.textWhite)
-                        .padding(.horizontal, 22)
-                        .padding(.top, 24)
-                        .padding(.bottom, 12)
+                    // MARK: 추천 친구 섹션 (요청이 없을 때만)
+                    if requests.isEmpty {
+                        Text("추천 친구")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.textWhite)
+                            .padding(.horizontal, 22)
+                            .padding(.top, 24)
+                            .padding(.bottom, 12)
 
-                    ForEach(viewModel.filteredFriends) { friend in
-                        SuggestedFriendRow(
-                            friend: friend,
-                            onAdd: { viewModel.sendRequest(to: friend) },
-                            onCancel: { viewModel.cancelRequest(to: friend) },
-                            onHide: { viewModel.hideFriend(friend) }
-                        )
+                        ForEach(viewModel.filteredFriends) { friend in
+                            SuggestedFriendRow(
+                                friend: friend,
+                                onAdd: { viewModel.sendRequest(to: friend) },
+                                onCancel: { viewModel.cancelRequest(to: friend) },
+                                onHide: { viewModel.hideFriend(friend) }
+                            )
+                        }
                     }
                 }
             }

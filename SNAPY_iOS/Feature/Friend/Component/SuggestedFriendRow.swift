@@ -13,6 +13,8 @@ struct SuggestedFriendRow: View {
     let onCancel: () -> Void
     let onHide: () -> Void
 
+    @State private var showProfile = false
+
     var body: some View {
         HStack(spacing: 14) {
             // 프로필 사진
@@ -88,5 +90,14 @@ struct SuggestedFriendRow: View {
         }
         .padding(.horizontal, 22)
         .padding(.vertical, 10)
+        .contentShape(Rectangle())
+        .onTapGesture { showProfile = true }
+        .navigationDestination(isPresented: $showProfile) {
+            FriendProfileView(
+                name: friend.name,
+                handle: friend.handle,
+                profileImageUrl: friend.profileImageUrl
+            )
+        }
     }
 }

@@ -12,6 +12,8 @@ struct FriendRequestRow: View {
     let onAccept: () -> Void
     let onReject: () -> Void
 
+    @State private var showProfile = false
+
     var body: some View {
         HStack(spacing: 12) {
             // 프로필 사진
@@ -66,5 +68,14 @@ struct FriendRequestRow: View {
             }
         }
         .padding(.horizontal, 22)
+        .contentShape(Rectangle())
+        .onTapGesture { showProfile = true }
+        .navigationDestination(isPresented: $showProfile) {
+            FriendProfileView(
+                name: request.name,
+                handle: request.handle,
+                profileImageUrl: request.profileImageUrl
+            )
+        }
     }
 }

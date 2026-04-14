@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FriendRequestRow: View {
-    let request: FriendRequest
+    let request: ReceivedFriendRequest
     let onAccept: () -> Void
     let onReject: () -> Void
 
@@ -38,7 +38,7 @@ struct FriendRequestRow: View {
 
             // 이름 + 핸들
             VStack(alignment: .leading, spacing: 3) {
-                Text(request.name)
+                Text(request.username)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.textWhite)
 
@@ -72,9 +72,10 @@ struct FriendRequestRow: View {
         .onTapGesture { showProfile = true }
         .navigationDestination(isPresented: $showProfile) {
             FriendProfileView(
-                name: request.name,
+                name: request.username,
                 handle: request.handle,
-                profileImageUrl: request.profileImageUrl
+                profileImageUrl: request.profileImageUrl,
+                isFriend: false
             )
         }
     }

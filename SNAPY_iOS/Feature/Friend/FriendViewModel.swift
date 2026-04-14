@@ -15,7 +15,7 @@ struct SuggestedFriend: Identifiable {
     let name: String
     let handle: String
     let profileImageUrl: String?
-    let mutualText: String?     // "김은찬 외 4명과 친구" (nil 이면 표시 안 함)
+    let mutualText: String?
     var requestState: FriendRequestState = .none
 }
 
@@ -29,16 +29,26 @@ final class FriendViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var suggestedFriends: [SuggestedFriend] = []
     @Published var hiddenIds: Set<UUID> = []
+    @Published var errorMessage: String? = nil
+    @Published var isLoading = false
 
-    init() {
-        // 임시 목 데이터 5개
-        suggestedFriends = [
-            SuggestedFriend(name: "김무기", handle: "david_18", profileImageUrl: nil, mutualText: "zhvcx_flii, kimikhnа0816님 외 32명 친구 중 입니다"),
-            SuggestedFriend(name: "김은찬", handle: "silver_c.ld", profileImageUrl: nil, mutualText: "zhvcx_flii, kimikhnа0816님 외 32명 친구 중 입니다"),
-            SuggestedFriend(name: "홍길동", handle: "hong_gd", profileImageUrl: nil, mutualText: nil),
-            SuggestedFriend(name: "권재현", handle: "kwon_jh", profileImageUrl: nil, mutualText: nil),
-            SuggestedFriend(name: "문종은", handle: "moon_je", profileImageUrl: nil, mutualText: nil),
-        ]
+    /// 서버에서 추천 친구 조회
+    func loadRecommendedFriends() async {
+        isLoading = true
+        do {
+            let list = try await FriendService.shared.getRecommendedFriends()
+            suggestedFriends = list.map { friend in
+                SuggestedFriend(
+                    name: friend.username,
+                    handle: friend.handle,
+                    profileImageUrl: friend.profileImageUrl,
+                    mutualText: nil
+                )
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading = false
     }
 
     /// 검색 필터 + 숨김 제외
@@ -51,16 +61,36 @@ final class FriendViewModel: ObservableObject {
         }
     }
 
-    /// 추가 버튼 → 요청 보냄
+    /// 추가 버튼 → 서버에 친구 요청 보내기
     func sendRequest(to friend: SuggestedFriend) {
         guard let idx = suggestedFriends.firstIndex(where: { $0.id == friend.id }) else { return }
         suggestedFriends[idx].requestState = .requested
+
+        Task {
+            do {
+                try await FriendService.shared.sendRequest(handle: friend.handle)
+            } catch {
+                // 실패 시 원복
+                suggestedFriends[idx].requestState = .none
+                errorMessage = error.localizedDescription
+            }
+        }
     }
 
-    /// 취소 버튼 → 요청 취소
+    /// 취소 버튼 → 서버에 요청 취소
     func cancelRequest(to friend: SuggestedFriend) {
         guard let idx = suggestedFriends.firstIndex(where: { $0.id == friend.id }) else { return }
         suggestedFriends[idx].requestState = .none
+
+        Task {
+            do {
+                try await FriendService.shared.cancelRequest(handle: friend.handle)
+            } catch {
+                // 실패 시 원복
+                suggestedFriends[idx].requestState = .requested
+                errorMessage = error.localizedDescription
+            }
+        }
     }
 
     /// X 버튼 → 추천 목록에서 숨김 (로컬)

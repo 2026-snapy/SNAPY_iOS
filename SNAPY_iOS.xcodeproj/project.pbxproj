@@ -45,6 +45,9 @@
 		BC706E592F8D09950093C0B8 /* FriendRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706E582F8D09940093C0B8 /* FriendRequestView.swift */; };
 		BC706E5B2F8D39700093C0B8 /* FriendProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706E5A2F8D396F0093C0B8 /* FriendProfileView.swift */; };
 		BC706E5D2F8D482C0093C0B8 /* FriendRelationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706E5C2F8D48280093C0B8 /* FriendRelationSheet.swift */; };
+		BC706E5F2F8DC0E20093C0B8 /* FriendDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706E5E2F8DC0E10093C0B8 /* FriendDTO.swift */; };
+		BC706E622F8DC1100093C0B8 /* FriendAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706E612F8DC1090093C0B8 /* FriendAPI.swift */; };
+		BC706E642F8DC1350093C0B8 /* FriendService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706E632F8DC1330093C0B8 /* FriendService.swift */; };
 		BCCAD5822F6ABB4B00ED71E0 /* SnapyLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD5812F6ABB3D00ED71E0 /* SnapyLoginView.swift */; };
 		BCCAD5FE2F6ABC3000ED71E0 /* SnapyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD5FD2F6ABC2F00ED71E0 /* SnapyTextField.swift */; };
 		BCCAD6072F6B060300ED71E0 /* EmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD6062F6B05EB00ED71E0 /* EmailView.swift */; };
@@ -146,6 +149,9 @@
 		BC706E582F8D09940093C0B8 /* FriendRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestView.swift; sourceTree = "<group>"; };
 		BC706E5A2F8D396F0093C0B8 /* FriendProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendProfileView.swift; sourceTree = "<group>"; };
 		BC706E5C2F8D48280093C0B8 /* FriendRelationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRelationSheet.swift; sourceTree = "<group>"; };
+		BC706E5E2F8DC0E10093C0B8 /* FriendDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendDTO.swift; sourceTree = "<group>"; };
+		BC706E612F8DC1090093C0B8 /* FriendAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendAPI.swift; sourceTree = "<group>"; };
+		BC706E632F8DC1330093C0B8 /* FriendService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendService.swift; sourceTree = "<group>"; };
 		BCCAD5812F6ABB3D00ED71E0 /* SnapyLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapyLoginView.swift; sourceTree = "<group>"; };
 		BCCAD5FD2F6ABC2F00ED71E0 /* SnapyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapyTextField.swift; sourceTree = "<group>"; };
 		BCCAD6062F6B05EB00ED71E0 /* EmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailView.swift; sourceTree = "<group>"; };
@@ -246,6 +252,7 @@
 		BC1DC2DA2F68CF730016A4CD /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				BC706E5E2F8DC0E10093C0B8 /* FriendDTO.swift */,
 				BC706E492F8BF9AF0093C0B8 /* ProfileDTO.swift */,
 				BC6473722F86AD4700FA15EA /* AlbumDTO.swift */,
 				BC1DC2D72F68CF730016A4CD /* AuthDTO.swift */,
@@ -264,6 +271,7 @@
 		BC1DC2E12F68CF730016A4CD /* API */ = {
 			isa = PBXGroup;
 			children = (
+				BC706E602F8DC1010093C0B8 /* Friend */,
 				BC706E4B2F8BF9C70093C0B8 /* Profile */,
 				BC6473762F86ADC300FA15EA /* Album */,
 				BC1DC2D32F68CF730016A4CD /* Token */,
@@ -276,6 +284,7 @@
 		BC1DC2E82F68CF730016A4CD /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				BC706E632F8DC1330093C0B8 /* FriendService.swift */,
 				BC706E4E2F8BF9FF0093C0B8 /* ProfileService.swift */,
 				BC64737B2F86B41700FA15EA /* MoyaAsync */,
 				BC6473742F86AD6D00FA15EA /* AlbumService.swift */,
@@ -364,6 +373,14 @@
 				BC706E4C2F8BF9D80093C0B8 /* ProfileAPI.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		BC706E602F8DC1010093C0B8 /* Friend */ = {
+			isa = PBXGroup;
+			children = (
+				BC706E612F8DC1090093C0B8 /* FriendAPI.swift */,
+			);
+			path = Friend;
 			sourceTree = "<group>";
 		};
 		BCCAD6052F6B05E100ED71E0 /* Email */ = {
@@ -764,6 +781,7 @@
 				BC1DC2F12F68CF730016A4CD /* Color+Extensions.swift in Sources */,
 				BCCAD60C2F6B062F00ED71E0 /* PasswordView.swift in Sources */,
 				BCD815AF2F69346D0028AE50 /* MainTabView.swift in Sources */,
+				BC706E5F2F8DC0E20093C0B8 /* FriendDTO.swift in Sources */,
 				BC64737A2F86ADDA00FA15EA /* AlbumAPI.swift in Sources */,
 				BCCAD6072F6B060300ED71E0 /* EmailView.swift in Sources */,
 				BC706DFF2F87FA0E0093C0B8 /* AlbumDateDetailView.swift in Sources */,
@@ -789,6 +807,7 @@
 				BC706E5D2F8D482C0093C0B8 /* FriendRelationSheet.swift in Sources */,
 				BC6473752F86AD6E00FA15EA /* AlbumService.swift in Sources */,
 				BCD816EB2F6A52390028AE50 /* OnboardingView.swift in Sources */,
+				BC706E642F8DC1350093C0B8 /* FriendService.swift in Sources */,
 				BCD816DA2F6A419C0028AE50 /* ProfileView.swift in Sources */,
 				BCD816E72F6A43860028AE50 /* AlbumViewModel.swift in Sources */,
 				BCED9C202F6E6215008E47BB /* DualCameraService.swift in Sources */,
@@ -803,6 +822,7 @@
 				BC706E512F8CEA450093C0B8 /* SuggestedFriendRow.swift in Sources */,
 				BCD816E52F6A437D0028AE50 /* AlbumView.swift in Sources */,
 				BCD10DB02F854CDA004CBC29 /* GuestbookAddView.swift in Sources */,
+				BC706E622F8DC1100093C0B8 /* FriendAPI.swift in Sources */,
 				BCD8162D2F6937940028AE50 /* SnapyButton.swift in Sources */,
 				BC6676D72F840F70009CBF8D /* ImageViewerView.swift in Sources */,
 				BCD815A72F692FB50028AE50 /* LoginViewModel.swift in Sources */,

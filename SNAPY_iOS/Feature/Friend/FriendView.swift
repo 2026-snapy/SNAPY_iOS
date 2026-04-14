@@ -54,11 +54,21 @@ struct FriendView: View {
                     .padding(.bottom, 30)
 
                     // MARK: 추천 친구 리스트
-                    if viewModel.filteredFriends.isEmpty {
+                    if viewModel.isLoading {
                         Spacer()
-                        Text("추천 친구가 없습니다")
-                            .font(.system(size: 14))
-                            .foregroundColor(.customGray300)
+                        ProgressView()
+                            .tint(.white)
+                        Spacer()
+                    } else if viewModel.filteredFriends.isEmpty {
+                        Spacer()
+                        VStack(spacing: 12) {
+                            Image(systemName: "person.2.slash")
+                                .font(.system(size: 36))
+                                .foregroundColor(.customGray300)
+                            Text("추천 친구가 없습니다")
+                                .font(.system(size: 15, weight: .medium))
+                                .foregroundColor(.customGray300)
+                        }
                         Spacer()
                     } else {
                         ScrollView {
@@ -85,6 +95,9 @@ struct FriendView: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
+            .task {
+                await viewModel.loadRecommendedFriends()
+            }
             .navigationDestination(isPresented: $showFriendRequest) {
                 FriendRequestView()
             }

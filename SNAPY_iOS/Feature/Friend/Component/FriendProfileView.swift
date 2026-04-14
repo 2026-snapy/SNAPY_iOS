@@ -148,7 +148,19 @@ struct FriendProfileView: View {
                         } else {
                             // 비친구: [친구 추가] / [요청됨]
                             Button {
-                                isFriendRequested.toggle()
+                                if isFriendRequested {
+                                    isFriendRequested = false
+                                    Task {
+                                        do { try await FriendService.shared.cancelRequest(handle: handle) }
+                                        catch { isFriendRequested = true }
+                                    }
+                                } else {
+                                    isFriendRequested = true
+                                    Task {
+                                        do { try await FriendService.shared.sendRequest(handle: handle) }
+                                        catch { isFriendRequested = false }
+                                    }
+                                }
                             } label: {
                                 HStack(spacing: 6) {
                                     Image(systemName: isFriendRequested ? "clock" : "person.badge.plus")
@@ -239,6 +251,13 @@ struct FriendProfileView: View {
                 name: name,
                 handle: handle,
                 onRemoveFriend: {
+                    Task {
+                        do {
+                            try await FriendService.shared.removeFriend(handle: handle)
+                        } catch {
+                            print("[FriendProfile] 친구 삭제 실패: \(error)")
+                        }
+                    }
                     showFriendSheet = false
                     dismiss()
                 }

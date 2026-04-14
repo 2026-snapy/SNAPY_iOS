@@ -132,6 +132,8 @@ final class ProfileViewModel: ObservableObject {
             handle = profile.handle
             profileImageUrl = profile.profileImageUrl
             bannerImageUrl = profile.backgroundImageUrl
+            // 자기 handle 저장 (추천 친구에서 자신 제외용)
+            UserDefaults.standard.set(profile.handle, forKey: "myHandle")
         } catch {
             errorMessage = error.localizedDescription
         }

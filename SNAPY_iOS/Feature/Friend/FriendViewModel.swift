@@ -36,19 +36,25 @@ final class FriendViewModel: ObservableObject {
 
     private var searchTask: Task<Void, Never>?
 
-    /// 서버에서 추천 친구 조회
+    /// 추천 친구 조회
+    /// ⚠️ 임시: /api/users?q= (빈 쿼리) 로 전체 유저 조회.
+    /// 추후 /api/users/me/recommended-friends 로 교체할 것.
     func loadRecommendedFriends() async {
         isLoading = true
         do {
-            let list = try await FriendService.shared.getRecommendedFriends()
-            suggestedFriends = list.map { friend in
-                SuggestedFriend(
-                    name: friend.username,
-                    handle: friend.handle,
-                    profileImageUrl: friend.profileImageUrl,
-                    mutualText: nil
-                )
-            }
+            let list = try await FriendService.shared.searchUsers(query: "")
+            // 자기 자신 제외 (내 handle 은 UserDefaults 에 저장된 값)
+            let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
+            suggestedFriends = list
+                .filter { $0.handle != myHandle }
+                .map { friend in
+                    SuggestedFriend(
+                        name: friend.username,
+                        handle: friend.handle,
+                        profileImageUrl: friend.profileImageUrl,
+                        mutualText: nil
+                    )
+                }
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -107,9 +113,14 @@ final class FriendViewModel: ObservableObject {
             do {
                 try await FriendService.shared.sendRequest(handle: friend.handle)
             } catch {
-                // 실패 시 원복
-                suggestedFriends[idx].requestState = .none
-                errorMessage = error.localizedDescription
+                // 409 (이미 요청/이미 친구) 면 요청됨 상태 유지
+                let msg = error.localizedDescription
+                if msg.contains("409") || msg.contains("이미") || msg.contains("conflict") {
+                    // 이미 보낸 상태이므로 .requested 유지
+                } else {
+                    suggestedFriends[idx].requestState = .none
+                    errorMessage = msg
+                }
             }
         }
     }

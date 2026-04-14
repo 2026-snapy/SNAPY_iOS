@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import ContactsUI
+import Contacts
 
 struct ContactSyncView: View {
     var onDoneTap: () -> Void
@@ -33,13 +33,13 @@ struct ContactSyncView: View {
                 .padding(.horizontal, 24)
 
                 // 설명 텍스트
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 8) {
                     Text("친구들에게 SNAPY를 공유하고")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.customGray300)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(Color.textWhite)
                     Text("함께 더 재미있게 즐겨보세요!")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.customGray300)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(Color.textWhite)
                 }
                 .padding(.top, 16)
                 .padding(.horizontal, 24)
@@ -49,7 +49,7 @@ struct ContactSyncView: View {
                 // MARK: 연락처 아이콘
                 HStack {
                     Spacer()
-                    Image("contact_icon")
+                    Image("Contact_icon")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 180, height: 180)
@@ -59,25 +59,10 @@ struct ContactSyncView: View {
                 Spacer()
 
                 // MARK: 연락처 연동 버튼
-                Button {
-                    showContactPicker = true
-                } label: {
-                    HStack(spacing: 10) {
-                        Image("Login_Logo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 28, height: 28)
-
-                        Text("연락처 연동하기")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(.backgroundBlack)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(Color.textWhite)
-                    .cornerRadius(28)
+                SnapyButton(title: "연락처 연동하기") {
+                    requestContactAccess()
                 }
-                .padding(.horizontal, 24)
+                .padding(.bottom, 10)
 
                 // 건너뛰기
                 Button {
@@ -92,66 +77,44 @@ struct ContactSyncView: View {
                 .padding(.bottom, 24)
             }
         }
-        .sheet(isPresented: $showContactPicker) {
-            ContactPickerView { phoneNumbers in
-                // 선택된 연락처 전화번호로 서버에 동기화
-                Task {
-                    do {
-                        try await syncContacts(phones: phoneNumbers)
-                    } catch {
-                        print("[ContactSync] 동기화 실패: \(error)")
-                    }
+    }
+
+    /// 연락처 접근 권한 요청 → iOS 시스템 UI 가 자동으로 뜸
+    /// 허용 후 연락처를 읽어서 서버 동기화
+    private func requestContactAccess() {
+        let store = CNContactStore()
+        store.requestAccess(for: .contacts) { granted, error in
+            if granted {
+                let phones = self.fetchAllPhoneNumbers(store: store)
+                print("[ContactSync] 연락처 \(phones.count)개 번호 가져옴")
+                // 추후 POST /api/contacts/sync 연결
+                Task { @MainActor in
+                    onDoneTap()
                 }
-                onDoneTap()
+            } else {
+                print("[ContactSync] 연락처 권한 거부")
+                Task { @MainActor in
+                    onDoneTap()
+                }
             }
         }
     }
 
-    private func syncContacts(phones: [String]) async throws {
-        // POST /api/contacts/sync 호출
-        // 추후 FriendService 에 연결
-        print("[ContactSync] 동기화 요청 - \(phones.count)개 번호")
-    }
-}
-
-// MARK: - 연락처 피커 (UIKit 래핑)
-
-struct ContactPickerView: UIViewControllerRepresentable {
-    let onPicked: ([String]) -> Void
-
-    func makeUIViewController(context: Context) -> CNContactPickerViewController {
-        let picker = CNContactPickerViewController()
-        picker.delegate = context.coordinator
-        picker.predicateForEnablingContact = NSPredicate(format: "phoneNumbers.@count > 0")
-        return picker
-    }
-
-    func updateUIViewController(_ uiViewController: CNContactPickerViewController, context: Context) {}
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(onPicked: onPicked)
-    }
-
-    class Coordinator: NSObject, CNContactPickerDelegate {
-        let onPicked: ([String]) -> Void
-
-        init(onPicked: @escaping ([String]) -> Void) {
-            self.onPicked = onPicked
-        }
-
-        func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
-            let phones = contacts.compactMap { contact in
-                contact.phoneNumbers.first?.value.stringValue
+    /// 연락처에서 전화번호 전체 추출
+    private func fetchAllPhoneNumbers(store: CNContactStore) -> [String] {
+        let keys = [CNContactPhoneNumbersKey] as [CNKeyDescriptor]
+        let request = CNContactFetchRequest(keysToFetch: keys)
+        var phones: [String] = []
+        try? store.enumerateContacts(with: request) { contact, _ in
+            for number in contact.phoneNumbers {
+                let cleaned = number.value.stringValue
                     .replacingOccurrences(of: "-", with: "")
                     .replacingOccurrences(of: " ", with: "")
                     .replacingOccurrences(of: "+82", with: "0")
+                phones.append(cleaned)
             }
-            onPicked(phones)
         }
-
-        func contactPickerDidCancel(_ picker: CNContactPickerViewController) {
-            onPicked([])
-        }
+        return phones
     }
 }
 

@@ -10,7 +10,9 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTab: Int = 0
     @State private var showCamera: Bool = false
+    @State private var toastMessage: String?
     @StateObject private var cameraVM = CameraViewModel()
+    @ObservedObject private var photoStore = PhotoStore.shared
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -38,7 +40,7 @@ struct MainTabView: View {
                 .tag(2)
 
             NavigationStack {
-                AlbumView(onOpenCamera: { showCamera = true })
+                AlbumView(onOpenCamera: { tryOpenCamera() })
             }
             .tabItem {
                 Image("Album_icon")
@@ -56,9 +58,17 @@ struct MainTabView: View {
                 .tag(4)
         }
         .tint(.white)
+        .overlay(alignment: .bottom) {
+            if let message = toastMessage {
+                toastView(message: message)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .padding(.bottom, 100)
+            }
+        }
+        .animation(.easeInOut(duration: 0.3), value: toastMessage)
         .onChange(of: selectedTab) {
             if selectedTab == 2 {
-                showCamera = true
+                tryOpenCamera()
                 selectedTab = 0
             }
         }
@@ -73,6 +83,31 @@ struct MainTabView: View {
                 showCamera = false
             }
         }
+    }
+
+    private func tryOpenCamera() {
+        if let message = photoStore.cannotTakePhotoMessage() {
+            showToast(message)
+        } else {
+            showCamera = true
+        }
+    }
+
+    private func showToast(_ message: String) {
+        toastMessage = message
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            toastMessage = nil
+        }
+    }
+
+    @ViewBuilder
+    private func toastView(message: String) -> some View {
+        Text(message)
+            .font(.system(size: 15, weight: .semibold))
+            .foregroundColor(.white)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
     }
 }
 

@@ -269,6 +269,34 @@ final class PhotoStore: ObservableObject {
         return nil
     }
 
+    // MARK: - 촬영 가능 여부
+
+    /// 지금 사진을 찍을 수 있으면 nil, 없으면 안내 메시지 반환
+    func cannotTakePhotoMessage() -> String? {
+        // 슬롯이 남아있으면 촬영 가능
+        if nextAvailableType(at: Date()) != nil { return nil }
+
+        // 다음 시간대 안내
+        let timeSlot = TimeSlot.current
+        switch timeSlot {
+        case .morning:
+            return "점심 시간(12:00)에 사진이 활성화 됩니다!"
+        case .afternoon:
+            return "저녁 시간(17:00)에 사진이 활성화 됩니다!"
+        case .evening:
+            return "내일 아침(06:00)에 사진이 활성화 됩니다!"
+        case .extra:
+            let hour = Calendar.current.component(.hour, from: Date())
+            if hour < 6 {
+                return "아침 시간(06:00)에 사진이 활성화 됩니다!"
+            } else if hour < 12 {
+                return "점심 시간(12:00)에 사진이 활성화 됩니다!"
+            } else {
+                return "저녁 시간(17:00)에 사진이 활성화 됩니다!"
+            }
+        }
+    }
+
     // MARK: - 헬퍼
 
     /// 오늘 앨범에서 특정 슬롯에 해당하는 사진

@@ -64,11 +64,16 @@ final class FriendViewModel: ObservableObject {
             for friend in filtered {
                 Task { [weak self] in
                     guard let self else { return }
-                    let mutuals = (try? await FriendService.shared.getMutualFriends(handle: friend.handle)) ?? []
-                    if !mutuals.isEmpty, let text = self.buildMutualText(mutuals: mutuals, isContact: false) {
-                        if let idx = self.suggestedFriends.firstIndex(where: { $0.handle == friend.handle }) {
-                            self.suggestedFriends[idx].mutualText = text
+                    do {
+                        let mutuals = try await FriendService.shared.getMutualFriends(handle: friend.handle)
+                        print("[FriendVM] 겹친구 \(friend.handle): \(mutuals.count)명")
+                        if !mutuals.isEmpty, let text = self.buildMutualText(mutuals: mutuals, isContact: false) {
+                            if let idx = self.suggestedFriends.firstIndex(where: { $0.handle == friend.handle }) {
+                                self.suggestedFriends[idx].mutualText = text
+                            }
                         }
+                    } catch {
+                        print("[FriendVM] 겹친구 조회 실패 \(friend.handle): \(error)")
                     }
                 }
             }
@@ -85,9 +90,9 @@ final class FriendViewModel: ObservableObject {
         if !mutuals.isEmpty {
             let firstName = mutuals[0].username
             if mutuals.count == 1 {
-                return "\(firstName)님과 친구입니다"
+                return "\(firstName)와 친구입니다"
             } else {
-                return "\(firstName)님 외 \(mutuals.count - 1)명과 친구입니다"
+                return "\(firstName) 외 \(mutuals.count - 1)명과 친구입니다"
             }
         }
         if isContact {

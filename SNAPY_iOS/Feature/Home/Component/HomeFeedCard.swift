@@ -104,13 +104,13 @@ struct HomeFeedCard: View {
                         .foregroundColor(.white)
                 }
 
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     Button {
                         // 댓글
                     } label: {
                         Image("Chat_icon")
                             .resizable()
-                            .frame(width: 26, height: 26)
+                            .frame(width: 24, height: 24)
                     }
                     Text("\(post.commentCount)")
                         .font(.system(size: 16, weight: .medium))
@@ -120,9 +120,9 @@ struct HomeFeedCard: View {
                 Button {
                     // 공유
                 } label: {
-                    Image("Share_icon")
-                        .resizable()
-                        .frame(width: 24, height: 24)
+                    Image(systemName: "paperplane")
+                        .font(.system(size: 20))
+                        .foregroundColor(.white)
                 }
 
                 Spacer()
@@ -144,11 +144,11 @@ struct ImageCommentSection: View {
     @State private var showImagePicker = false
 
     // 임시 이미지 반응 목데이터
-    private let reactions = ["Mock_img2", "Mock_img3"]
+    private let reactions = ["Mock_img2", "Mock_img3", "Mock_img4", "Mock_img5", "Mock_img1", "Mock_img2", "Mock_img3", "Mock_img4"]
 
     var body: some View {
         HStack(spacing: 12) {
-            // 이미지 추가 버튼 (원형, 점선 테두리)
+            // 이미지 추가 버튼 (고정)
             Button {
                 showImagePicker = true
             } label: {
@@ -162,24 +162,17 @@ struct ImageCommentSection: View {
                     )
             }
 
-            // 이미지 반응들 (원형)
-            ForEach(reactions, id: \.self) { imageName in
-                Image(imageName)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 44, height: 44)
-                    .clipShape(Circle())
-            }
-
-            Spacer()
-
-            Button {
-                // 댓글 작성 화면 이동
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(width: 44, height: 44)
+            // 반응 이미지들 (가로 스크롤)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(reactions.indices, id: \.self) { index in
+                        Image(reactions[index])
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 44, height: 44)
+                            .clipShape(Circle())
+                    }
+                }
             }
         }
     }

@@ -31,6 +31,10 @@ struct HomeView: View {
                             )
                         }
                     }
+
+                    // 피드 끝 메시지
+                    HomeFeedEndView()
+                        .padding(.vertical, 40)
                 }
             }
 
@@ -45,7 +49,7 @@ struct HomeView: View {
                     .background(Color.white, in: Circle())
                     .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
             }
-            .padding(.trailing, 20)
+            .padding(.trailing, 14)
             .padding(.bottom, 24)
         }
         .sheet(isPresented: $viewModel.showPublishSheet) {

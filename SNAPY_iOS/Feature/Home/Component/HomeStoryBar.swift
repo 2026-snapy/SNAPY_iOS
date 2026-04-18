@@ -7,16 +7,25 @@
 
 import SwiftUI
 
+private struct StoryPresentation: Identifiable {
+    let id = UUID()
+    let index: Int
+}
+
 struct HomeStoryBar: View {
     let stories: [StoryItem]
+    @State private var storyPresentation: StoryPresentation?
+
+    private var sortedStories: [StoryItem] {
+        stories.sorted { !$0.isSeen && $1.isSeen }
+    }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 13) {
-                let sorted = stories.sorted { !$0.isSeen && $1.isSeen }
-                ForEach(sorted) { story in
+                ForEach(Array(sortedStories.enumerated()), id: \.element.id) { index, story in
                     Button {
-                        // 스토리 화면 이동
+                        storyPresentation = StoryPresentation(index: index)
                     } label: {
                         storyCard(story: story)
                     }
@@ -24,6 +33,12 @@ struct HomeStoryBar: View {
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 20)
+        }
+        .fullScreenCover(item: $storyPresentation) { presentation in
+            StoryDetailView(
+                stories: sortedStories,
+                initialIndex: presentation.index
+            )
         }
     }
 
@@ -86,9 +101,9 @@ struct HomeFeed_Previews: PreviewProvider {
     static var previews: some View {
         HomeStoryBar(
             stories: [
-                StoryItem(profileImage: "Profile_img", bannerImage: "Mock_img1", username: "eunchan", isSeen: false),
-                StoryItem(profileImage: "Profile_img", bannerImage: "Mock_img2", username: "user_02", isSeen: true),
-                StoryItem(profileImage: "Profile_img", bannerImage: "Mock_img3", username: "user_03", isSeen: false),
+                StoryItem(profileImage: "Profile_img", bannerImage: "Mock_img1", displayName: "은찬", username: "eunchan", images: ["Mock_img1", "Mock_img2"], isSeen: false),
+                StoryItem(profileImage: "Profile_img", bannerImage: "Mock_img2", displayName: "민수", username: "user_02", images: ["Mock_img2"], isSeen: true),
+                StoryItem(profileImage: "Profile_img", bannerImage: "Mock_img3", displayName: "지현", username: "user_03", images: ["Mock_img3", "Mock_img4"], isSeen: false),
             ]
         )
         .background(Color.black)

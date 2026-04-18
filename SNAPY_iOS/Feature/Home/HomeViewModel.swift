@@ -33,7 +33,9 @@ struct StoryItem: Identifiable {
     let id = UUID()
     let profileImage: String
     let bannerImage: String
+    let displayName: String
     let username: String
+    let images: [String]
     let isSeen: Bool
 }
 
@@ -50,12 +52,12 @@ final class HomeViewModel: ObservableObject {
 
     private func loadMockData() {
         stories = [
-            StoryItem(profileImage: "Profile_img", bannerImage: "Mock_img1", username: "내 스토리", isSeen: false),
-            StoryItem(profileImage: "Mock_img1", bannerImage: "Mock_img2", username: "silver_c_Id", isSeen: false),
-            StoryItem(profileImage: "Mock_img2", bannerImage: "Mock_img3", username: "user_02", isSeen: false),
-            StoryItem(profileImage: "Mock_img3", bannerImage: "Mock_img4", username: "user_03", isSeen: true),
-            StoryItem(profileImage: "Mock_img4", bannerImage: "Mock_img5", username: "user_04", isSeen: false),
-            StoryItem(profileImage: "Mock_img5", bannerImage: "Mock_img1", username: "user_05", isSeen: true),
+            StoryItem(profileImage: "Profile_img", bannerImage: "Mock_img1", displayName: "나", username: "내 스토리", images: ["Mock_img1", "Mock_img2"], isSeen: false),
+            StoryItem(profileImage: "Mock_img1", bannerImage: "Mock_img2", displayName: "은찬", username: "silver_c_Id", images: ["Mock_img2", "Mock_img3", "Mock_img4"], isSeen: false),
+            StoryItem(profileImage: "Mock_img2", bannerImage: "Mock_img3", displayName: "민수", username: "user_02", images: ["Mock_img3"], isSeen: false),
+            StoryItem(profileImage: "Mock_img3", bannerImage: "Mock_img4", displayName: "지현", username: "user_03", images: ["Mock_img4", "Mock_img5"], isSeen: true),
+            StoryItem(profileImage: "Mock_img4", bannerImage: "Mock_img5", displayName: "서연", username: "user_04", images: ["Mock_img5", "Mock_img1", "Mock_img2"], isSeen: false),
+            StoryItem(profileImage: "Mock_img5", bannerImage: "Mock_img1", displayName: "준호", username: "user_05", images: ["Mock_img1", "Mock_img3"], isSeen: true),
         ]
 
         feedPosts = [

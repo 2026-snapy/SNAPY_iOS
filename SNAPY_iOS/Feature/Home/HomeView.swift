@@ -44,12 +44,12 @@ struct HomeView: View {
                     }
                 }
 
-                // 홈 화면 보일 때마다 스토리 새로고침 (촬영 후 돌아왔을 때도)
+                // 홈 화면 보일 때마다 스토리 새로고침
                 .onAppear {
                     Task { await viewModel.loadStories() }
                 }
 
-                // 게시 플로팅 버튼 → 페이지 단위로 이동
+                // 게시 버튼
                 NavigationLink {
                     PublishPreviewView(homeViewModel: viewModel)
                 } label: {

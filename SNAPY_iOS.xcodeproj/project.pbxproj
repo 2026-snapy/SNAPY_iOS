@@ -59,6 +59,9 @@
 		BC706F672F93E88C0093C0B8 /* StoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F662F93E88A0093C0B8 /* StoryService.swift */; };
 		BC706F692F93E8B80093C0B8 /* StoryDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F682F93E8B70093C0B8 /* StoryDTO.swift */; };
 		BC706F6C2F93E8E40093C0B8 /* StoryAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F6B2F93E8E30093C0B8 /* StoryAPI.swift */; };
+		BC706F6E2F9527A60093C0B8 /* SettingsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F6D2F9527A40093C0B8 /* SettingsDTO.swift */; };
+		BC706F702F9527F30093C0B8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F6F2F9527F20093C0B8 /* SettingsView.swift */; };
+		BC706F722F95280D0093C0B8 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F712F95280A0093C0B8 /* SettingsViewModel.swift */; };
 		BCCAD5822F6ABB4B00ED71E0 /* SnapyLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD5812F6ABB3D00ED71E0 /* SnapyLoginView.swift */; };
 		BCCAD5FE2F6ABC3000ED71E0 /* SnapyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD5FD2F6ABC2F00ED71E0 /* SnapyTextField.swift */; };
 		BCCAD6072F6B060300ED71E0 /* EmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCAD6062F6B05EB00ED71E0 /* EmailView.swift */; };
@@ -174,6 +177,9 @@
 		BC706F662F93E88A0093C0B8 /* StoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryService.swift; sourceTree = "<group>"; };
 		BC706F682F93E8B70093C0B8 /* StoryDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryDTO.swift; sourceTree = "<group>"; };
 		BC706F6B2F93E8E30093C0B8 /* StoryAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryAPI.swift; sourceTree = "<group>"; };
+		BC706F6D2F9527A40093C0B8 /* SettingsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDTO.swift; sourceTree = "<group>"; };
+		BC706F6F2F9527F20093C0B8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BC706F712F95280A0093C0B8 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		BCCAD5812F6ABB3D00ED71E0 /* SnapyLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapyLoginView.swift; sourceTree = "<group>"; };
 		BCCAD5FD2F6ABC2F00ED71E0 /* SnapyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapyTextField.swift; sourceTree = "<group>"; };
 		BCCAD6062F6B05EB00ED71E0 /* EmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailView.swift; sourceTree = "<group>"; };
@@ -274,6 +280,7 @@
 		BC1DC2DA2F68CF730016A4CD /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				BC706F6D2F9527A40093C0B8 /* SettingsDTO.swift */,
 				BC706F682F93E8B70093C0B8 /* StoryDTO.swift */,
 				BC706E5E2F8DC0E10093C0B8 /* FriendDTO.swift */,
 				BC706E492F8BF9AF0093C0B8 /* ProfileDTO.swift */,
@@ -424,6 +431,24 @@
 			path = Story;
 			sourceTree = "<group>";
 		};
+		BC706F732F9528160093C0B8 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				BCD816DB2F6A41A00028AE50 /* ProfileViewModel.swift */,
+				BCD816D92F6A41990028AE50 /* ProfileView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		BC706F762F9528310093C0B8 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				BC706F712F95280A0093C0B8 /* SettingsViewModel.swift */,
+				BC706F6F2F9527F20093C0B8 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		BCCAD6052F6B05E100ED71E0 /* Email */ = {
 			isa = PBXGroup;
 			children = (
@@ -563,9 +588,9 @@
 		BCD815A02F69291E0028AE50 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				BC706F762F9528310093C0B8 /* Settings */,
+				BC706F732F9528160093C0B8 /* Profile */,
 				BCD816D02F6A415B0028AE50 /* Component */,
-				BCD816DB2F6A41A00028AE50 /* ProfileViewModel.swift */,
-				BCD816D92F6A41990028AE50 /* ProfileView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -850,6 +875,7 @@
 				BCD816CC2F6A414D0028AE50 /* HomeViewModel.swift in Sources */,
 				BCD816D62F6A418A0028AE50 /* FriendView.swift in Sources */,
 				BCD816CA2F6A41470028AE50 /* HomeView.swift in Sources */,
+				BC706F722F95280D0093C0B8 /* SettingsViewModel.swift in Sources */,
 				BC01FFA52F6BBA6600A85201 /* SignUpButton.swift in Sources */,
 				BCD816C12F69AA6B0028AE50 /* AppleLoginButton.swift in Sources */,
 				BC6676D52F8406EB009CBF8D /* ProfileFeedGrid.swift in Sources */,
@@ -861,6 +887,7 @@
 				BCD816D82F6A41940028AE50 /* FriendViewModel.swift in Sources */,
 				BC706E5D2F8D482C0093C0B8 /* FriendRelationSheet.swift in Sources */,
 				BC6473752F86AD6E00FA15EA /* AlbumService.swift in Sources */,
+				BC706F6E2F9527A60093C0B8 /* SettingsDTO.swift in Sources */,
 				BCD816EB2F6A52390028AE50 /* OnboardingView.swift in Sources */,
 				BC706E642F8DC1350093C0B8 /* FriendService.swift in Sources */,
 				BCD816DA2F6A419C0028AE50 /* ProfileView.swift in Sources */,
@@ -894,6 +921,7 @@
 				BC706E552F8CFDA30093C0B8 /* FriendHeaderView.swift in Sources */,
 				BC1DC2FB2F68CF730016A4CD /* AuthService.swift in Sources */,
 				BCCAD6782F6BA34400ED71E0 /* InfoView.swift in Sources */,
+				BC706F702F9527F30093C0B8 /* SettingsView.swift in Sources */,
 				BC6676BD2F7D6370009CBF8D /* DraggablePIP.swift in Sources */,
 				BCCAD6742F6B9F7500ED71E0 /* registerCompleteView.swift in Sources */,
 				BC706DFD2F87C1FA0093C0B8 /* AlbumCalendarView.swift in Sources */,

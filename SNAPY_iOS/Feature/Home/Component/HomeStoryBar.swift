@@ -55,6 +55,7 @@ struct HomeStoryBar: View {
                 // 배너 배경
                 storyImageView(name: story.bannerImage)
                     .frame(width: 60, height: 100)
+                    .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 10))
 
                 // 어두운 오버레이
@@ -65,6 +66,7 @@ struct HomeStoryBar: View {
                 // 프로필 사진
                 storyImageView(name: story.profileImage)
                     .frame(width: 36, height: 36)
+                    .clipped()
                     .clipShape(Circle())
                     .overlay(
                         Circle()
@@ -102,7 +104,17 @@ struct HomeStoryBar: View {
                 switch phase {
                 case .success(let image):
                     image.resizable().scaledToFill()
-                default:
+                        .transition(.opacity.animation(.easeIn(duration: 0.2)))
+                case .failure:
+                    Color.customGray500
+                case .empty:
+                    Color.customGray500
+                        .overlay(
+                            ProgressView()
+                                .tint(.white)
+                                .scaleEffect(0.6)
+                        )
+                @unknown default:
                     Color.customGray500
                 }
             }

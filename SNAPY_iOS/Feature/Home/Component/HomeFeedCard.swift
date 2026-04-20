@@ -174,10 +174,14 @@ struct HomeFeedCard: View {
                         Color.customGray500
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
             } else if let asset = photo.assetName {
                 Image(asset)
                     .resizable()
                     .scaledToFill()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
             } else {
                 Color.customGray500
             }
@@ -195,6 +199,7 @@ struct HomeFeedCard: View {
                     }
                 }
                 .frame(width: 100, height: 130)
+                .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)

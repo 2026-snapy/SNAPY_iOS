@@ -63,6 +63,7 @@ final class AuthViewModel: ObservableObject {
         await MainActor.run {
             isLoading = true
             errorMessage = nil
+            isLoggedIn = false
         }
 
         do {

@@ -13,6 +13,7 @@ struct HomeFeedCard: View {
     var onLike: () -> Void
 
     @State private var currentPage = 0
+    @State private var showComments = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -103,7 +104,7 @@ struct HomeFeedCard: View {
 
                 HStack(spacing: 6) {
                     Button {
-                        // 댓글
+                        showComments = true
                     } label: {
                         Image("Chat_icon")
                             .resizable()
@@ -131,6 +132,11 @@ struct HomeFeedCard: View {
             ImageCommentSection()
                 .padding(.horizontal, 14)
                 .padding(.bottom, 12)
+        }
+        .sheet(isPresented: $showComments) {
+            CommentSheetView(postId: post.id)
+                .presentationDetents([.fraction(0.65), .large])
+                .presentationDragIndicator(.hidden)
         }
     }
 

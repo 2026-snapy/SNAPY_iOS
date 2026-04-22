@@ -135,7 +135,7 @@ struct HomeFeedCard: View {
         }
         .sheet(isPresented: $showComments) {
             CommentSheetView(postId: post.id)
-                .presentationDetents([.fraction(0.65), .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
         }
     }

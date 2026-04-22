@@ -64,8 +64,8 @@ struct CommentSheetView: View {
                 )
                 comments.append(comment)
             }
-            .presentationDetents([.fraction(0.45)])
-            .presentationDragIndicator(.visible)
+            .presentationDetents([.fraction(0.55)])
+            .presentationDragIndicator(.hidden)
         }
         .onAppear {
             loadMockComments()

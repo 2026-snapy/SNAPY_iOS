@@ -70,6 +70,20 @@ final class StoryService {
         return data
     }
 
+    // MARK: - 좋아요 목록
+
+    func fetchLikes(storyId: Int, type: AlbumType) async throws -> [StoryLikeUserData] {
+        let response = try await requestWithRefresh(.fetchLikes(storyId: storyId, type: type))
+        guard (200..<300).contains(response.statusCode) else {
+            throw StoryError.serverError("서버 오류 (\(response.statusCode))")
+        }
+        let decoded = try JSONDecoder().decode(StoryLikeListResponse.self, from: response.data)
+        guard decoded.success, let data = decoded.data else {
+            throw StoryError.serverError(decoded.message)
+        }
+        return data
+    }
+
     // MARK: - 401 → refresh → 1회 재시도
 
     private func requestWithRefresh(_ target: StoryAPI) async throws -> Response {
@@ -81,14 +95,14 @@ final class StoryService {
                 do {
                     _ = try await AuthService.shared.refreshAccessToken()
                 } catch {
-                    TokenStorage.clear()
+                    TokenStorage.forceLogout()
                     throw StoryError.unauthorized
                 }
                 let retryResult = await provider.requestAsync(target)
                 switch retryResult {
                 case .success(let retryResponse):
                     if retryResponse.statusCode == 401 {
-                        TokenStorage.clear()
+                        TokenStorage.forceLogout()
                         throw StoryError.unauthorized
                     }
                     return retryResponse

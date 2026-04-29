@@ -93,9 +93,6 @@ final class AlbumService {
     func fetchToday() async throws -> DailyAlbumData {
         let response = try await requestWithRefresh(.fetchToday)
         print("[AlbumService] fetchToday 응답 코드 \(response.statusCode)")
-        if let body = String(data: response.data, encoding: .utf8) {
-            print("[AlbumService] fetchToday 응답 본문 \(body)")
-        }
         guard (200..<300).contains(response.statusCode) else {
             let msg = extractErrorMessage(from: response.data, statusCode: response.statusCode)
             throw AlbumError.serverError(msg)
@@ -120,10 +117,6 @@ final class AlbumService {
     /// 백엔드가 photos 배열을 포함해서 응답하면 과거 날짜 사진도 볼 수 있다.
     func fetchAlbumAsDaily(albumId: Int) async throws -> DailyAlbumData {
         let response = try await requestWithRefresh(.fetchDetail(albumId: albumId))
-        print("[AlbumService] 앨범 상세 응답 코드 \(response.statusCode)")
-        if let body = String(data: response.data, encoding: .utf8) {
-            print("[AlbumService] 앨범 상세 응답 본문 \(body)")
-        }
         guard (200..<300).contains(response.statusCode) else {
             let msg = extractErrorMessage(from: response.data, statusCode: response.statusCode)
             throw AlbumError.serverError(msg)
@@ -266,14 +259,14 @@ final class AlbumService {
                 do {
                     _ = try await AuthService.shared.refreshAccessToken()
                 } catch {
-                    TokenStorage.clear()
+                    TokenStorage.forceLogout()
                     throw AlbumError.unauthorized
                 }
                 let retryResult = await provider.requestAsync(target)
                 switch retryResult {
                 case .success(let retryResponse):
                     if retryResponse.statusCode == 401 {
-                        TokenStorage.clear()
+                        TokenStorage.forceLogout()
                         throw AlbumError.unauthorized
                     }
                     return retryResponse

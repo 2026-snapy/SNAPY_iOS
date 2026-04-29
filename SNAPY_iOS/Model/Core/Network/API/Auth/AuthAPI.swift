@@ -30,7 +30,7 @@ extension AuthAPI: TargetType {
         case .signup:
             return "/api/auth/register"
         case .refresh:
-            return "/api/refresh-accesstoken"
+            return "/api/auth/refresh-accesstoken"
         case .logout:
             return "/api/auth/logout"
         }
@@ -71,11 +71,20 @@ extension AuthAPI: TargetType {
     var headers: [String : String]? {
         switch self {
         case .login, .signup:
-            return ["Content-Type": "application/json"]
+            return [
+                "Content-Type": "application/json",
+                "X-Client-Type": "app"
+            ]
 
         case .refresh:
-            // RefreshToken은 쿠키에 자동으로 심어져 있으므로 별도 헤더 불필요
-            return ["Content-Type": "application/json"]
+            var headers: [String: String] = [
+                "Content-Type": "application/json",
+                "X-Client-Type": "app"
+            ]
+            if let refresh = TokenStorage.refreshToken {
+                headers["X-Refresh-Token"] = refresh
+            }
+            return headers
 
         case .logout:
             var headers: [String: String] = [

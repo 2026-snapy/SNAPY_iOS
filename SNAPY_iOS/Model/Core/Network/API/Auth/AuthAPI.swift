@@ -20,7 +20,7 @@ extension AuthAPI: TargetType {
 
     var baseURL: URL {
         // 백엔드 주소
-        return URL(string: "http://3.36.111.255:8080")!
+        return URL(string: "https://snapy.api.krafte.net")!
     }
 
     var path: String {

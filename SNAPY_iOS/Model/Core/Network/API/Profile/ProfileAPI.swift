@@ -25,7 +25,7 @@ enum ProfileAPI {
 extension ProfileAPI: TargetType {
 
     var baseURL: URL {
-        return URL(string: "http://3.36.111.255:8080")!
+        return URL(string: "https://snapy.api.krafte.net")!
     }
 
     var path: String {

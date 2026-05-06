@@ -45,31 +45,36 @@ struct HomeView: View {
                         )
 
                         // 피드
-                        LazyVStack(spacing: 30) {
-                            ForEach(viewModel.feedPosts) { post in
-                                HomeFeedCard(
-                                    post: post,
-                                    onLike: { viewModel.toggleLike(for: post) },
-                                    onProfileImageTap: {
-                                        handleProfileImageTap(post: post)
-                                    },
-                                    onNameTap: {
-                                        navigateToProfile(post: post)
-                                    }
-                                )
-                                .onAppear {
-                                    if post.id == viewModel.feedPosts.last?.id {
-                                        Task { await viewModel.loadMoreFeed() }
+                        if viewModel.feedPosts.isEmpty && viewModel.isLoadingFeed {
+                            // 첫 로딩: 스켈레톤 UI
+                            FeedSkeletonList()
+                        } else {
+                            LazyVStack(spacing: 30) {
+                                ForEach(viewModel.feedPosts) { post in
+                                    HomeFeedCard(
+                                        post: post,
+                                        onLike: { viewModel.toggleLike(for: post) },
+                                        onProfileImageTap: {
+                                            handleProfileImageTap(post: post)
+                                        },
+                                        onNameTap: {
+                                            navigateToProfile(post: post)
+                                        }
+                                    )
+                                    .onAppear {
+                                        if post.id == viewModel.feedPosts.last?.id {
+                                            Task { await viewModel.loadMoreFeed() }
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        // 로딩 인디케이터 (다음 페이지)
-                        if viewModel.isLoadingFeed {
-                            ProgressView()
-                                .tint(.white)
-                                .padding(.vertical, 20)
+                            // 다음 페이지 로딩
+                            if viewModel.isLoadingFeed {
+                                ProgressView()
+                                    .tint(.white)
+                                    .padding(.vertical, 20)
+                            }
                         }
 
                         // 피드 끝 메시지

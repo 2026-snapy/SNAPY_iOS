@@ -65,22 +65,37 @@ struct NotificationView: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            ForEach(viewModel.notifications) { notification in
-                                NotificationRow(
-                                    notification: notification,
-                                    message: viewModel.message(for: notification)
-                                )
-                                .onTapGesture {
-                                    Task { await viewModel.markAsRead(notification) }
-                                }
-                                .onAppear {
-                                    if notification.id == viewModel.notifications.last?.id {
-                                        Task { await viewModel.loadMore() }
-                                    }
-                                }
+                            let grouped = groupedNotifications(viewModel.notifications)
 
-                                Divider()
-                                    .background(Color.white.opacity(0.06))
+                            ForEach(grouped, id: \.title) { section in
+                                // 섹션 헤더
+                                HStack {
+                                    Text(section.title)
+                                        .font(.system(size: 14, weight: .bold))
+                                        .foregroundColor(Color.textWhite)
+                                    Spacer()
+                                }
+                                .padding(.horizontal, 20)
+                                .padding(.top, 20)
+                                .padding(.bottom, 8)
+
+                                ForEach(section.items) { notification in
+                                    NotificationRow(
+                                        notification: notification,
+                                        message: viewModel.message(for: notification)
+                                    )
+                                    .onTapGesture {
+                                        Task { await viewModel.markAsRead(notification) }
+                                    }
+                                    .onAppear {
+                                        if notification.id == viewModel.notifications.last?.id {
+                                            Task { await viewModel.loadMore() }
+                                        }
+                                    }
+
+                                    Divider()
+                                        .background(Color.white.opacity(0.06))
+                                }
                             }
 
                             if viewModel.isLoading {
@@ -98,13 +113,88 @@ struct NotificationView: View {
             await viewModel.loadNotifications()
         }
     }
+
+    // MARK: - 날짜별 그룹핑
+
+    private struct NotificationSection {
+        let title: String
+        let items: [NotificationData]
+    }
+
+    private func groupedNotifications(_ notifications: [NotificationData]) -> [NotificationSection] {
+        let calendar = Calendar.current
+        let now = Date()
+        let todayStart = calendar.startOfDay(for: now)
+        let yesterdayStart = calendar.date(byAdding: .day, value: -1, to: todayStart)!
+        let weekAgoStart = calendar.date(byAdding: .day, value: -7, to: todayStart)!
+
+        var today: [NotificationData] = []
+        var yesterday: [NotificationData] = []
+        var recent7Days: [NotificationData] = []
+        var older: [NotificationData] = []
+
+        for noti in notifications {
+            let date = parseDate(noti.createdAt) ?? .distantPast
+
+            if date >= todayStart {
+                today.append(noti)
+            } else if date >= yesterdayStart {
+                yesterday.append(noti)
+            } else if date >= weekAgoStart {
+                recent7Days.append(noti)
+            } else {
+                older.append(noti)
+            }
+        }
+
+        var sections: [NotificationSection] = []
+        if !today.isEmpty { sections.append(NotificationSection(title: "오늘", items: today)) }
+        if !yesterday.isEmpty { sections.append(NotificationSection(title: "어제", items: yesterday)) }
+        if !recent7Days.isEmpty { sections.append(NotificationSection(title: "최근 7일", items: recent7Days)) }
+        if !older.isEmpty { sections.append(NotificationSection(title: "이전", items: older)) }
+
+        return sections
+    }
+
+    private func parseDate(_ dateString: String) -> Date? {
+        NotificationDateParser.parse(dateString)
+    }
+}
+
+// MARK: - 날짜 파싱 유틸
+
+enum NotificationDateParser {
+    static func parse(_ dateString: String) -> Date? {
+        let iso = ISO8601DateFormatter()
+        iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = iso.date(from: dateString) { return date }
+        iso.formatOptions = [.withInternetDateTime]
+        if let date = iso.date(from: dateString) { return date }
+
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US_POSIX")
+        // 타임존 없는 경우 UTC로 처리
+        for tz in [TimeZone(identifier: "UTC")!, TimeZone(identifier: "Asia/Seoul")!] {
+            for fmt in [
+                "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
+                "yyyy-MM-dd'T'HH:mm:ss.SSS",
+                "yyyy-MM-dd'T'HH:mm:ss",
+                "yyyy-MM-dd HH:mm:ss"
+            ] {
+                df.dateFormat = fmt
+                df.timeZone = tz
+                if let date = df.date(from: dateString) { return date }
+            }
+        }
+        return nil
+    }
 }
 
 // MARK: - 알림 Row
 
 struct NotificationRow: View {
     let notification: NotificationData
-    let message: String
+    let message: AttributedString
 
     var body: some View {
         HStack(spacing: 12) {
@@ -130,7 +220,6 @@ struct NotificationRow: View {
             // 메시지
             VStack(alignment: .leading, spacing: 4) {
                 Text(message)
-                    .font(.system(size: 14, weight: notification.read ? .regular : .semibold))
                     .foregroundColor(Color.textWhite)
                     .lineLimit(2)
 
@@ -167,15 +256,7 @@ struct NotificationRow: View {
     }
 
     private func timeAgo(_ dateString: String) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
-        guard let date = formatter.date(from: dateString) else {
-            // fractionalSeconds 없이 재시도
-            formatter.formatOptions = [.withInternetDateTime]
-            guard let date = formatter.date(from: dateString) else { return dateString }
-            return relativeTime(from: date)
-        }
+        guard let date = NotificationDateParser.parse(dateString) else { return dateString }
         return relativeTime(from: date)
     }
 
@@ -183,8 +264,22 @@ struct NotificationRow: View {
         let seconds = Int(-date.timeIntervalSinceNow)
         if seconds < 60 { return "방금 전" }
         if seconds < 3600 { return "\(seconds / 60)분 전" }
-        if seconds < 86400 { return "\(seconds / 3600)시간 전" }
-        if seconds < 604800 { return "\(seconds / 86400)일 전" }
+
+        let hours = seconds / 3600
+        let days = seconds / 86400
+
+        if seconds < 86400 {
+            return "\(hours)시간 전"
+        }
+
+        if days < 7 {
+            let remainHours = (seconds % 86400) / 3600
+            if remainHours > 0 {
+                return "\(days)일 \(remainHours)시간 전"
+            }
+            return "\(days)일 전"
+        }
+
         let df = DateFormatter()
         df.dateFormat = "M월 d일"
         return df.string(from: date)

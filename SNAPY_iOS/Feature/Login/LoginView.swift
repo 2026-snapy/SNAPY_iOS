@@ -7,14 +7,19 @@
 
 import SwiftUI
 import Combine
+import AuthenticationServices
 
 struct LoginView: View {
     var onSnapyTap: () -> Void
     var onRegisterTap: () -> Void
     var onGoogleLoginSuccess: () -> Void = {}
     var onGoogleLoginExistingUser: () -> Void = {}
+    var onAppleLoginSuccess: () -> Void = {}
+    var onAppleLoginExistingUser: () -> Void = {}
     @EnvironmentObject var authVM: AuthViewModel
     @State private var showErrorAlert = false
+    @State private var appleSignInRequest: ASAuthorizationAppleIDRequest?
+    @State private var appleSignInCoordinator: AppleSignInCoordinator?
 
     let images = ["Login_img1", "Login_img2", "Login_img3", "Login_img4", "Login_img5"]
 
@@ -77,9 +82,30 @@ struct LoginView: View {
 
 
                 AppleLoginButton(title: "Apple로 계속하기") {
-                    withAnimation {
-                        print("Apple로 계속하기 클릭")
+                    let provider = ASAuthorizationAppleIDProvider()
+                    let request = provider.createRequest()
+                    request.requestedScopes = [.fullName, .email]
+                    appleSignInRequest = request
+                    appleSignInCoordinator = AppleSignInCoordinator { authorization in
+                        Task {
+                            await authVM.appleLogin(authorization: authorization)
+                            if authVM.isLoggedIn && authVM.isOAuthLogin {
+                                do {
+                                    _ = try await ProfileService.shared.fetchMyProfile()
+                                    onAppleLoginExistingUser()
+                                } catch {
+                                    onAppleLoginSuccess()
+                                }
+                            }
+                        }
+                    } onError: { error in
+                        if (error as NSError).code != ASAuthorizationError.canceled.rawValue {
+                            authVM.errorMessage = "애플 로그인에 실패했습니다."
+                        }
                     }
+                    let controller = ASAuthorizationController(authorizationRequests: [request])
+                    controller.delegate = appleSignInCoordinator
+                    controller.performRequests()
                 }
                 .padding(.bottom, 20)
 
@@ -122,6 +148,26 @@ struct LoginView: View {
                 showErrorAlert = true
             }
         }
+    }
+}
+
+// MARK: - Apple Sign In Coordinator
+
+class AppleSignInCoordinator: NSObject, ASAuthorizationControllerDelegate {
+    let onSuccess: (ASAuthorization) -> Void
+    let onError: (Error) -> Void
+
+    init(onSuccess: @escaping (ASAuthorization) -> Void, onError: @escaping (Error) -> Void) {
+        self.onSuccess = onSuccess
+        self.onError = onError
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        onSuccess(authorization)
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        onError(error)
     }
 }
 

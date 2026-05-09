@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import GoogleSignIn
+import AuthenticationServices
 
 enum AuthFlow: Equatable {
     case splash
@@ -173,6 +174,66 @@ final class AuthViewModel: ObservableObject {
                     errorMessage = "구글 로그인에 실패했습니다. 다시 시도해주세요."
                     isLoading = false
                 }
+            }
+        }
+    }
+
+    // MARK: - Apple 로그인
+
+    func appleLogin(authorization: ASAuthorization) async {
+        await MainActor.run {
+            isLoading = true
+            errorMessage = nil
+        }
+
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let identityTokenData = credential.identityToken,
+              let identityToken = String(data: identityTokenData, encoding: .utf8) else {
+            await MainActor.run {
+                errorMessage = "Apple 인증 토큰을 가져올 수 없습니다."
+                isLoading = false
+            }
+            return
+        }
+
+        // 풀네임 (최초 로그인 시에만 제공됨)
+        var fullName: String? = nil
+        if let nameComponents = credential.fullName {
+            let parts = [nameComponents.familyName, nameComponents.givenName].compactMap { $0 }
+            if !parts.isEmpty { fullName = parts.joined() }
+        }
+
+        // Apple ID 이메일 → 핸들 기본값
+        await MainActor.run {
+            oauthDefaultName = fullName ?? ""
+            oauthDefaultHandle = credential.email?.components(separatedBy: "@").first ?? ""
+        }
+
+        print("[AppleLogin] identityToken 앞 50자: \(String(identityToken.prefix(50)))")
+
+        do {
+            let response = try await authService.appleLogin(identityToken: identityToken, fullName: fullName)
+
+            await MainActor.run {
+                if response.success {
+                    isOAuthLogin = true
+                    isLoggedIn = true
+                    authFlow = .main
+                } else {
+                    errorMessage = response.message
+                }
+                isLoading = false
+            }
+        } catch let authError as AuthError {
+            await MainActor.run {
+                errorMessage = authError.localizedDescription
+                isLoading = false
+            }
+        } catch {
+            print("[AppleLogin] 에러: \(error)")
+            await MainActor.run {
+                errorMessage = "애플 로그인에 실패했습니다. 다시 시도해주세요."
+                isLoading = false
             }
         }
     }

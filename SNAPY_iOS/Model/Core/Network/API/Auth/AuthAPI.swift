@@ -13,6 +13,7 @@ enum AuthAPI {
     case login(email: String, password: String)
     case signup(username: String, handle: String, email: String, phone: String, password: String)
     case googleLogin(idToken: String)
+    case appleLogin(identityToken: String, fullName: String?)
     case refresh
     case logout
 }
@@ -32,6 +33,8 @@ extension AuthAPI: TargetType {
             return "/api/auth/register"
         case .googleLogin:
             return "/api/auth/google/ios"
+        case .appleLogin:
+            return "/api/auth/apple/ios"
         case .refresh:
             return "/api/auth/refresh-accesstoken"
         case .logout:
@@ -68,6 +71,13 @@ extension AuthAPI: TargetType {
             ]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
 
+        case let .appleLogin(identityToken, fullName):
+            var params: [String: Any] = [
+                "identityToken": identityToken
+            ]
+            if let fullName { params["fullName"] = fullName }
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+
         case .refresh:
             // RefreshToken은 쿠키에서 서버가 자동 추출
             return .requestPlain
@@ -79,7 +89,7 @@ extension AuthAPI: TargetType {
 
     var headers: [String : String]? {
         switch self {
-        case .login, .signup, .googleLogin:
+        case .login, .signup, .googleLogin, .appleLogin:
             return [
                 "Content-Type": "application/json",
                 "X-Client-Type": "app"

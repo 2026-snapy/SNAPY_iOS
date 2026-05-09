@@ -133,6 +133,41 @@ final class AuthService {
         }
     }
 
+    // MARK: - 애플 로그인
+    func appleLogin(identityToken: String, fullName: String?) async throws -> LoginResponse {
+        let result = await provider.requestAsync(.appleLogin(identityToken: identityToken, fullName: fullName))
+        switch result {
+        case .success(let response):
+            print("[AuthService] 애플 로그인 응답 코드 \(response.statusCode)")
+            if let body = String(data: response.data, encoding: .utf8) {
+                print("[AuthService] 애플 로그인 응답 \(body)")
+            }
+
+            guard (200..<300).contains(response.statusCode) else {
+                if let parsed = try? JSONDecoder().decode(BaseResponse<EmptyData>.self, from: response.data) {
+                    throw AuthError.serverError(parsed.message)
+                }
+                throw AuthError.serverError("애플 로그인에 실패했습니다.")
+            }
+
+            let decoded = try JSONDecoder().decode(LoginResponse.self, from: response.data)
+
+            guard decoded.success, let data = decoded.data else {
+                throw AuthError.serverError(decoded.message)
+            }
+
+            TokenStorage.accessToken = data.accessToken
+            if let refresh = data.refreshToken {
+                TokenStorage.refreshToken = refresh
+            }
+
+            return decoded
+
+        case .failure:
+            throw AuthError.serverError("네트워크 연결을 확인해주세요.")
+        }
+    }
+
     // MARK: - 회원가입
     func signup(
         username: String,

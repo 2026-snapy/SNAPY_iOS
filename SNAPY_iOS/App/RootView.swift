@@ -52,6 +52,13 @@ struct RootView: View {
                     onGoogleLoginExistingUser: {
                         authVM.isOAuthLogin = false
                         screen = .main
+                    },
+                    onAppleLoginSuccess: {
+                        screen = .oauthInfo
+                    },
+                    onAppleLoginExistingUser: {
+                        authVM.isOAuthLogin = false
+                        screen = .main
                     }
                 )
                 .environmentObject(authVM)
@@ -147,17 +154,17 @@ struct RootView: View {
                 
             case .oauthInfo:
                 OAuthInfoView(onNext: {
-                    screen = .oauthProfile
+                    screen = .oauthPhone
                 })
                 .environmentObject(authVM)
 
-            case .oauthProfile:
-                RegisterProfileImageView(onNext: {
-                    screen = .oauthPhone
-                })
-
             case .oauthPhone:
                 OAuthPhoneView(onNext: {
+                    screen = .oauthProfile
+                })
+
+            case .oauthProfile:
+                RegisterProfileImageView(onNext: {
                     screen = .oauthContactSync
                 })
 

@@ -40,6 +40,7 @@ struct ProfileFeedSection: View {
                     displayName: viewModel.username,
                     handle: viewModel.handle,
                     profileImage: viewModel.profileImage,
+                    profileImageUrl: viewModel.profileImageUrl,
                     profileAsset: "Profile_img"
                 )) {
                     feedThumbnail(post.thumbnailImage)
@@ -91,6 +92,7 @@ struct ProfileFeedSection: View {
                                     displayName: viewModel.username,
                                     handle: viewModel.handle,
                                     profileImage: viewModel.profileImage,
+                                    profileImageUrl: viewModel.profileImageUrl,
                                     profileAsset: "Profile_img"
                                 )) {
                                     feedThumbnail(post.thumbnailImage)

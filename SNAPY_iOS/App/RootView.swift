@@ -99,7 +99,12 @@ struct RootView: View {
                         screen = .registerEmail
                     },
                     onSignNextTap: {
-                        screen = .registerPhone
+                        Task {
+                            await signUpVM.register()
+                            if signUpVM.isRegistered {
+                                screen = .registerPhone
+                            }
+                        }
                     }
                 )
                 .environmentObject(signUpVM)
@@ -114,7 +119,7 @@ struct RootView: View {
                     }
                 )
                 .environmentObject(signUpVM)
-                
+
             case .registerInfo:
                 InfoView(
                     onBack: {
@@ -122,8 +127,8 @@ struct RootView: View {
                     },
                     onSignNextTap: {
                         Task {
-                            await signUpVM.register()
-                            if signUpVM.isRegistered {
+                            await signUpVM.saveInfo()
+                            if signUpVM.errorMessage == nil {
                                 screen = .registerProfileImage
                             }
                         }
@@ -210,10 +215,11 @@ struct RootView: View {
 // MARK: - 자동 로그인
 private extension RootView {
     func checkAutoLogin() async {
-        // 1) access token이 아직 유효하면 바로 메인
+        // 1) access token이 아직 유효하면 프로필 확인
         if TokenStorage.isAccessTokenValid() {
-            print("[AutoLogin] access token 유효 → 메인")
-            screen = .main
+            print("[AutoLogin] access token 유효")
+            let destination = await checkProfileCompletion()
+            screen = destination
             return
         }
 
@@ -221,8 +227,9 @@ private extension RootView {
         if TokenStorage.refreshToken != nil {
             do {
                 _ = try await AuthService.shared.refreshAccessToken()
-                print("[AutoLogin] 토큰 재발급 성공 → 메인")
-                screen = .main
+                print("[AutoLogin] 토큰 재발급 성공")
+                let destination = await checkProfileCompletion()
+                screen = destination
                 return
             } catch {
                 print("[AutoLogin] 토큰 재발급 실패 → 로그인")
@@ -233,6 +240,26 @@ private extension RootView {
         // 3) 토큰 없음 → 로그인
         print("[AutoLogin] 토큰 없음 → 로그인")
         screen = .login
+    }
+
+    /// 프로필 완성도 확인 → 미완성 시 해당 단계로 이동
+    func checkProfileCompletion() async -> AppScreen {
+        do {
+            let profile = try await ProfileService.shared.fetchMyProfile()
+            UserDefaults.standard.set(profile.handle, forKey: "myHandle")
+
+            // handle이 기본값이거나 비어있으면 → 이름/핸들 설정
+            if profile.handle.isEmpty {
+                print("[AutoLogin] 핸들 미설정 → oauthInfo")
+                return .oauthInfo
+            }
+
+            print("[AutoLogin] 프로필 완성 → 메인")
+            return .main
+        } catch {
+            print("[AutoLogin] 프로필 조회 실패: \(error) → oauthInfo")
+            return .oauthInfo
+        }
     }
 }
 

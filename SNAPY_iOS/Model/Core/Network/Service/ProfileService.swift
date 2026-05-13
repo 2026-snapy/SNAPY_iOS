@@ -141,10 +141,20 @@ final class ProfileService {
         return data
     }
 
-    // MARK: - 전화번호 등록
+    // MARK: - 인증번호 요청
 
-    func updatePhone(_ phone: String) async throws {
-        let response = try await requestWithRefresh(.updatePhone(phone: phone))
+    func requestPhoneCode(_ phone: String) async throws {
+        let response = try await requestWithRefresh(.requestPhoneCode(phone: phone))
+        print("[ProfileService] 인증번호 요청 응답 코드 \(response.statusCode)")
+        guard (200..<300).contains(response.statusCode) else {
+            throw ProfileError.serverError(extractMessage(from: response))
+        }
+    }
+
+    // MARK: - 전화번호 등록 (인증번호 포함)
+
+    func updatePhone(_ phone: String, code: String) async throws {
+        let response = try await requestWithRefresh(.updatePhone(phone: phone, code: code))
         print("[ProfileService] 전화번호 등록 응답 코드 \(response.statusCode)")
         guard (200..<300).contains(response.statusCode) else {
             throw ProfileError.serverError(extractMessage(from: response))

@@ -36,6 +36,8 @@ struct FriendProfileView: View {
     @State private var showProfileViewer = false
     @State private var isRefreshing = false
     @State private var shareImage: UIImage? = nil
+    @State private var friendStory: StoryItem? = nil
+    @State private var showStory = false
     @StateObject private var guestbookVM = ProfileViewModel()
 
     init(name: String, handle: String, profileImageUrl: String?, bannerImageUrl: String? = nil, isFriend: Bool = false, mutualFriendsText: String? = nil, contactText: String? = nil) {
@@ -91,23 +93,49 @@ struct FriendProfileView: View {
                     // MARK: 프로필 정보
                     VStack(alignment: .leading, spacing: 16) {
                         HStack(alignment: .center) {
-                            Button { showProfileViewer = true } label: {
+                            Group {
+                                if let url = profileImageUrl, let imgUrl = URL(string: url) {
+                                    KFImage(imgUrl)
+                                        .resizable()
+                                        .placeholder { Image("Profile_img").resizable().scaledToFill() }
+                                        .fade(duration: 0.2)
+                                        .scaledToFill()
+                                } else {
+                                    Image("Profile_img")
+                                        .resizable()
+                                        .scaledToFill()
+                                }
+                            }
+                            .frame(width: 96, height: 96)
+                            .clipShape(Circle())
+                            .padding(5)
+                            .overlay(
                                 Group {
-                                    if let url = profileImageUrl, let imgUrl = URL(string: url) {
-                                        KFImage(imgUrl)
-                                            .resizable()
-                                            .placeholder { Image("Profile_img").resizable().scaledToFill() }
-                                            .fade(duration: 0.2)
-                                            .scaledToFill()
-                                    } else {
-                                        Image("Profile_img")
-                                            .resizable()
-                                            .scaledToFill()
+                                    if let story = friendStory {
+                                        Circle()
+                                            .stroke(
+                                                story.storyIds.allSatisfy({ SeenStoryStore.isSeen($0) })
+                                                    ? AnyShapeStyle(Color.customGray500)
+                                                    : AnyShapeStyle(
+                                                        LinearGradient(
+                                                            colors: [Color(hex: "FFC83D"), Color(hex: "FF9F1C")],
+                                                            startPoint: .topLeading,
+                                                            endPoint: .bottomTrailing
+                                                        )
+                                                    ),
+                                                lineWidth: 2.5
+                                            )
                                     }
                                 }
-                                .frame(width: 96, height: 96)
-                                .clipShape(Circle())
-                                .overlay(Circle().stroke(Color.backgroundBlack, lineWidth: 3))
+                            )
+                            .onTapGesture {
+                                if let story = friendStory {
+                                    showStory = true
+                                    SeenStoryStore.markSeen(story.storyIds)
+                                }
+                            }
+                            .onLongPressGesture {
+                                showProfileViewer = true
                             }
 
                             Spacer().frame(width: 30)
@@ -323,6 +351,8 @@ struct FriendProfileView: View {
         }
         .toolbarBackground(Color.clear, for: .navigationBar)
         .task {
+            // 친구 스토리 로드
+            await loadFriendStory()
             // 서버에서 이 유저의 프로필 + 친구 수 조회
             do {
                 let profile = try await ProfileService.shared.fetchUserProfile(handle: handle)
@@ -431,6 +461,55 @@ struct FriendProfileView: View {
                 let text = "SNAPY 프로필: @\(handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!"
                 ShareSheetView(items: [image, text])
             }
+        }
+        .fullScreenCover(isPresented: $showStory) {
+            if let story = friendStory {
+                StoryDetailView(
+                    stories: [story],
+                    initialIndex: 0
+                )
+            }
+        }
+    }
+
+    /// 친구 스토리 로드
+    private func loadFriendStory() async {
+        do {
+            let list = try await StoryService.shared.fetchStories()
+            let stories = list.filter { $0.handle == handle }
+            guard !stories.isEmpty else {
+                friendStory = nil
+                return
+            }
+
+            var allPhotos: [StoryPhotoSet] = []
+            var latest = stories[0]
+            for story in stories.sorted(by: { $0.storyId < $1.storyId }) {
+                if let detail = try? await StoryService.shared.fetchDetail(storyId: story.storyId) {
+                    let photos = detail.photos.map { p -> StoryPhotoSet in
+                        var photo = p
+                        photo.ownerStoryId = story.storyId
+                        return photo
+                    }
+                    allPhotos.append(contentsOf: photos)
+                    if story.storyId > latest.storyId { latest = story }
+                }
+            }
+
+            guard !allPhotos.isEmpty else { friendStory = nil; return }
+
+            friendStory = StoryItem(
+                storyId: latest.storyId,
+                profileImage: latest.profileImageUrl ?? "",
+                bannerImage: latest.thumbnailUrl ?? "",
+                displayName: name,
+                username: handle,
+                photos: allPhotos,
+                createdAt: latest.createdAt,
+                isSeen: false
+            )
+        } catch {
+            friendStory = nil
         }
     }
 

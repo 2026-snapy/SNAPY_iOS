@@ -573,7 +573,8 @@ struct FriendProfileView: View {
                                 id: album.albumId,
                                 thumbnailImage: thumbnail,
                                 photos: detail.photos,
-                                date: Self.formatAlbumDate(album.albumDate)
+                                date: Self.formatAlbumDate(album.albumDate),
+                                rawDate: album.albumDate
                             )
                         } catch {
                             print("[FriendProfile] 앨범 상세 실패 (id=\(album.albumId)): \(error)")
@@ -585,7 +586,7 @@ struct FriendProfileView: View {
                 for await post in group {
                     if let post { results.append(post) }
                 }
-                return results.sorted { $0.date > $1.date }
+                return results.sorted { $0.rawDate > $1.rawDate }
             }
 
             feedPosts = posts

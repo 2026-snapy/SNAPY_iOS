@@ -251,6 +251,27 @@ final class AlbumService {
         }
     }
 
+    // MARK: - 좋아요 목록 조회
+
+    func fetchLikes(albumId: Int) async throws -> [AlbumLikeUserData] {
+        let response = try await requestWithRefresh(.fetchLikes(albumId: albumId))
+        guard (200..<300).contains(response.statusCode) else {
+            let msg = extractErrorMessage(from: response.data, statusCode: response.statusCode)
+            throw AlbumError.serverError(msg)
+        }
+        do {
+            let decoded = try JSONDecoder().decode(AlbumLikeListResponse.self, from: response.data)
+            guard decoded.success, let data = decoded.data else {
+                throw AlbumError.serverError(decoded.message)
+            }
+            return data
+        } catch let err as AlbumError {
+            throw err
+        } catch {
+            throw AlbumError.decodingFailed
+        }
+    }
+
     // MARK: - 캘린더 전체 조회
 
     /// /api/albums/calendar — 사용자의 모든 앨범을 한 번에 가져온다.

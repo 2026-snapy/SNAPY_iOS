@@ -71,6 +71,7 @@
 		BC8A28D32FB3235F00073FDE /* PushAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28D22FB3235E00073FDE /* PushAPI.swift */; };
 		BC8A28D72FB4168A00073FDE /* ShareCardViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28D62FB4168800073FDE /* ShareCardViews.swift */; };
 		BC8A28DD2FB4C2D900073FDE /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28DC2FB4C2D800073FDE /* UIImage+Extensions.swift */; };
+		BC8A2B7B2FBAE5FF00073FDE /* LikeListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A2B7A2FBAE5FE00073FDE /* LikeListSheet.swift */; };
 		BCA00F012FA0000100FEED01 /* FeedDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA00F002FA0000100FEED01 /* FeedDTO.swift */; };
 		BCA00F032FA0000100FEED02 /* FeedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA00F022FA0000100FEED02 /* FeedAPI.swift */; };
 		BCA00F052FA0000100FEED03 /* FeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA00F042FA0000100FEED03 /* FeedService.swift */; };
@@ -221,6 +222,7 @@
 		BC8A28D22FB3235E00073FDE /* PushAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushAPI.swift; sourceTree = "<group>"; };
 		BC8A28D62FB4168800073FDE /* ShareCardViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardViews.swift; sourceTree = "<group>"; };
 		BC8A28DC2FB4C2D800073FDE /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
+		BC8A2B7A2FBAE5FE00073FDE /* LikeListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeListSheet.swift; sourceTree = "<group>"; };
 		BCA00F002FA0000100FEED01 /* FeedDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedDTO.swift; sourceTree = "<group>"; };
 		BCA00F022FA0000100FEED02 /* FeedAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedAPI.swift; sourceTree = "<group>"; };
 		BCA00F042FA0000100FEED03 /* FeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedService.swift; sourceTree = "<group>"; };
@@ -548,6 +550,7 @@
 		BCA00F092FA1000100CARD02 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				BC8A2B7A2FBAE5FE00073FDE /* LikeListSheet.swift */,
 				BC8A28D62FB4168800073FDE /* ShareCardViews.swift */,
 				BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */,
 				BC65863B2FAB905700D827CF /* FeedSkeletonView.swift */,
@@ -1070,6 +1073,7 @@
 				BC706E722F8E92110093C0B8 /* FriendListView.swift in Sources */,
 				BCD815AB2F69343D0028AE50 /* RootView.swift in Sources */,
 				BC8A28D32FB3235F00073FDE /* PushAPI.swift in Sources */,
+				BC8A2B7B2FBAE5FF00073FDE /* LikeListSheet.swift in Sources */,
 				BC706F5B2F8FEF910093C0B8 /* HomeFeedCard.swift in Sources */,
 				BC706E4D2F8BF9D90093C0B8 /* ProfileAPI.swift in Sources */,
 				BCD816D82F6A41940028AE50 /* FriendViewModel.swift in Sources */,

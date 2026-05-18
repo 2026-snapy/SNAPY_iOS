@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import Moya
+internal import Alamofire
 
 final class ProfileService {
     static let shared = ProfileService()
@@ -193,9 +194,19 @@ final class ProfileService {
     // MARK: - 401 재시도
 
     private func requestWithRefresh(_ target: ProfileAPI) async throws -> Response {
+        // REQ 로그
+        print("[ProfileService] REQ: \(target.method.rawValue) \(target.baseURL)\(target.path)")
+        if let headers = target.headers {
+            print("[ProfileService] Headers: \(headers.map { "\($0.key): \($0.value.prefix(30))..." })")
+        }
+
         let firstResult = await provider.requestAsync(target)
         switch firstResult {
         case .success(let response):
+            print("[ProfileService] RES: \(response.statusCode) \(target.path)")
+            if let body = String(data: response.data, encoding: .utf8)?.prefix(200) {
+                print("[ProfileService] Body: \(body)")
+            }
             if response.statusCode == 401 {
                 do {
                     _ = try await AuthService.shared.refreshAccessToken()

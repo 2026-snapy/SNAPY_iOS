@@ -36,6 +36,8 @@ struct StoryDetailView: View {
     @State private var timer: Timer?
     @State private var shareImage: UIImage? = nil
     @State private var navProfileHandle: String? = nil
+    @State private var likeUsers: [StoryLikeUserData] = []
+    @State private var showLikeSheet = false
 
     // 좌우 드래그
     @State private var dragX: CGFloat = 0.0
@@ -95,6 +97,7 @@ struct StoryDetailView: View {
             startTimer()
             onStorySeen?(stories[initialIndex].storyId)
             loadLikeStatus()
+            loadLikesForMyStory()
         }
         .onDisappear {
             stopTimer()
@@ -121,7 +124,36 @@ struct StoryDetailView: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
+        .sheet(isPresented: $showLikeSheet, onDismiss: { isPaused = false }) {
+            StoryLikeListSheet(likeUsers: likeUsers)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
+        .onChange(of: currentImageIndex) { _, _ in
+            loadLikesForMyStory()
+        }
         } // NavigationStack
+    }
+
+    private func loadLikesForMyStory() {
+        let story = currentStory
+        let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
+        guard story.username == myHandle else { likeUsers = []; return }
+        let photos = story.photos
+        guard currentImageIndex < photos.count,
+              let type = photos[currentImageIndex].albumType else { likeUsers = []; return }
+        let storyId = photos[currentImageIndex].ownerStoryId ?? story.storyId
+
+        Task {
+            do {
+                let users = try await StoryService.shared.fetchLikes(storyId: storyId, type: type)
+                await MainActor.run {
+                    likeUsers = users.sorted { ($0.likedAt ?? "") > ($1.likedAt ?? "") }
+                }
+            } catch {
+                print("[StoryDetail] 좋아요 목록 조회 실패: \(error)")
+            }
+        }
     }
 
     // MARK: - 개별 스토리 페이지
@@ -457,9 +489,54 @@ struct StoryDetailView: View {
         let isMyStory = story.username == myHandle
 
         if isMyStory {
-            // 내 스토리: 공유만
-            HStack(spacing: 20) {
+            // 내 스토리: 좋아요 프로필 + 공유
+            HStack(spacing: 14) {
+                // 좋아요 프로필 목록
+                if !likeUsers.isEmpty {
+                    Button {
+                        isPaused = true
+                        showLikeSheet = true
+                    } label: {
+                        HStack(spacing: 0) {
+                            // 프로필 이미지 최대 5개 (겹치게)
+                            let displayUsers = Array(likeUsers.prefix(5))
+                            ForEach(Array(displayUsers.enumerated()), id: \.element.id) { index, user in
+                                ZStack(alignment: .bottomTrailing) {
+                                    if let url = user.profileImageUrl, let imgUrl = URL(string: url) {
+                                        KFImage(imgUrl)
+                                            .resizable()
+                                            .placeholder { Image("Profile_img").resizable().scaledToFill() }
+                                            .scaledToFill()
+                                            .frame(width: 36, height: 36)
+                                            .clipShape(Circle())
+                                            .overlay(Circle().stroke(Color.black, lineWidth: 1.5))
+                                    } else {
+                                        Image("Profile_img")
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 36, height: 36)
+                                            .clipShape(Circle())
+                                            .overlay(Circle().stroke(Color.black, lineWidth: 1.5))
+                                    }
+
+                                    // 마지막 프로필에만 하트
+                                    if index == displayUsers.count - 1 {
+                                        Image(systemName: "heart.fill")
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.red)
+                                            .offset(x: 3, y: 3)
+                                    }
+                                }
+                                .offset(x: CGFloat(-index * 14))
+                            }
+                        }
+                        .padding(.leading, CGFloat(min(likeUsers.count, 5) - 1) * 14)
+                    }
+                    .buttonStyle(.plain)
+                }
+
                 Spacer()
+
                 Button {
                     shareStory()
                 } label: {
@@ -686,6 +763,70 @@ struct StoryDetailView: View {
 }
 
 // MARK: - Preview
+
+// MARK: - 좋아요 목록 시트
+
+struct StoryLikeListSheet: View {
+    let likeUsers: [StoryLikeUserData]
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Text("좋아요")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.textWhite)
+                .padding(.top, 20)
+                .padding(.bottom, 16)
+
+            if likeUsers.isEmpty {
+                Spacer()
+                Text("아직 좋아요가 없습니다")
+                    .font(.system(size: 15))
+                    .foregroundColor(.customGray300)
+                Spacer()
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(likeUsers) { user in
+                            HStack(spacing: 12) {
+                                if let url = user.profileImageUrl, let imgUrl = URL(string: url) {
+                                    KFImage(imgUrl)
+                                        .resizable()
+                                        .placeholder { Image("Profile_img").resizable().scaledToFill() }
+                                        .scaledToFill()
+                                        .frame(width: 44, height: 44)
+                                        .clipShape(Circle())
+                                } else {
+                                    Image("Profile_img")
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 44, height: 44)
+                                        .clipShape(Circle())
+                                }
+
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text(user.username)
+                                        .font(.system(size: 15, weight: .semibold))
+                                        .foregroundColor(.textWhite)
+                                    Text("@\(user.handle)")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.customGray300)
+                                }
+
+                                Spacer()
+
+                                Image(systemName: "heart.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.red)
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 #Preview("StoryDetail") {
     StoryDetailView(

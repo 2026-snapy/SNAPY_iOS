@@ -16,6 +16,7 @@ struct FeedPost: Identifiable {
     let thumbnailImage: String  // 에셋 또는 URL
     let photos: [PhotoData]     // 상세 사진들 (front + back)
     let date: String
+    let rawDate: String         // 원본 날짜 (yyyy-MM-dd, 정렬용)
     var isLiked: Bool = false
     var likeCount: Int = 0
 }
@@ -289,6 +290,7 @@ final class ProfileViewModel: ObservableObject {
                                 thumbnailImage: thumbnail,
                                 photos: detail.photos,
                                 date: Self.formatAlbumDate(album.albumDate),
+                                rawDate: album.albumDate,
                                 isLiked: detail.liked ?? false,
                                 likeCount: detail.likeCount ?? 0
                             )
@@ -302,7 +304,7 @@ final class ProfileViewModel: ObservableObject {
                 for await post in group {
                     if let post { results.append(post) }
                 }
-                return results.sorted { $0.date > $1.date }
+                return results.sorted { $0.rawDate > $1.rawDate }
             }
             feedPosts = posts
             print("[ProfileVM] \(month)월 피드 \(posts.count)개 로드 완료")
@@ -329,6 +331,7 @@ final class ProfileViewModel: ObservableObject {
                                 thumbnailImage: thumbnail,
                                 photos: detail.photos,
                                 date: Self.formatAlbumDate(album.albumDate),
+                                rawDate: album.albumDate,
                                 isLiked: detail.liked ?? false,
                                 likeCount: detail.likeCount ?? 0
                             )
@@ -339,7 +342,7 @@ final class ProfileViewModel: ObservableObject {
                 for await post in group {
                     if let post { results.append(post) }
                 }
-                return results.sorted { $0.date > $1.date }
+                return results.sorted { $0.rawDate > $1.rawDate }
             }
         } catch {
             return []

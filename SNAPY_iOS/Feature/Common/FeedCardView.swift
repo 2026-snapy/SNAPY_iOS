@@ -37,6 +37,7 @@ struct FeedCardView: View {
     @State private var heartAnimations: [HeartAnimation] = []
     @State private var shareImage: UIImage? = nil
     @State private var heartTapCount: Int = 0
+    @State private var showLikeList = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -140,8 +141,8 @@ struct FeedCardView: View {
             .padding(.vertical, 14)
 
             // MARK: 액션 버튼
-            HStack(spacing: 14) {
-                HStack(spacing: 5) {
+            HStack(spacing: 18) {
+                HStack(spacing: 6) {
                     Button {
                         let willLike = !isLiked
                         if willLike {
@@ -155,9 +156,13 @@ struct FeedCardView: View {
                             .font(.system(size: 26))
                             .foregroundColor(isLiked ? .red : .white)
                     }
-                    Text("\(likeCount)")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.white)
+                    Button {
+                        showLikeList = true
+                    } label: {
+                        Text("\(likeCount)")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
                 }
 
                 HStack(spacing: 6) {
@@ -169,7 +174,7 @@ struct FeedCardView: View {
                             .frame(width: 24, height: 24)
                     }
                     Text("\(commentCount)")
-                        .font(.system(size: 16, weight: .medium))
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(.white)
                 }
 
@@ -194,6 +199,11 @@ struct FeedCardView: View {
             CommentSheetView(albumId: albumId, commentCount: $commentCount)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
+        }
+        .sheet(isPresented: $showLikeList) {
+            LikeListSheet(albumId: albumId)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: Binding(
             get: { shareImage != nil },

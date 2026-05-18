@@ -187,8 +187,8 @@ struct FeedDetailCard: View {
         ScrollView {
             ProfileFeedGrid(
                 posts: [
-                    FeedPost(id: 1, thumbnailImage: "Mock_img1", photos: [], date: "2026.04.01"),
-                    FeedPost(id: 2, thumbnailImage: "Mock_img2", photos: [], date: "2026.04.02"),
+                    FeedPost(id: 1, thumbnailImage: "Mock_img1", photos: [], date: "4월 1일", rawDate: "2026-04-01"),
+                    FeedPost(id: 2, thumbnailImage: "Mock_img2", photos: [], date: "4월 2일", rawDate: "2026-04-02"),
                 ],
                 displayName: "김은찬",
                 handle: "silver_c.ld"

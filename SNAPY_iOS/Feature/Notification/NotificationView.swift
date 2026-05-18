@@ -18,6 +18,14 @@ struct NotificationView: View {
     @State private var navProfileName: String = ""
     @State private var navProfileImage: String? = nil
     @State private var showFriendRequest = false
+    @State private var showStory: StoryItem? = nil
+    @State private var showExpiredAlert = false
+    @State private var expiredAlertMessage = ""
+    @State private var navFeedPost: FeedPost? = nil
+    @State private var navFeedHandle: String = ""
+    @State private var navFeedName: String = ""
+    @State private var navFeedProfileUrl: String? = nil
+    @State private var showFeedDetail = false
 
     var body: some View {
         ZStack {
@@ -151,6 +159,30 @@ struct NotificationView: View {
         .navigationDestination(isPresented: $showFriendRequest) {
             FriendRequestView()
         }
+        .navigationDestination(isPresented: $showFeedDetail) {
+            if let post = navFeedPost {
+                FeedDetailView(
+                    posts: [post],
+                    initialPostId: post.id,
+                    displayName: navFeedName,
+                    handle: navFeedHandle,
+                    profileImage: nil,
+                    profileImageUrl: navFeedProfileUrl,
+                    profileAsset: "Profile_img"
+                )
+            }
+        }
+        .fullScreenCover(item: $showStory) { story in
+            StoryDetailView(
+                stories: [story],
+                initialIndex: 0
+            )
+        }
+        .alert("알림", isPresented: $showExpiredAlert) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(expiredAlertMessage)
+        }
         .toolbar(.hidden, for: .navigationBar)
         .gesture(
             DragGesture()
@@ -197,32 +229,190 @@ struct NotificationView: View {
         switch notification.type {
         case .friendRequest:
             showFriendRequest = true
+
         case .friendAccepted:
             guard let handle = notification.senderHandle else { return }
             navProfileName = notification.senderUsername ?? ""
             navProfileImage = notification.senderProfileImageUrl
             navProfileHandle = handle
-        case .storyLike, .newStory:
+
+        case .storyLike:
+            // 내 스토리 중 좋아요 누른 사진으로 바로 이동
+            guard let storyId = notification.referenceId else { return }
+            loadAndShowStory(storyId: Int(storyId), photoType: notification.referenceType)
+
+        case .newStory:
+            // 새 스토리 → 그 사람 스토리 보기
             guard let handle = notification.senderHandle else { return }
-            navProfileName = notification.senderUsername ?? ""
-            navProfileImage = notification.senderProfileImageUrl
-            navProfileHandle = handle
-        case .feedLike, .feedComment, .albumPublished:
-            guard let handle = notification.senderHandle else { return }
-            navProfileName = notification.senderUsername ?? ""
-            navProfileImage = notification.senderProfileImageUrl
-            navProfileHandle = handle
+            loadAndShowUserStory(handle: handle)
+
+        case .feedLike, .feedComment:
+            // 좋아요/댓글 달린 내 앨범으로 이동
+            guard let albumId = notification.referenceId else { return }
+            loadAndShowFeed(
+                albumId: Int(albumId),
+                handle: UserDefaults.standard.string(forKey: "myHandle") ?? "",
+                name: "나",
+                profileUrl: nil
+            )
+
+        case .albumPublished:
+            // 발행된 앨범으로 이동
+            guard let albumId = notification.referenceId,
+                  let handle = notification.senderHandle else { return }
+            loadAndShowFeed(
+                albumId: Int(albumId),
+                handle: handle,
+                name: notification.senderUsername ?? "",
+                profileUrl: notification.senderProfileImageUrl
+            )
+
         case .guestbookCreated:
-            // 내 프로필(방명록)로 이동
             dismiss()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                 NotificationCenter.default.post(name: .switchToProfileTab, object: nil)
             }
+
         case .albumPhotoUploadReminder:
-            // 카메라 열기
-            dismiss()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                NotificationCenter.default.post(name: .openCamera, object: nil)
+            // 오늘 알림만 카메라로 이동
+            if let date = parseNotificationDate(notification.createdAt),
+               Calendar.current.isDateInToday(date) {
+                dismiss()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    NotificationCenter.default.post(name: .openCamera, object: nil)
+                }
+            } else {
+                expiredAlertMessage = "오늘의 앨범만 촬영할 수 있습니다."
+                showExpiredAlert = true
+            }
+        }
+    }
+
+    /// 스토리 ID로 스토리 로드 후 표시 (photoType이 있으면 해당 사진부터)
+    private func loadAndShowStory(storyId: Int, photoType: String? = nil) {
+        Task {
+            do {
+                let detail = try await StoryService.shared.fetchDetail(storyId: storyId)
+                let photos = detail.photos.map { p -> StoryPhotoSet in
+                    var photo = p
+                    photo.ownerStoryId = storyId
+                    return photo
+                }
+
+                // photoType에 해당하는 사진 인덱스 찾기
+                var startIndex = 0
+                if let photoType, let idx = photos.firstIndex(where: { $0.type == photoType }) {
+                    startIndex = idx
+                }
+
+                let item = StoryItem(
+                    storyId: storyId,
+                    storyIds: [storyId],
+                    profileImage: detail.profileImageUrl ?? "",
+                    bannerImage: "",
+                    displayName: detail.username,
+                    username: detail.handle,
+                    photos: photos,
+                    createdAt: detail.createdAt,
+                    isSeen: true,
+                    unseenStartIndex: startIndex
+                )
+                await MainActor.run {
+                    showStory = item
+                }
+            } catch {
+                print("[Notification] 스토리 로드 실패: \(error)")
+                await MainActor.run {
+                    expiredAlertMessage = "스토리는 24시간 이내에만 확인할 수 있습니다."
+                    showExpiredAlert = true
+                }
+            }
+        }
+    }
+
+    /// 유저 handle로 스토리 목록에서 찾아서 표시
+    private func loadAndShowUserStory(handle: String) {
+        Task {
+            do {
+                let list = try await StoryService.shared.fetchStories()
+                let userStories = list.filter { $0.handle == handle }
+                guard !userStories.isEmpty else { return }
+
+                var allPhotos: [StoryPhotoSet] = []
+                var latest = userStories[0]
+                for story in userStories.sorted(by: { $0.storyId < $1.storyId }) {
+                    if let detail = try? await StoryService.shared.fetchDetail(storyId: story.storyId) {
+                        let photos = detail.photos.map { p -> StoryPhotoSet in
+                            var photo = p
+                            photo.ownerStoryId = story.storyId
+                            return photo
+                        }
+                        allPhotos.append(contentsOf: photos)
+                        if story.storyId > latest.storyId { latest = story }
+                    }
+                }
+                guard !allPhotos.isEmpty else { return }
+
+                let item = StoryItem(
+                    storyId: latest.storyId,
+                    profileImage: latest.profileImageUrl ?? "",
+                    bannerImage: latest.thumbnailUrl ?? "",
+                    displayName: latest.username,
+                    username: handle,
+                    photos: allPhotos,
+                    createdAt: latest.createdAt,
+                    isSeen: false
+                )
+                await MainActor.run {
+                    showStory = item
+                }
+            } catch {
+                print("[Notification] 유저 스토리 로드 실패: \(error)")
+                await MainActor.run {
+                    expiredAlertMessage = "스토리는 24시간 이내에만 확인할 수 있습니다."
+                    showExpiredAlert = true
+                }
+            }
+        }
+    }
+
+    private func parseNotificationDate(_ dateStr: String) -> Date? {
+        NotificationDateParser.parse(dateStr)
+    }
+
+    /// 앨범 ID로 피드 상세 로드 후 표시
+    private func loadAndShowFeed(albumId: Int, handle: String, name: String, profileUrl: String?) {
+        Task {
+            do {
+                let detail = try await AlbumService.shared.fetchAlbumAsDaily(albumId: albumId)
+                guard !detail.photos.isEmpty else { return }
+                let thumbnail = detail.photos.first?.backImageUrl ?? ""
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd"
+                let dateStr = detail.albumDate
+
+                let post = FeedPost(
+                    id: albumId,
+                    thumbnailImage: thumbnail,
+                    photos: detail.photos,
+                    date: dateStr,
+                    rawDate: dateStr,
+                    isLiked: detail.liked ?? false,
+                    likeCount: detail.likeCount ?? 0
+                )
+                await MainActor.run {
+                    navFeedPost = post
+                    navFeedHandle = handle
+                    navFeedName = name
+                    navFeedProfileUrl = profileUrl
+                    showFeedDetail = true
+                }
+            } catch {
+                print("[Notification] 앨범 로드 실패: \(error)")
+                await MainActor.run {
+                    expiredAlertMessage = "게시물을 찾을 수 없습니다."
+                    showExpiredAlert = true
+                }
             }
         }
     }

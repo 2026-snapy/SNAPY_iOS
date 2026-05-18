@@ -20,6 +20,7 @@ enum AlbumAPI {
     case fetchDetail(albumId: Int)
     case publish(albumId: Int)
     case toggleLike(albumId: Int)
+    case fetchLikes(albumId: Int)
 }
 
 extension AlbumAPI: TargetType {
@@ -46,6 +47,8 @@ extension AlbumAPI: TargetType {
             return "/api/albums/\(albumId)/publish"
         case .toggleLike(let albumId):
             return "/api/albums/\(albumId)/likes"
+        case .fetchLikes(let albumId):
+            return "/api/albums/\(albumId)/likes"
         }
     }
 
@@ -53,7 +56,7 @@ extension AlbumAPI: TargetType {
         switch self {
         case .upload, .publish, .toggleLike:
             return .post
-        case .fetchToday, .fetchAll, .fetchByMonth, .fetchByMonthForUser, .fetchCalendar, .fetchDetail:
+        case .fetchToday, .fetchAll, .fetchByMonth, .fetchByMonthForUser, .fetchCalendar, .fetchDetail, .fetchLikes:
             return .get
         }
     }
@@ -98,7 +101,7 @@ extension AlbumAPI: TargetType {
                 encoding: URLEncoding.queryString
             )
 
-        case .fetchToday, .fetchAll, .fetchCalendar, .fetchDetail, .publish, .toggleLike:
+        case .fetchToday, .fetchAll, .fetchCalendar, .fetchDetail, .publish, .toggleLike, .fetchLikes:
             return .requestPlain
         }
     }

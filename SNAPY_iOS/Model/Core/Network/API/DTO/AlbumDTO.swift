@@ -123,6 +123,17 @@ struct AlbumLikeData: Codable {
     let likeCount: Int
 }
 
+/// 앨범 좋아요 유저 목록
+struct AlbumLikeUserData: Codable, Identifiable {
+    let userId: Int
+    let handle: String
+    let username: String
+    let profileImageUrl: String?
+    let likedAt: String?
+
+    var id: Int { userId }
+}
+
 // MARK: - typealias
 
 typealias AlbumUploadResponse  = BaseResponse<AlbumUploadData>
@@ -130,4 +141,5 @@ typealias TodayAlbumResponse   = BaseResponse<DailyAlbumData>
 typealias AlbumListResponse    = BaseResponse<[AlbumListItemData]>
 typealias AlbumDetailResponse  = BaseResponse<[AlbumListItemData]>
 typealias AlbumPublishResponse = BaseResponse<AlbumPublishData>
+typealias AlbumLikeListResponse = BaseResponse<[AlbumLikeUserData]>
 typealias AlbumLikeResponse    = BaseResponse<AlbumLikeData>

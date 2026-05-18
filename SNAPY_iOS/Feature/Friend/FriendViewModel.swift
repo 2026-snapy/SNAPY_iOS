@@ -38,8 +38,6 @@ final class FriendViewModel: ObservableObject {
     private var searchTask: Task<Void, Never>?
 
     /// 추천 친구 조회
-    /// ⚠️ 임시: /api/users?q= (빈 쿼리) 로 전체 유저 조회.
-    /// 추후 /api/users/me/recommended-friends 로 교체할 것.
     func loadRecommendedFriends() async {
         isLoading = true
         // 친구 요청 수 조회
@@ -47,8 +45,8 @@ final class FriendViewModel: ObservableObject {
             pendingRequestCount = requests.count
         }
         do {
-            let list = try await FriendService.shared.searchUsers(query: "")
-            print("[FriendVM] 유저 조회 성공: \(list.count)명")
+            let list = try await FriendService.shared.getRecommendedFriends()
+            print("[FriendVM] 추천 친구 조회 성공: \(list.count)명")
             let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
             let contactHandles = Set(UserDefaults.standard.stringArray(forKey: "contactSyncedHandles") ?? [])
 

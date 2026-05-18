@@ -205,7 +205,9 @@ final class FriendProfileViewModel: ObservableObject {
                                 thumbnailImage: thumbnail,
                                 photos: detail.photos,
                                 date: Self.formatAlbumDate(album.albumDate),
-                                rawDate: album.albumDate
+                                rawDate: album.albumDate,
+                                isLiked: detail.liked ?? false,
+                                likeCount: detail.likeCount ?? 0
                             )
                         } catch {
                             return nil

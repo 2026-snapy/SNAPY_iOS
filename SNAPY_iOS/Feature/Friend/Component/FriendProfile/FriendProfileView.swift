@@ -210,7 +210,13 @@ struct FriendProfileView: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(.textWhite)
 
-            if viewModel.currentFriend {
+            if viewModel.isLoading {
+                // 로딩 중에는 버튼 숨김
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.customDarkGray)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 36)
+            } else if viewModel.currentFriend {
                 friendButton
             } else {
                 friendRequestButton

@@ -115,8 +115,9 @@ struct FriendProfileView: View {
             HStack {
                 Button { dismiss() } label: {
                     Image(systemName: "chevron.left")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 22, weight: .semibold))
                         .foregroundStyle(Color.primary)
+                        .padding(2)
                 }
                 .buttonStyle(.glass)
 
@@ -137,16 +138,12 @@ struct FriendProfileView: View {
                     .buttonStyle(.glass)
 
                     Menu {
-                        Button(role: .destructive) {
+                        Button("신고", role: .destructive) {
                             showReportSheet = true
-                        } label: {
-                            Label("신고", systemImage: "exclamationmark.triangle")
                         }
 
-                        Button(role: .destructive) {
+                        Button("차단", role: .destructive) {
                             showBlockAlert = true
-                        } label: {
-                            Label("차단", systemImage: "nosign")
                         }
                     } label: {
                         Image(systemName: "ellipsis")
@@ -207,10 +204,8 @@ struct FriendProfileView: View {
                 ShareSheetView(items: [image, text])
             }
         }
-        .sheet(isPresented: $showReportSheet) {
+        .fullScreenCover(isPresented: $showReportSheet) {
             ReportView(reportType: .USER, targetId: viewModel.handle)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.hidden)
         }
         .alert("이 사용자를 차단하시겠습니까?", isPresented: $showBlockAlert) {
             Button("취소", role: .cancel) { }

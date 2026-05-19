@@ -209,10 +209,8 @@ struct FeedCardView: View {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
         }
-        .sheet(isPresented: $showReport) {
+        .fullScreenCover(isPresented: $showReport) {
             ReportView(reportType: .FEED, targetId: "\(albumId)")
-                .presentationDetents([.large])
-                .presentationDragIndicator(.hidden)
         }
         .sheet(isPresented: $showLikeList) {
             LikeListSheet(albumId: albumId)

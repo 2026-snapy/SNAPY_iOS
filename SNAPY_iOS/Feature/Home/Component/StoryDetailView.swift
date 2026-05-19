@@ -105,19 +105,18 @@ struct StoryDetailView: View {
                     showStoryMenu = false
                     showReport = true
                 } label: {
-                    HStack(spacing: 10) {
+                    HStack(spacing: 8) {
                         Image(systemName: "exclamationmark.triangle")
-                            .font(.system(size: 15))
+                            .font(.system(size: 14))
                         Text("신고")
-                            .font(.system(size: 16, weight: .medium))
+                            .font(.system(size: 15, weight: .medium))
                     }
                     .foregroundColor(.red)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 14)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 12)
                 }
             }
-            .frame(width: 200)
+            .frame(width: 100)
             .background(
                 RoundedRectangle(cornerRadius: 14)
                     .fill(.ultraThinMaterial)

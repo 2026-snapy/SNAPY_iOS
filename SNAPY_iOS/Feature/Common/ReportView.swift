@@ -109,6 +109,7 @@ struct ReportView: View {
                         Divider()
                             .background(Color.customGray500)
                             .padding(.horizontal, 22)
+                            .padding(.bottom, 10)
 
                         reasonListView
                     }

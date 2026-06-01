@@ -105,8 +105,12 @@ struct MainTabView: View {
                 selectedTab = 0
                 deepLinkStoryId = id
             case .profile(let handle):
-                selectedTab = 0
-                deepLinkProfileHandle = handle
+                let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
+                if handle == myHandle {
+                    selectedTab = 4  // 내 프로필 탭으로 이동
+                } else {
+                    deepLinkProfileHandle = handle
+                }
             }
             deepLinkRouter.clearDestination()
         }
@@ -237,11 +241,11 @@ struct DeepLinkAlbumView: View {
                     // 뒤로가기 버튼
                     Button { dismiss() } label: {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(width: 36, height: 36)
-                            .background(.ultraThinMaterial, in: Circle())
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundStyle(Color.primary)
+                            .padding(2)
                     }
+                    .buttonStyle(.glass)
                     .padding(.leading, 16)
                     .padding(.top, 12)
                 }

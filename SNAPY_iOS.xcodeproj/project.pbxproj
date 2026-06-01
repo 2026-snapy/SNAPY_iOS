@@ -65,6 +65,7 @@
 		BC706F6E2F9527A60093C0B8 /* SettingsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F6D2F9527A40093C0B8 /* SettingsDTO.swift */; };
 		BC706F702F9527F30093C0B8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F6F2F9527F20093C0B8 /* SettingsView.swift */; };
 		BC706F722F95280D0093C0B8 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F712F95280A0093C0B8 /* SettingsViewModel.swift */; };
+		BC89E5E32FCDD0A60078C653 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5E22FCDD0A40078C653 /* DeepLinkRouter.swift */; };
 		BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */; };
 		BC8A28CE2FB322DB00073FDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CD2FB322D500073FDE /* AppDelegate.swift */; };
 		BC8A28D02FB3231400073FDE /* PushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CF2FB3231200073FDE /* PushService.swift */; };
@@ -227,6 +228,7 @@
 		BC706F6F2F9527F20093C0B8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BC706F712F95280A0093C0B8 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		BC706F772F95A71B0093C0B8 /* SNAPY_iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SNAPY_iOS.entitlements; sourceTree = "<group>"; };
+		BC89E5E22FCDD0A40078C653 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
 		BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSkeletonView.swift; sourceTree = "<group>"; };
 		BC8A28CD2FB322D500073FDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC8A28CF2FB3231200073FDE /* PushService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushService.swift; sourceTree = "<group>"; };
@@ -711,6 +713,7 @@
 		BCD815922F69285F0028AE50 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E5E22FCDD0A40078C653 /* DeepLinkRouter.swift */,
 				BC8A28CD2FB322D500073FDE /* AppDelegate.swift */,
 				BCD815B02F6934780028AE50 /* AppState.swift */,
 				BCD815AE2F69346D0028AE50 /* MainTabView.swift */,
@@ -1027,9 +1030,10 @@
 				};
 			};
 			buildConfigurationList = BC5AFEB92F6866FF00273744 /* Build configuration list for PBXProject "SNAPY_iOS" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				ko,
 				en,
 				Base,
 			);
@@ -1083,6 +1087,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC1DC2EE2F68CF730016A4CD /* TokenStorage.swift in Sources */,
+				BC89E5E32FCDD0A60078C653 /* DeepLinkRouter.swift in Sources */,
 				BCD815A32F6929550028AE50 /* SplashView.swift in Sources */,
 				BC8A28DD2FB4C2D900073FDE /* UIImage+Extensions.swift in Sources */,
 				BC8A2CCC2FC5622C00073FDE /* ReportService.swift in Sources */,

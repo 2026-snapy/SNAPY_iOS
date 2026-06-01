@@ -150,7 +150,9 @@ struct StoryDetailView: View {
             set: { if !$0 { shareImage = nil; isPaused = false } }
         )) {
             if let image = shareImage {
-                let text = "SNAPY 스토리: @\(currentStory.username)\n\nSNAPY에서 당신의 일상을 공유해보세요!"
+                let storyId = currentStory.storyId
+                let shareURL = "https://snapy.krafte.net/share/story/\(storyId)"
+                let text = "SNAPY 스토리: @\(currentStory.username)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(shareURL)"
                 ShareSheetView(items: [image, text])
             }
         }

@@ -33,6 +33,7 @@ final class CameraViewModel: ObservableObject {
 
     let dualCamera = DualCameraService()
     let maxPhotos = 1
+    private var isCapturing = false
     private var cancellables = Set<AnyCancellable>()
 
     /// 카메라 촬영 버튼 영역: "저녁 · 2026.03.23 00:11"
@@ -93,22 +94,25 @@ final class CameraViewModel: ObservableObject {
     }
 
     func capturePhoto() {
-        guard capturedPhotos.count < maxPhotos else { return }
+        guard capturedPhotos.count < maxPhotos, !isCapturing else { return }
+        isCapturing = true
 
         if dualCamera.isMultiCamSupported && dualCamera.isRunning {
             dualCamera.capturePhotos { [weak self] backImage, frontImage in
                 DispatchQueue.main.async {
+                    guard let self = self else { return }
                     // 촬영 실패 시 (연결 끊김 등) 무시
-                    guard backImage != nil || frontImage != nil else { return }
-                    self?.capturedAt = Date()
-                    let swapped = self?.isCameraSwapped ?? false
-                    self?.capturedPhotos.append((
+                    guard backImage != nil || frontImage != nil else {
+                        self.isCapturing = false
+                        return
+                    }
+                    self.capturedAt = Date()
+                    let swapped = self.isCameraSwapped
+                    self.capturedPhotos.append((
                         front: swapped ? backImage : frontImage,
                         back: swapped ? frontImage : backImage
                     ))
-                    DispatchQueue.main.async {
-                        self?.showPreview = true
-                    }
+                    self.showPreview = true
                 }
             }
         } else {
@@ -130,6 +134,7 @@ final class CameraViewModel: ObservableObject {
         if !capturedPhotos.isEmpty {
             capturedPhotos.removeLast()
         }
+        isCapturing = false
         showPreview = false
     }
 
@@ -172,6 +177,7 @@ final class CameraViewModel: ObservableObject {
         currentPhotoIndex = 0
         showPreview = false
         shouldDismiss = false
+        isCapturing = false
         latestBackImage = nil
         latestFrontImage = nil
         dualCamera.stopSession()

@@ -10,6 +10,14 @@
 				<string>com.googleusercontent.apps.1020178958015-4hpunjp0nggtit2idai2961j14sea0dj</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>messiofcoding</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.messiofcoding.snapy</string>
+		</dict>
 	</array>
 	<key>GIDClientID</key>
 	<string>1020178958015-4hpunjp0nggtit2idai2961j14sea0dj.apps.googleusercontent.com</string>

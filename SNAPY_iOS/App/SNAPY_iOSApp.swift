@@ -25,8 +25,18 @@ struct SNAPY_iOSApp: App {
         WindowGroup {
             RootView()
                 .preferredColorScheme(.dark)
+                .environmentObject(DeepLinkRouter.shared)
                 .onOpenURL { url in
-                    GIDSignIn.sharedInstance.handle(url)
+                    // Google Sign-In 처리
+                    if GIDSignIn.sharedInstance.handle(url) { return }
+                    // Universal Links / 딥링크 처리
+                    DeepLinkRouter.shared.handleURL(url)
+                }
+                .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+                    // Universal Links (Safari에서 앱으로 전환)
+                    if let url = activity.webpageURL {
+                        DeepLinkRouter.shared.handleURL(url)
+                    }
                 }
         }
     }

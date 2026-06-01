@@ -331,7 +331,7 @@ struct FeedCardView: View {
     // MARK: - 공유
 
     private func buildShareURL() -> String {
-        "https://snapy.krafte.net/share/album/\(albumId)"
+        "https://snapy.krafte.net/share/album/\(albumId)?handle=\(handle)"
     }
 
     private func shareFeed() {

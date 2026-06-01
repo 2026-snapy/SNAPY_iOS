@@ -12,6 +12,9 @@ struct MainTabView: View {
     @State private var showCamera: Bool = false
     @State private var toastMessage: String?
     @State private var deepLinkAlbumId: Int?
+    @State private var deepLinkAlbumHandle: String?
+    @State private var deepLinkStoryId: Int?
+    @State private var deepLinkProfileHandle: String?
     @StateObject private var cameraVM = CameraViewModel()
     @ObservedObject private var photoStore = PhotoStore.shared
     @EnvironmentObject private var deepLinkRouter: DeepLinkRouter
@@ -94,26 +97,39 @@ struct MainTabView: View {
         .onChange(of: deepLinkRouter.pendingDestination) { _, destination in
             guard let destination else { return }
             switch destination {
-            case .album(let id):
-                selectedTab = 0  // 홈 탭으로 이동
-                deepLinkAlbumId = id
-            case .story(let id):
+            case .album(let id, let handle):
                 selectedTab = 0
                 deepLinkAlbumId = id
-            case .profile:
-                selectedTab = 4  // 프로필 탭
+                deepLinkAlbumHandle = handle
+            case .story(let id):
+                selectedTab = 0
+                deepLinkStoryId = id
+            case .profile(let handle):
+                selectedTab = 0
+                deepLinkProfileHandle = handle
             }
             deepLinkRouter.clearDestination()
         }
-        .sheet(item: Binding(
-            get: { deepLinkAlbumId.map { DeepLinkAlbumItem(id: $0) } },
-            set: { deepLinkAlbumId = $0?.id }
+        // 앨범 딥링크
+        .fullScreenCover(item: Binding(
+            get: { deepLinkAlbumId.map { DeepLinkItem(id: $0) } },
+            set: { deepLinkAlbumId = $0?.id; if $0 == nil { deepLinkAlbumHandle = nil } }
         )) { item in
-            NavigationStack {
-                DeepLinkAlbumView(albumId: item.id)
-            }
-            .presentationDetents([.large])
-            .presentationDragIndicator(.visible)
+            DeepLinkAlbumView(albumId: item.id, handle: deepLinkAlbumHandle)
+        }
+        // 스토리 딥링크
+        .fullScreenCover(item: Binding(
+            get: { deepLinkStoryId.map { DeepLinkItem(id: $0) } },
+            set: { deepLinkStoryId = $0?.id }
+        )) { item in
+            DeepLinkStoryView(storyId: item.id)
+        }
+        // 프로필 딥링크
+        .fullScreenCover(item: Binding(
+            get: { deepLinkProfileHandle.map { DeepLinkStringItem(value: $0) } },
+            set: { deepLinkProfileHandle = $0?.value }
+        )) { item in
+            DeepLinkProfileView(handle: item.value, onDismiss: { deepLinkProfileHandle = nil })
         }
     }
 
@@ -147,26 +163,38 @@ struct MainTabView: View {
     }
 }
 
-// MARK: - 딥링크 앨범 아이템
+// MARK: - 딥링크 아이템
 
-struct DeepLinkAlbumItem: Identifiable {
+struct DeepLinkItem: Identifiable {
     let id: Int
+}
+
+struct DeepLinkStringItem: Identifiable {
+    let value: String
+    var id: String { value }
 }
 
 // MARK: - 딥링크 앨범 뷰
 
 struct DeepLinkAlbumView: View {
     let albumId: Int
+    let handle: String?
     @Environment(\.dismiss) private var dismiss
+    @State private var albumData: DailyAlbumData?
     @State private var isLoading = true
     @State private var errorMessage: String?
+    @State private var isLiked = false
+    @State private var likeCount = 0
+    @State private var commentCount = 0
 
     var body: some View {
-        Group {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
             if isLoading {
                 VStack(spacing: 16) {
                     ProgressView()
-                    Text("앨범을 불러오는 중...")
+                    Text("불러오는 중...")
                         .foregroundColor(.customGray300)
                 }
             } else if let error = errorMessage {
@@ -176,34 +204,172 @@ struct DeepLinkAlbumView: View {
                         .foregroundColor(.customGray300)
                     Text(error)
                         .foregroundColor(.customGray300)
+                    Button("닫기") { dismiss() }
+                        .foregroundColor(.white)
+                        .padding(.top, 12)
                 }
-            } else {
-                VStack(spacing: 16) {
-                    Image(systemName: "photo.on.rectangle.angled")
-                        .font(.system(size: 40))
-                        .foregroundColor(.customGray300)
-                    Text("앨범 #\(albumId)")
-                        .font(.title3.bold())
-                    Text("앨범 상세 화면")
-                        .foregroundColor(.customGray300)
+            } else if let album = albumData {
+                ZStack(alignment: .topLeading) {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            Spacer().frame(height: 56)
+
+                            FeedCardView(
+                                albumId: album.albumId,
+                                profileImageSource: .asset("Profile_img"),
+                                displayName: "",
+                                handle: handle ?? "",
+                                date: album.albumDate,
+                                photos: album.photos.map { photo in
+                                    FeedCardPhoto(
+                                        frontImageUrl: photo.frontImageUrl,
+                                        backImageUrl: photo.backImageUrl,
+                                        assetName: nil
+                                    )
+                                },
+                                isLiked: $isLiked,
+                                likeCount: $likeCount,
+                                commentCount: $commentCount
+                            )
+                        }
+                    }
+
+                    // 뒤로가기 버튼
+                    Button { dismiss() } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(width: 36, height: 36)
+                            .background(.ultraThinMaterial, in: Circle())
+                    }
+                    .padding(.leading, 16)
+                    .padding(.top, 12)
                 }
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black)
-        .navigationTitle("공유된 앨범")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("닫기") { dismiss() }
-                    .foregroundColor(.white)
             }
         }
         .task {
-            // TODO: 앨범 상세 API 호출하여 실제 데이터 로드
-            try? await Task.sleep(for: .seconds(0.5))
+            do {
+                let data = try await AlbumService.shared.fetchAlbumAsDaily(albumId: albumId)
+                isLiked = data.liked ?? false
+                likeCount = data.likeCount ?? 0
+                albumData = data
+            } catch {
+                errorMessage = "앨범을 불러올 수 없습니다."
+            }
             isLoading = false
         }
+    }
+}
+
+// MARK: - 딥링크 프로필 뷰
+
+struct DeepLinkProfileView: View {
+    let handle: String
+    let onDismiss: () -> Void
+
+    var body: some View {
+        let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
+        let isMyProfile = handle == myHandle
+
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            if isMyProfile {
+                // 내 프로필 → ProfileView로
+                NavigationStack {
+                    ProfileView()
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button { onDismiss() } label: {
+                                    Image(systemName: "chevron.left")
+                                        .foregroundColor(.white)
+                                }
+                            }
+                        }
+                }
+            } else {
+                // 친구 프로필
+                NavigationStack {
+                    FriendProfileView(name: "", handle: handle, profileImageUrl: nil)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button { onDismiss() } label: {
+                                    Image(systemName: "chevron.left")
+                                        .foregroundColor(.white)
+                                }
+                            }
+                        }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - 딥링크 스토리 뷰
+
+struct DeepLinkStoryView: View {
+    let storyId: Int
+    @Environment(\.dismiss) private var dismiss
+    @State private var storyItem: StoryItem?
+    @State private var isLoading = true
+    @State private var errorMessage: String?
+
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            if isLoading {
+                VStack(spacing: 16) {
+                    ProgressView()
+                    Text("스토리를 불러오는 중...")
+                        .foregroundColor(.customGray300)
+                }
+            } else if let error = errorMessage {
+                VStack(spacing: 16) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 40))
+                        .foregroundColor(.customGray300)
+                    Text(error)
+                        .foregroundColor(.customGray300)
+                    Button("닫기") { dismiss() }
+                        .foregroundColor(.white)
+                        .padding(.top, 12)
+                }
+            } else if let story = storyItem {
+                StoryDetailView(
+                    stories: [story],
+                    initialIndex: 0,
+                    onStorySeen: nil
+                )
+            }
+        }
+        .task {
+            await loadStory()
+        }
+    }
+
+    private func loadStory() async {
+        do {
+            let detail = try await StoryService.shared.fetchDetail(storyId: storyId)
+            let photos = detail.photos.map { photo -> StoryPhotoSet in
+                var p = photo
+                p.ownerStoryId = detail.storyId
+                return p
+            }
+            storyItem = StoryItem(
+                storyId: detail.storyId,
+                profileImage: detail.profileImageUrl ?? "",
+                bannerImage: "",
+                displayName: detail.username,
+                username: detail.handle,
+                photos: photos,
+                createdAt: detail.createdAt,
+                isSeen: true
+            )
+        } catch {
+            errorMessage = "스토리를 불러올 수 없습니다."
+        }
+        isLoading = false
     }
 }
 

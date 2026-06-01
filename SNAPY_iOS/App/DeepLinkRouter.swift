@@ -6,7 +6,7 @@ final class DeepLinkRouter: ObservableObject {
     static let shared = DeepLinkRouter()
 
     enum Destination: Equatable {
-        case album(id: Int)
+        case album(id: Int, handle: String?)
         case story(id: Int)
         case profile(handle: String)
     }
@@ -37,11 +37,13 @@ final class DeepLinkRouter: ObservableObject {
             pathComponents = url.path.split(separator: "/").map(String.init)
         }
 
-        // share/album/{id}
+        // share/album/{id}?handle=xxx
         if let idx = pathComponents.firstIndex(of: "album"),
            idx + 1 < pathComponents.count,
            let id = Int(pathComponents[idx + 1]) {
-            pendingDestination = .album(id: id)
+            let handle = URLComponents(string: url.absoluteString)?
+                .queryItems?.first(where: { $0.name == "handle" })?.value
+            pendingDestination = .album(id: id, handle: handle)
             return
         }
 

@@ -204,7 +204,8 @@ struct FriendProfileView: View {
             set: { if !$0 { shareImage = nil } }
         )) {
             if let image = shareImage {
-                let text = "SNAPY 프로필: @\(viewModel.handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!"
+                let shareURL = "https://snapy.krafte.net/share/profile/\(viewModel.handle)"
+                let text = "SNAPY 프로필: @\(viewModel.handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(shareURL)"
                 ShareSheetView(items: [image, text])
             }
         }

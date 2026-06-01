@@ -1027,9 +1027,10 @@
 				};
 			};
 			buildConfigurationList = BC5AFEB92F6866FF00273744 /* Build configuration list for PBXProject "SNAPY_iOS" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				ko,
 				en,
 				Base,
 			);

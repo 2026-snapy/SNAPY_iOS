@@ -50,7 +50,8 @@ struct CameraView: View {
             if showPreview {
                 cameraVM.stopCamera()
             } else {
-                cameraVM.checkCameraPermission()
+                // 다시 찍기: 기존 세션 재시작만 (새로 만들지 않음)
+                cameraVM.dualCamera.startSession()
             }
         }
     }

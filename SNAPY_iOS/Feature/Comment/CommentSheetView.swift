@@ -321,18 +321,27 @@ struct CommentRow: View {
     var onDelete: (() -> Void)? = nil
 
     @StateObject private var audioPlayer = AudioCommentPlayer()
+    @State private var showProfile = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             // 프로필
-            profileImage
-                .frame(width: 40, height: 40)
-                .clipShape(Circle())
+            Button {
+                showProfile = true
+            } label: {
+                profileImage
+                    .frame(width: 40, height: 40)
+                    .clipShape(Circle())
+            }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(comment.handle)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.textWhite)
+                Button {
+                    showProfile = true
+                } label: {
+                    Text(comment.handle)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.textWhite)
+                }
 
                 commentContent
             }
@@ -346,6 +355,38 @@ struct CommentRow: View {
                     Image(systemName: "trash")
                         .font(.system(size: 14))
                         .foregroundColor(.customGray300)
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $showProfile) {
+            let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
+            if comment.handle == myHandle {
+                ZStack(alignment: .topLeading) {
+                    NavigationStack {
+                        ProfileView()
+                    }
+                    Button { showProfile = false } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundStyle(Color.primary)
+                            .padding(2)
+                    }
+                    .buttonStyle(.glass)
+                    .padding(.leading, 16)
+                    .padding(.top, 10)
+                }
+            } else {
+                NavigationStack {
+                    FriendProfileView(name: "", handle: comment.handle, profileImageUrl: comment.profileImageUrl)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button { showProfile = false } label: {
+                                    Image(systemName: "chevron.left")
+                                        .foregroundColor(.white)
+                                }
+                                .buttonStyle(.glass)
+                            }
+                        }
                 }
             }
         }

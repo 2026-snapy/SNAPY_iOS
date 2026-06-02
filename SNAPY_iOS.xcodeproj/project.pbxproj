@@ -91,6 +91,7 @@
 		BC89E6212FCEC18A0078C653 /* OAuthPhoneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6202FCEC1880078C653 /* OAuthPhoneViewModel.swift */; };
 		BC89E6262FCEC2D30078C653 /* RegisterProfileImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6252FCEC2D20078C653 /* RegisterProfileImageViewModel.swift */; };
 		BC89E6282FCEC4F00078C653 /* FriendListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6272FCEC4EF0078C653 /* FriendListViewModel.swift */; };
+		BC89E62A2FCEF1570078C653 /* FriendFeedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6292FCEF1550078C653 /* FriendFeedSection.swift */; };
 		BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */; };
 		BC8A28CE2FB322DB00073FDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CD2FB322D500073FDE /* AppDelegate.swift */; };
 		BC8A28D02FB3231400073FDE /* PushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CF2FB3231200073FDE /* PushService.swift */; };
@@ -279,6 +280,7 @@
 		BC89E6202FCEC1880078C653 /* OAuthPhoneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthPhoneViewModel.swift; sourceTree = "<group>"; };
 		BC89E6252FCEC2D20078C653 /* RegisterProfileImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterProfileImageViewModel.swift; sourceTree = "<group>"; };
 		BC89E6272FCEC4EF0078C653 /* FriendListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendListViewModel.swift; sourceTree = "<group>"; };
+		BC89E6292FCEF1550078C653 /* FriendFeedSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendFeedSection.swift; sourceTree = "<group>"; };
 		BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSkeletonView.swift; sourceTree = "<group>"; };
 		BC8A28CD2FB322D500073FDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC8A28CF2FB3231200073FDE /* PushService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushService.swift; sourceTree = "<group>"; };
@@ -703,6 +705,7 @@
 		BC8A2B7E2FBB2AAF00073FDE /* FriendProfile */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E6292FCEF1550078C653 /* FriendFeedSection.swift */,
 				BC8A2B7C2FBB2A5E00073FDE /* FriendProfileViewModel.swift */,
 				BC706E5A2F8D396F0093C0B8 /* FriendProfileView.swift */,
 			);
@@ -1287,6 +1290,7 @@
 				BCD816C12F69AA6B0028AE50 /* AppleLoginButton.swift in Sources */,
 				BC6676D52F8406EB009CBF8D /* ProfileFeedGrid.swift in Sources */,
 				BCD816D22F6A416F0028AE50 /* CameraView.swift in Sources */,
+				BC89E62A2FCEF1570078C653 /* FriendFeedSection.swift in Sources */,
 				BCAAFF122F98DD0C00A6B597 /* PastMonthCard.swift in Sources */,
 				BC706E722F8E92110093C0B8 /* FriendListView.swift in Sources */,
 				BCD815AB2F69343D0028AE50 /* RootView.swift in Sources */,

@@ -31,6 +31,8 @@ final class FriendProfileViewModel: ObservableObject {
 
     @Published var feedPosts: [FeedPost] = []
     @Published var friendStory: StoryItem? = nil
+    @Published var pastAlbums: [ProfilePastAlbum] = []
+    @Published var pastMonths: [PastMonthSummary] = []
 
     init(name: String, handle: String, profileImageUrl: String?,
          bannerImageUrl: String? = nil, isFriend: Bool = false,
@@ -80,6 +82,9 @@ final class FriendProfileViewModel: ObservableObject {
             maxStreak = profile.maxStreak ?? 0
             isBlocked = profile.blocked ?? false
             isBlockedBy = profile.blockedBy ?? false
+            let albums = (profile.pastAlbums ?? []).sorted { ($0.year * 100 + $0.month) > ($1.year * 100 + $1.month) }
+            pastAlbums = albums
+            pastMonths = albums.map { PastMonthSummary(id: $0.id, month: $0.month, year: $0.year, thumbnailUrl: $0.thumbnailUrl) }
         } catch {
             print("[FriendProfileVM] 프로필 로드 실패: \(error)")
         }
@@ -239,6 +244,45 @@ final class FriendProfileViewModel: ObservableObject {
             postCount = posts.count
         } catch {
             print("[FriendProfileVM] 피드 로드 실패: \(error)")
+        }
+    }
+
+    // MARK: - 과거 달 피드 로드
+
+    func loadMonthFeed(month: Int) async -> [FeedPost] {
+        do {
+            let albums = try await AlbumService.shared.fetchAlbumsForUser(month: month, handle: handle)
+            let sorted = albums.sorted { $0.albumDate > $1.albumDate }
+
+            let posts: [FeedPost] = await withTaskGroup(of: FeedPost?.self) { group in
+                for album in sorted {
+                    group.addTask {
+                        do {
+                            let detail = try await AlbumService.shared.fetchAlbumAsDaily(albumId: album.albumId)
+                            guard !detail.photos.isEmpty else { return nil }
+                            let thumbnail = detail.photos.first?.backImageUrl ?? ""
+                            return await FeedPost(
+                                id: album.albumId,
+                                thumbnailImage: thumbnail,
+                                photos: detail.photos,
+                                date: Self.formatAlbumDate(album.albumDate),
+                                rawDate: album.albumDate,
+                                isLiked: detail.liked ?? false,
+                                likeCount: detail.likeCount ?? 0
+                            )
+                        } catch { return nil }
+                    }
+                }
+                var results: [FeedPost] = []
+                for await post in group {
+                    if let post { results.append(post) }
+                }
+                return results.sorted { $0.rawDate > $1.rawDate }
+            }
+            return posts
+        } catch {
+            print("[FriendProfileVM] \(month)월 피드 로드 실패: \(error)")
+            return []
         }
     }
 

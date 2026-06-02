@@ -381,18 +381,13 @@ struct FriendProfileView: View {
 
             if viewModel.isLoading {
                 ProfileFeedSkeletonGrid(count: max(viewModel.postCount, 12))
-            } else if viewModel.feedPosts.isEmpty {
-                Text("이번달에 올린 게시물이 없습니다")
+            } else if viewModel.feedPosts.isEmpty && viewModel.pastMonths.isEmpty {
+                Text("올린 게시물이 없습니다")
                     .font(.system(size: 16))
                     .foregroundColor(.customGray300)
                     .padding(.top, 40)
             } else {
-                ProfileFeedGrid(
-                    posts: viewModel.feedPosts,
-                    displayName: viewModel.name,
-                    handle: viewModel.handle,
-                    profileImageUrl: viewModel.profileImageUrl
-                )
+                FriendFeedSection(viewModel: viewModel)
             }
         }
     }

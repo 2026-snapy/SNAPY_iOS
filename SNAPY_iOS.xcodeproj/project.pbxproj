@@ -77,6 +77,7 @@
 		BC89E5FA2FCE9A050078C653 /* FeedCardModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5F92FCE99A60078C653 /* FeedCardModels.swift */; };
 		BC89E5FC2FCE9A250078C653 /* FeedCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FB2FCE9A240078C653 /* FeedCardViewModel.swift */; };
 		BC89E5FE2FCE9A3F0078C653 /* ImageCommentSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FD2FCE9A3E0078C653 /* ImageCommentSection.swift */; };
+		BC89E6002FCEA7F10078C653 /* StreakSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FF2FCEA7F00078C653 /* StreakSheet.swift */; };
 		BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */; };
 		BC8A28CE2FB322DB00073FDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CD2FB322D500073FDE /* AppDelegate.swift */; };
 		BC8A28D02FB3231400073FDE /* PushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CF2FB3231200073FDE /* PushService.swift */; };
@@ -251,6 +252,7 @@
 		BC89E5F92FCE99A60078C653 /* FeedCardModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCardModels.swift; sourceTree = "<group>"; };
 		BC89E5FB2FCE9A240078C653 /* FeedCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCardViewModel.swift; sourceTree = "<group>"; };
 		BC89E5FD2FCE9A3E0078C653 /* ImageCommentSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCommentSection.swift; sourceTree = "<group>"; };
+		BC89E5FF2FCEA7F00078C653 /* StreakSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakSheet.swift; sourceTree = "<group>"; };
 		BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSkeletonView.swift; sourceTree = "<group>"; };
 		BC8A28CD2FB322D500073FDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC8A28CF2FB3231200073FDE /* PushService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushService.swift; sourceTree = "<group>"; };
@@ -924,6 +926,7 @@
 		BCD816D02F6A415B0028AE50 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E5FF2FCEA7F00078C653 /* StreakSheet.swift */,
 				BCAAFF172F98E22F00A6B597 /* ProfileFeedSection.swift */,
 				BCAAFF152F98E1D300A6B597 /* PastMonthFeedView.swift */,
 				BCAAFF112F98DD0A00A6B597 /* PastMonthCard.swift */,
@@ -1161,6 +1164,7 @@
 				BCAAFF162F98E1D500A6B597 /* PastMonthFeedView.swift in Sources */,
 				BC8A2C012FBCBA2300073FDE /* TermsAgreementView.swift in Sources */,
 				BC89E5EB2FCE706B0078C653 /* CommentViewModel.swift in Sources */,
+				BC89E6002FCEA7F10078C653 /* StreakSheet.swift in Sources */,
 				BCBCF44C2FAC5EAF0058E92D /* OAuthInfoView.swift in Sources */,
 				BCD816BF2F69A8D30028AE50 /* AppleSignInButton.swift in Sources */,
 				BCED9C222F6E625A008E47BB /* PhotoStore.swift in Sources */,

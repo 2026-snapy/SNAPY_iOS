@@ -11,9 +11,7 @@ struct PhoneView: View {
     var onBack: () -> Void
     var onSignNextTap: () -> Void
     @EnvironmentObject var signUpVM: SiginUpViewModel
-    @State private var codeSent = false
-    @State private var isSending = false
-    @State private var sendError: String?
+    @StateObject private var viewModel = PhoneViewModel()
 
     var body: some View {
         ZStack {
@@ -56,8 +54,8 @@ struct PhoneView: View {
                                 .keyboardType(.phonePad)
                                 .frame(maxWidth: .infinity)
 
-                            Button(codeSent ? "재발송" : "인증번호 받기") {
-                                requestCode()
+                            Button(viewModel.codeSent ? "재발송" : "인증번호 받기") {
+                                Task { await viewModel.requestCode(digits: signUpVM.registerPhone) }
                             }
                             .font(.system(size: 12, weight: .medium))
                             .foregroundColor(signUpVM.registerPhone.count == 11 ? .textWhite : .customGray300)
@@ -67,7 +65,7 @@ struct PhoneView: View {
                                 RoundedRectangle(cornerRadius: 6)
                                     .stroke(signUpVM.registerPhone.count == 11 ? Color.gray : Color.customGray500, lineWidth: 1)
                             )
-                            .disabled(signUpVM.registerPhone.count != 11 || isSending)
+                            .disabled(signUpVM.registerPhone.count != 11 || viewModel.isSending)
                         }
 
                         Rectangle()
@@ -85,13 +83,13 @@ struct PhoneView: View {
                                 .foregroundColor(.red)
                         }
 
-                        if codeSent {
+                        if viewModel.codeSent {
                             Text("인증번호가 발송되었습니다.")
                                 .font(.system(size: 12))
                                 .foregroundColor(.MainYellow)
                         }
 
-                        if let error = sendError {
+                        if let error = viewModel.sendError {
                             Text(error)
                                 .font(.system(size: 12))
                                 .foregroundColor(.red)
@@ -130,27 +128,6 @@ struct PhoneView: View {
         }
     }
 
-    private func requestCode() {
-        let digits = signUpVM.registerPhone
-        guard digits.count == 11 else { return }
-        isSending = true
-        sendError = nil
-
-        Task {
-            do {
-                try await ProfileService.shared.requestPhoneCode(digits)
-                await MainActor.run {
-                    codeSent = true
-                    isSending = false
-                }
-            } catch {
-                await MainActor.run {
-                    sendError = error.localizedDescription
-                    isSending = false
-                }
-            }
-        }
-    }
 }
 
 struct PhoneView_Previews: PreviewProvider {

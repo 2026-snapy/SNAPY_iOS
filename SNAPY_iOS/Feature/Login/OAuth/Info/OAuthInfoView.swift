@@ -10,12 +10,10 @@ import SwiftUI
 struct OAuthInfoView: View {
     var onNext: () -> Void
     @EnvironmentObject var authVM: AuthViewModel
+    @StateObject private var viewModel = OAuthInfoViewModel()
 
     @State private var handle = ""
     @State private var username = ""
-    @State private var handleValidation: String?
-    @State private var isSaving = false
-    @State private var errorMessage: String?
 
     var body: some View {
         ZStack {
@@ -55,7 +53,7 @@ struct OAuthInfoView: View {
                             .foregroundColor(.customGray300)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
-                        if let msg = handleValidation {
+                        if let msg = viewModel.handleValidation {
                             Text(msg)
                                 .font(.system(size: 12))
                                 .foregroundColor(.red)
@@ -81,26 +79,29 @@ struct OAuthInfoView: View {
 
                 Spacer()
 
-                SnapyButton(title: isSaving ? "저장 중..." : "다음", isEnabled: isValid && !isSaving) {
-                    Task { await saveAndNext() }
+                SnapyButton(title: viewModel.isSaving ? "저장 중..." : "다음", isEnabled: isValid && !viewModel.isSaving) {
+                    Task {
+                        let success = await viewModel.saveAndNext(handle: handle, username: username)
+                        if success { withAnimation { onNext() } }
+                    }
                 }
                 .padding(.bottom, 24)
             }
         }
         .alert("오류", isPresented: Binding(
-            get: { errorMessage != nil },
-            set: { if !$0 { errorMessage = nil } }
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
             Button("확인", role: .cancel) {}
         } message: {
-            Text(errorMessage ?? "")
+            Text(viewModel.errorMessage ?? "")
         }
         .onAppear {
             handle = authVM.oauthDefaultHandle
             username = authVM.oauthDefaultName
         }
         .onChange(of: handle) { _, newValue in
-            validateHandle(newValue)
+            viewModel.validateHandle(newValue)
         }
         .onTapGesture {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -108,59 +109,7 @@ struct OAuthInfoView: View {
     }
 
     private var isValid: Bool {
-        !handle.isEmpty && !username.isEmpty && handleValidation == nil
-    }
-
-    private func saveAndNext() async {
-        isSaving = true
-        errorMessage = nil
-
-        do {
-            // 핸들 중복 확인
-            let available = try await ProfileService.shared.checkHandle(handle)
-            if !available {
-                errorMessage = "이미 사용 중인 사용자 ID입니다."
-                isSaving = false
-                return
-            }
-
-            // 핸들 + 이름 저장
-            try await ProfileService.shared.updateHandle(handle)
-            try await ProfileService.shared.updateUsername(username)
-
-            await MainActor.run {
-                isSaving = false
-                withAnimation { onNext() }
-            }
-        } catch {
-            errorMessage = error.localizedDescription
-            isSaving = false
-        }
-    }
-
-    private func validateHandle(_ value: String) {
-        if value.isEmpty {
-            handleValidation = nil
-            return
-        }
-        if value.count < 5 {
-            handleValidation = "5자 이상 입력해주세요"
-            return
-        }
-        if value.count > 24 {
-            handleValidation = "24자 이하로 입력해주세요"
-            return
-        }
-        if value.contains(" ") {
-            handleValidation = "공백은 사용할 수 없습니다"
-            return
-        }
-        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "_."))
-        if !value.unicodeScalars.allSatisfy({ allowed.contains($0) }) {
-            handleValidation = "영문, 숫자, 밑줄(_), 마침표(.)만 사용 가능합니다"
-            return
-        }
-        handleValidation = nil
+        !handle.isEmpty && !username.isEmpty && viewModel.handleValidation == nil
     }
 }
 

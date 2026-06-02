@@ -310,6 +310,17 @@ final class FriendProfileViewModel: ObservableObject {
         }
     }
 
+    // MARK: - 친구 삭제
+
+    func removeFriend() async {
+        do {
+            try await FriendService.shared.removeFriend(handle: handle)
+            currentFriend = false
+        } catch {
+            print("[FriendProfile] 친구 삭제 실패: \(error)")
+        }
+    }
+
     // MARK: - 공유
 
     func shareProfile() async -> UIImage? {

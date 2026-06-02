@@ -469,4 +469,60 @@ final class ProfileViewModel: ObservableObject {
             }
         }
     }
+
+    // MARK: - 내 스토리 로드
+
+    @Published var myStory: StoryItem? = nil
+
+    func loadMyStory() async {
+        do {
+            let list = try await StoryService.shared.fetchStories()
+            let myStories = list.filter { $0.handle == handle }
+            guard !myStories.isEmpty else { myStory = nil; return }
+
+            var allPhotos: [StoryPhotoSet] = []
+            var latest = myStories[0]
+            for story in myStories.sorted(by: { $0.storyId < $1.storyId }) {
+                if let detail = try? await StoryService.shared.fetchDetail(storyId: story.storyId) {
+                    let photos = detail.photos.map { p -> StoryPhotoSet in
+                        var photo = p; photo.ownerStoryId = story.storyId; return photo
+                    }
+                    allPhotos.append(contentsOf: photos)
+                    if story.storyId > latest.storyId { latest = story }
+                }
+            }
+            guard !allPhotos.isEmpty else { myStory = nil; return }
+
+            myStory = StoryItem(
+                storyId: latest.storyId,
+                profileImage: latest.profileImageUrl ?? "",
+                bannerImage: latest.thumbnailUrl ?? "",
+                displayName: username,
+                username: handle,
+                photos: allPhotos,
+                createdAt: latest.createdAt,
+                isSeen: true
+            )
+        } catch {
+            myStory = nil
+        }
+    }
+
+    // MARK: - 프로필 공유
+
+    func shareProfile() async -> UIImage? {
+        async let bannerImg = downloadImage(from: bannerImageUrl)
+        async let profileImg = downloadImage(from: profileImageUrl)
+
+        let card = ProfileShareCard(
+            bannerImage: await bannerImg,
+            profileImage: await profileImg,
+            username: username,
+            handle: handle,
+            postCount: postCount,
+            friendCount: friendCount,
+            streakCount: streakCount
+        )
+        return renderShareImage(card)
+    }
 }

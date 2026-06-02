@@ -12,16 +12,15 @@ struct FriendListView: View {
     @Environment(\.dismiss) private var dismiss
 
     let handle: String
-    @State private var friends: [FriendData] = []
-    @State private var isLoading = true
+    @StateObject private var viewModel = FriendListViewModel()
 
     var body: some View {
         ZStack {
             Color.backgroundBlack.ignoresSafeArea()
 
-            if isLoading {
+            if viewModel.isLoading {
                 ProgressView().tint(.white)
-            } else if friends.isEmpty {
+            } else if viewModel.friends.isEmpty {
                 VStack(spacing: 12) {
                     Image("Crying_img")
                         .resizable()
@@ -34,7 +33,7 @@ struct FriendListView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 0) {
-                        ForEach(friends) { friend in
+                        ForEach(viewModel.friends) { friend in
                             NavigationLink {
                                 FriendProfileView(
                                     name: friend.username,
@@ -80,12 +79,7 @@ struct FriendListView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .task {
-            do {
-                friends = try await FriendService.shared.getFriends(handle: handle)
-            } catch {
-                print("[FriendList] 로드 실패: \(error)")
-            }
-            isLoading = false
+            await viewModel.loadFriends(handle: handle)
         }
     }
 }

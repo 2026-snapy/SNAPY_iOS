@@ -10,8 +10,7 @@ import Kingfisher
 
 struct BlockedUsersView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var blockedUsers: [BlockedUserData] = []
-    @State private var isLoading = true
+    @StateObject private var viewModel = BlockedUsersViewModel()
     @State private var selectedProfile: BlockedUserData? = nil
 
     var body: some View {
@@ -19,12 +18,12 @@ struct BlockedUsersView: View {
             Color.backgroundBlack.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                if isLoading {
+                if viewModel.isLoading {
                     Spacer()
                     ProgressView()
                         .tint(.white)
                     Spacer()
-                } else if blockedUsers.isEmpty {
+                } else if viewModel.blockedUsers.isEmpty {
                     Spacer()
                     VStack(spacing: 12) {
                         Image(systemName: "nosign")
@@ -38,7 +37,7 @@ struct BlockedUsersView: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            ForEach(blockedUsers) { user in
+                            ForEach(viewModel.blockedUsers) { user in
                                 blockedUserRow(user: user)
                             }
                         }
@@ -74,7 +73,7 @@ struct BlockedUsersView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .task {
-            await loadBlockedUsers()
+            await viewModel.loadBlockedUsers()
         }
         .navigationDestination(item: $selectedProfile) { user in
             FriendProfileView(
@@ -125,7 +124,7 @@ struct BlockedUsersView: View {
 
             // 차단 해제 버튼
             Button {
-                Task { await unblock(user: user) }
+                Task { await viewModel.unblock(user: user) }
             } label: {
                 Text("해제")
                     .font(.system(size: 14, weight: .semibold))
@@ -140,26 +139,4 @@ struct BlockedUsersView: View {
         .padding(.vertical, 10)
     }
 
-    // MARK: - API
-
-    private func loadBlockedUsers() async {
-        isLoading = true
-        do {
-            blockedUsers = try await BlockService.shared.getBlockedUsers()
-        } catch {
-            print("[BlockedUsersView] 로드 실패: \(error)")
-        }
-        isLoading = false
-    }
-
-    private func unblock(user: BlockedUserData) async {
-        do {
-            try await BlockService.shared.unblockUser(handle: user.handle)
-            withAnimation(.easeInOut(duration: 0.3)) {
-                blockedUsers.removeAll { $0.id == user.id }
-            }
-        } catch {
-            print("[BlockedUsersView] 차단 해제 실패: \(error)")
-        }
-    }
 }

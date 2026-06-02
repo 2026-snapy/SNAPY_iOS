@@ -174,10 +174,7 @@ struct FriendProfileView: View {
                 name: viewModel.name,
                 handle: viewModel.handle,
                 onRemoveFriend: {
-                    Task {
-                        do { try await FriendService.shared.removeFriend(handle: viewModel.handle) }
-                        catch { print("[FriendProfile] 친구 삭제 실패: \(error)") }
-                    }
+                    Task { await viewModel.removeFriend() }
                     showFriendSheet = false
                     dismiss()
                 }

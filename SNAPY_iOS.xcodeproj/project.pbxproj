@@ -70,6 +70,27 @@
 		BC89E5E72FCE6EDC0078C653 /* CommentImageViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5E62FCE6EDA0078C653 /* CommentImageViewer.swift */; };
 		BC89E5E92FCE6EF20078C653 /* CommentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5E82FCE6EF00078C653 /* CommentRow.swift */; };
 		BC89E5EB2FCE706B0078C653 /* CommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5EA2FCE70690078C653 /* CommentViewModel.swift */; };
+		BC89E5ED2FCE73910078C653 /* StoryBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5EC2FCE738F0078C653 /* StoryBottomBar.swift */; };
+		BC89E5EF2FCE73AD0078C653 /* StoryDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5EE2FCE73AA0078C653 /* StoryDetailViewModel.swift */; };
+		BC89E5F12FCE73CC0078C653 /* StoryLikeListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5F02FCE73CA0078C653 /* StoryLikeListSheet.swift */; };
+		BC89E5F82FCE772C0078C653 /* NotificationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5F72FCE772A0078C653 /* NotificationRow.swift */; };
+		BC89E5FA2FCE9A050078C653 /* FeedCardModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5F92FCE99A60078C653 /* FeedCardModels.swift */; };
+		BC89E5FC2FCE9A250078C653 /* FeedCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FB2FCE9A240078C653 /* FeedCardViewModel.swift */; };
+		BC89E5FE2FCE9A3F0078C653 /* ImageCommentSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FD2FCE9A3E0078C653 /* ImageCommentSection.swift */; };
+		BC89E6002FCEA7F10078C653 /* StreakSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FF2FCEA7F00078C653 /* StreakSheet.swift */; };
+		BC89E6022FCEB0030078C653 /* PublishPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6012FCEB0010078C653 /* PublishPreviewViewModel.swift */; };
+		BC89E6042FCEB4460078C653 /* ContactSyncViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6032FCEB41D0078C653 /* ContactSyncViewModel.swift */; };
+		BC89E6082FCEB6C70078C653 /* ReportModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6072FCEB6C70078C653 /* ReportModels.swift */; };
+		BC89E60A2FCEB6D50078C653 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6092FCEB6D40078C653 /* ReportViewModel.swift */; };
+		BC89E6132FCEBBC80078C653 /* FriendRequestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6122FCEBBBB0078C653 /* FriendRequestViewModel.swift */; };
+		BC89E6152FCEBBFD0078C653 /* BlockedUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6142FCEBBFB0078C653 /* BlockedUsersViewModel.swift */; };
+		BC89E6172FCEBC2F0078C653 /* LikeListSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6162FCEBC2B0078C653 /* LikeListSheetViewModel.swift */; };
+		BC89E61A2FCEBDE50078C653 /* ProfileFeedGridViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6192FCEBDE30078C653 /* ProfileFeedGridViewModel.swift */; };
+		BC89E61D2FCEC1100078C653 /* PhoneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E61C2FCEC10C0078C653 /* PhoneViewModel.swift */; };
+		BC89E61F2FCEC15E0078C653 /* OAuthInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E61E2FCEC15D0078C653 /* OAuthInfoViewModel.swift */; };
+		BC89E6212FCEC18A0078C653 /* OAuthPhoneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6202FCEC1880078C653 /* OAuthPhoneViewModel.swift */; };
+		BC89E6262FCEC2D30078C653 /* RegisterProfileImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6252FCEC2D20078C653 /* RegisterProfileImageViewModel.swift */; };
+		BC89E6282FCEC4F00078C653 /* FriendListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6272FCEC4EF0078C653 /* FriendListViewModel.swift */; };
 		BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */; };
 		BC8A28CE2FB322DB00073FDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CD2FB322D500073FDE /* AppDelegate.swift */; };
 		BC8A28D02FB3231400073FDE /* PushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CF2FB3231200073FDE /* PushService.swift */; };
@@ -237,6 +258,27 @@
 		BC89E5E62FCE6EDA0078C653 /* CommentImageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentImageViewer.swift; sourceTree = "<group>"; };
 		BC89E5E82FCE6EF00078C653 /* CommentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentRow.swift; sourceTree = "<group>"; };
 		BC89E5EA2FCE70690078C653 /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
+		BC89E5EC2FCE738F0078C653 /* StoryBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryBottomBar.swift; sourceTree = "<group>"; };
+		BC89E5EE2FCE73AA0078C653 /* StoryDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryDetailViewModel.swift; sourceTree = "<group>"; };
+		BC89E5F02FCE73CA0078C653 /* StoryLikeListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryLikeListSheet.swift; sourceTree = "<group>"; };
+		BC89E5F72FCE772A0078C653 /* NotificationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRow.swift; sourceTree = "<group>"; };
+		BC89E5F92FCE99A60078C653 /* FeedCardModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCardModels.swift; sourceTree = "<group>"; };
+		BC89E5FB2FCE9A240078C653 /* FeedCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCardViewModel.swift; sourceTree = "<group>"; };
+		BC89E5FD2FCE9A3E0078C653 /* ImageCommentSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCommentSection.swift; sourceTree = "<group>"; };
+		BC89E5FF2FCEA7F00078C653 /* StreakSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakSheet.swift; sourceTree = "<group>"; };
+		BC89E6012FCEB0010078C653 /* PublishPreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishPreviewViewModel.swift; sourceTree = "<group>"; };
+		BC89E6032FCEB41D0078C653 /* ContactSyncViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSyncViewModel.swift; sourceTree = "<group>"; };
+		BC89E6072FCEB6C70078C653 /* ReportModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportModels.swift; sourceTree = "<group>"; };
+		BC89E6092FCEB6D40078C653 /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
+		BC89E6122FCEBBBB0078C653 /* FriendRequestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestViewModel.swift; sourceTree = "<group>"; };
+		BC89E6142FCEBBFB0078C653 /* BlockedUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersViewModel.swift; sourceTree = "<group>"; };
+		BC89E6162FCEBC2B0078C653 /* LikeListSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeListSheetViewModel.swift; sourceTree = "<group>"; };
+		BC89E6192FCEBDE30078C653 /* ProfileFeedGridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFeedGridViewModel.swift; sourceTree = "<group>"; };
+		BC89E61C2FCEC10C0078C653 /* PhoneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneViewModel.swift; sourceTree = "<group>"; };
+		BC89E61E2FCEC15D0078C653 /* OAuthInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthInfoViewModel.swift; sourceTree = "<group>"; };
+		BC89E6202FCEC1880078C653 /* OAuthPhoneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthPhoneViewModel.swift; sourceTree = "<group>"; };
+		BC89E6252FCEC2D20078C653 /* RegisterProfileImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterProfileImageViewModel.swift; sourceTree = "<group>"; };
+		BC89E6272FCEC4EF0078C653 /* FriendListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendListViewModel.swift; sourceTree = "<group>"; };
 		BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSkeletonView.swift; sourceTree = "<group>"; };
 		BC8A28CD2FB322D500073FDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC8A28CF2FB3231200073FDE /* PushService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushService.swift; sourceTree = "<group>"; };
@@ -539,6 +581,7 @@
 		BC706E662F8DFDCD0093C0B8 /* Contact */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E6032FCEB41D0078C653 /* ContactSyncViewModel.swift */,
 				BC706E672F8DFDD60093C0B8 /* ContactSyncView.swift */,
 			);
 			path = Contact;
@@ -564,11 +607,89 @@
 		BC706F762F9528310093C0B8 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E6142FCEBBFB0078C653 /* BlockedUsersViewModel.swift */,
 				BC8A2C0E2FBDFF2300073FDE /* BlockedUsersView.swift */,
 				BC706F712F95280A0093C0B8 /* SettingsViewModel.swift */,
 				BC706F6F2F9527F20093C0B8 /* SettingsView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		BC89E5F22FCE73DC0078C653 /* Story */ = {
+			isa = PBXGroup;
+			children = (
+				BC89E5F02FCE73CA0078C653 /* StoryLikeListSheet.swift */,
+				BC89E5EE2FCE73AA0078C653 /* StoryDetailViewModel.swift */,
+				BC89E5EC2FCE738F0078C653 /* StoryBottomBar.swift */,
+				BC706F642F933C630093C0B8 /* StoryDetailView.swift */,
+				BC706F5C2F8FEFAF0093C0B8 /* HomeStoryBar.swift */,
+			);
+			path = Story;
+			sourceTree = "<group>";
+		};
+		BC89E60B2FCEB6F60078C653 /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				BC89E6092FCEB6D40078C653 /* ReportViewModel.swift */,
+				BC89E6072FCEB6C70078C653 /* ReportModels.swift */,
+				BC8A2BFE2FBCBA0100073FDE /* ReportView.swift */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
+		BC89E60C2FCEB7100078C653 /* Skeleton */ = {
+			isa = PBXGroup;
+			children = (
+				BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */,
+				BC65863B2FAB905700D827CF /* FeedSkeletonView.swift */,
+			);
+			path = Skeleton;
+			sourceTree = "<group>";
+		};
+		BC89E60D2FCEB7610078C653 /* FeedCard */ = {
+			isa = PBXGroup;
+			children = (
+				BC89E5FB2FCE9A240078C653 /* FeedCardViewModel.swift */,
+				BC89E5F92FCE99A60078C653 /* FeedCardModels.swift */,
+				BCA00F082FA1000100CARD01 /* FeedCardView.swift */,
+			);
+			path = FeedCard;
+			sourceTree = "<group>";
+		};
+		BC89E6182FCEBC560078C653 /* LikeList */ = {
+			isa = PBXGroup;
+			children = (
+				BC89E6162FCEBC2B0078C653 /* LikeListSheetViewModel.swift */,
+				BC8A2B7A2FBAE5FE00073FDE /* LikeListSheet.swift */,
+			);
+			path = LikeList;
+			sourceTree = "<group>";
+		};
+		BC89E61B2FCEBE000078C653 /* ProfileFeed */ = {
+			isa = PBXGroup;
+			children = (
+				BC89E6192FCEBDE30078C653 /* ProfileFeedGridViewModel.swift */,
+				BC6676CE2F84062E009CBF8D /* ProfileFeedGrid.swift */,
+			);
+			path = ProfileFeed;
+			sourceTree = "<group>";
+		};
+		BC89E6222FCEC1B90078C653 /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				BCBCF44B2FAC5EAE0058E92D /* OAuthInfoView.swift */,
+				BC89E61E2FCEC15D0078C653 /* OAuthInfoViewModel.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
+		BC89E6232FCEC1CD0078C653 /* Phone */ = {
+			isa = PBXGroup;
+			children = (
+				BC89E6202FCEC1880078C653 /* OAuthPhoneViewModel.swift */,
+				BCBCF4472FAC59710058E92D /* OAuthPhoneView.swift */,
+			);
+			path = Phone;
 			sourceTree = "<group>";
 		};
 		BC8A28D12FB3234700073FDE /* Push */ = {
@@ -615,13 +736,13 @@
 		BCA00F092FA1000100CARD02 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E6182FCEBC560078C653 /* LikeList */,
+				BC89E60D2FCEB7610078C653 /* FeedCard */,
+				BC89E60C2FCEB7100078C653 /* Skeleton */,
+				BC89E60B2FCEB6F60078C653 /* Report */,
+				BC89E5FD2FCE9A3E0078C653 /* ImageCommentSection.swift */,
 				BC8A2C002FBCBA1B00073FDE /* TermsAgreementView.swift */,
-				BC8A2BFE2FBCBA0100073FDE /* ReportView.swift */,
-				BC8A2B7A2FBAE5FE00073FDE /* LikeListSheet.swift */,
 				BC8A28D62FB4168800073FDE /* ShareCardViews.swift */,
-				BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */,
-				BC65863B2FAB905700D827CF /* FeedSkeletonView.swift */,
-				BCA00F082FA1000100CARD01 /* FeedCardView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -651,6 +772,7 @@
 		BCBCF43E2FAC3DC50058E92D /* Notification */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E5F72FCE772A0078C653 /* NotificationRow.swift */,
 				BCBCF43C2FAC3DC50058E92D /* NotificationView.swift */,
 				BCBCF43D2FAC3DC50058E92D /* NotificationViewModel.swift */,
 			);
@@ -668,8 +790,8 @@
 		BCBCF44D2FAC61F10058E92D /* OAuth */ = {
 			isa = PBXGroup;
 			children = (
-				BCBCF44B2FAC5EAE0058E92D /* OAuthInfoView.swift */,
-				BCBCF4472FAC59710058E92D /* OAuthPhoneView.swift */,
+				BC89E6232FCEC1CD0078C653 /* Phone */,
+				BC89E6222FCEC1B90078C653 /* Info */,
 			);
 			path = OAuth;
 			sourceTree = "<group>";
@@ -677,6 +799,7 @@
 		BCBCF44E2FAC692D0058E92D /* ProfileImage */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E6252FCEC2D20078C653 /* RegisterProfileImageViewModel.swift */,
 				BCBCF44F2FAC693A0058E92D /* RegisterProfileImageView.swift */,
 			);
 			path = ProfileImage;
@@ -701,6 +824,7 @@
 		BCCAD60F2F6B063D00ED71E0 /* Phone */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E61C2FCEC10C0078C653 /* PhoneViewModel.swift */,
 				BCCAD6102F6B071300ED71E0 /* PhoneView.swift */,
 			);
 			path = Phone;
@@ -747,8 +871,8 @@
 				BCD815A02F69291E0028AE50 /* Profile */,
 				BCD8159F2F6929040028AE50 /* Friend */,
 				BCD8159E2F6928F10028AE50 /* Camera */,
-				BCD8159D2F6928B40028AE50 /* Home */,
 				BCD8159C2F6928AC0028AE50 /* SignUp */,
+				BCD8159D2F6928B40028AE50 /* Home */,
 				BCD8159B2F69289D0028AE50 /* Login */,
 			);
 			path = Feature;
@@ -869,11 +993,11 @@
 		BCD816CD2F6A41500028AE50 /* Component */ = {
 			isa = PBXGroup;
 			children = (
-				BC706F642F933C630093C0B8 /* StoryDetailView.swift */,
+				BC89E6012FCEB0010078C653 /* PublishPreviewViewModel.swift */,
+				BC89E5F22FCE73DC0078C653 /* Story */,
 				BC706F622F90A6C80093C0B8 /* HomeFeedEndView.swift */,
 				BC706F602F906B5E0093C0B8 /* HomeHeader.swift */,
 				BC706F5E2F8FEFC10093C0B8 /* PublishPreviewView.swift */,
-				BC706F5C2F8FEFAF0093C0B8 /* HomeStoryBar.swift */,
 				BC706F5A2F8FEF900093C0B8 /* HomeFeedCard.swift */,
 			);
 			path = Component;
@@ -882,6 +1006,7 @@
 		BCD816CF2F6A415A0028AE50 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E6122FCEBBBB0078C653 /* FriendRequestViewModel.swift */,
 				BC8A2B7E2FBB2AAF00073FDE /* FriendProfile */,
 				BC706E5C2F8D48280093C0B8 /* FriendRelationSheet.swift */,
 				BC706E582F8D09940093C0B8 /* FriendRequestView.swift */,
@@ -895,6 +1020,9 @@
 		BCD816D02F6A415B0028AE50 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E61B2FCEBE000078C653 /* ProfileFeed */,
+				BC89E6272FCEC4EF0078C653 /* FriendListViewModel.swift */,
+				BC89E5FF2FCEA7F00078C653 /* StreakSheet.swift */,
 				BCAAFF172F98E22F00A6B597 /* ProfileFeedSection.swift */,
 				BCAAFF152F98E1D300A6B597 /* PastMonthFeedView.swift */,
 				BCAAFF112F98DD0A00A6B597 /* PastMonthCard.swift */,
@@ -903,7 +1031,6 @@
 				BCD10DAB2F854C8F004CBC29 /* GuestbookFullView.swift */,
 				BC6676D62F840F6B009CBF8D /* ImageViewerView.swift */,
 				BC6676D12F84066B009CBF8D /* ProfileHeaderView.swift */,
-				BC6676CE2F84062E009CBF8D /* ProfileFeedGrid.swift */,
 				BC6676CC2F840613009CBF8D /* ProfileEditView.swift */,
 				BC6676CA2F8405F3009CBF8D /* GuestbookSection.swift */,
 			);
@@ -1098,6 +1225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC89E6132FCEBBC80078C653 /* FriendRequestViewModel.swift in Sources */,
 				BC1DC2EE2F68CF730016A4CD /* TokenStorage.swift in Sources */,
 				BC89E5E32FCDD0A60078C653 /* DeepLinkRouter.swift in Sources */,
 				BCD815A32F6929550028AE50 /* SplashView.swift in Sources */,
@@ -1106,10 +1234,12 @@
 				BC6674E72F73A564009CBF8D /* AlbumStrick.swift in Sources */,
 				BC706F632F90A6CA0093C0B8 /* HomeFeedEndView.swift in Sources */,
 				BC8A28CE2FB322DB00073FDE /* AppDelegate.swift in Sources */,
+				BC89E61A2FCEBDE50078C653 /* ProfileFeedGridViewModel.swift in Sources */,
 				BCD816DC2F6A41A50028AE50 /* ProfileViewModel.swift in Sources */,
 				BC6676CD2F840615009CBF8D /* ProfileEditView.swift in Sources */,
 				BC1DC2F12F68CF730016A4CD /* Color+Extensions.swift in Sources */,
 				BCBCF4462FAC3E380058E92D /* NotificationService.swift in Sources */,
+				BC89E61D2FCEC1100078C653 /* PhoneViewModel.swift in Sources */,
 				BCCAD60C2F6B062F00ED71E0 /* PasswordView.swift in Sources */,
 				BCBCF4342FAC209C0058E92D /* GoogleLoginButton.swift in Sources */,
 				BC8A2C092FBDB1FF00073FDE /* BlockAPI.swift in Sources */,
@@ -1119,17 +1249,21 @@
 				BC706E5F2F8DC0E20093C0B8 /* FriendDTO.swift in Sources */,
 				BC706E682F8DFDD70093C0B8 /* ContactSyncView.swift in Sources */,
 				BC8A2CD12FC5627100073FDE /* ReportAPI.swift in Sources */,
+				BC89E5FC2FCE9A250078C653 /* FeedCardViewModel.swift in Sources */,
 				BC64737A2F86ADDA00FA15EA /* AlbumAPI.swift in Sources */,
 				BCCAD6072F6B060300ED71E0 /* EmailView.swift in Sources */,
 				BC706DFF2F87FA0E0093C0B8 /* AlbumDateDetailView.swift in Sources */,
 				BC706F652F933C640093C0B8 /* StoryDetailView.swift in Sources */,
 				BCCAD6112F6B071700ED71E0 /* PhoneView.swift in Sources */,
 				BC6676D42F8406D1009CBF8D /* ProfileHeaderView.swift in Sources */,
+				BC89E6172FCEBC2F0078C653 /* LikeListSheetViewModel.swift in Sources */,
+				BC89E5FA2FCE9A050078C653 /* FeedCardModels.swift in Sources */,
 				BC706F5D2F8FEFB00093C0B8 /* HomeStoryBar.swift in Sources */,
 				BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */,
 				BCAAFF162F98E1D500A6B597 /* PastMonthFeedView.swift in Sources */,
 				BC8A2C012FBCBA2300073FDE /* TermsAgreementView.swift in Sources */,
 				BC89E5EB2FCE706B0078C653 /* CommentViewModel.swift in Sources */,
+				BC89E6002FCEA7F10078C653 /* StreakSheet.swift in Sources */,
 				BCBCF44C2FAC5EAF0058E92D /* OAuthInfoView.swift in Sources */,
 				BCD816BF2F69A8D30028AE50 /* AppleSignInButton.swift in Sources */,
 				BCED9C222F6E625A008E47BB /* PhotoStore.swift in Sources */,
@@ -1140,9 +1274,12 @@
 				BC89E5E52FCE6ECF0078C653 /* AudioCommentPlayer.swift in Sources */,
 				BCD10DAC2F854C94004CBC29 /* GuestbookFullView.swift in Sources */,
 				BC706E5B2F8D39700093C0B8 /* FriendProfileView.swift in Sources */,
+				BC89E5F12FCE73CC0078C653 /* StoryLikeListSheet.swift in Sources */,
 				BCCAD5822F6ABB4B00ED71E0 /* SnapyLoginView.swift in Sources */,
 				BC66763E2F797A99009CBF8D /* AlbumPhotoCard.swift in Sources */,
+				BC89E5F82FCE772C0078C653 /* NotificationRow.swift in Sources */,
 				BCD816CC2F6A414D0028AE50 /* HomeViewModel.swift in Sources */,
+				BC89E6262FCEC2D30078C653 /* RegisterProfileImageViewModel.swift in Sources */,
 				BCD816D62F6A418A0028AE50 /* FriendView.swift in Sources */,
 				BCD816CA2F6A41470028AE50 /* HomeView.swift in Sources */,
 				BC706F722F95280D0093C0B8 /* SettingsViewModel.swift in Sources */,
@@ -1153,8 +1290,10 @@
 				BCAAFF122F98DD0C00A6B597 /* PastMonthCard.swift in Sources */,
 				BC706E722F8E92110093C0B8 /* FriendListView.swift in Sources */,
 				BCD815AB2F69343D0028AE50 /* RootView.swift in Sources */,
+				BC89E6152FCEBBFD0078C653 /* BlockedUsersViewModel.swift in Sources */,
 				BC8A28D32FB3235F00073FDE /* PushAPI.swift in Sources */,
 				BC8A2B7B2FBAE5FF00073FDE /* LikeListSheet.swift in Sources */,
+				BC89E5EF2FCE73AD0078C653 /* StoryDetailViewModel.swift in Sources */,
 				BC706F5B2F8FEF910093C0B8 /* HomeFeedCard.swift in Sources */,
 				BC706E4D2F8BF9D90093C0B8 /* ProfileAPI.swift in Sources */,
 				BCD816D82F6A41940028AE50 /* FriendViewModel.swift in Sources */,
@@ -1165,6 +1304,7 @@
 				BC8A2BFF2FBCBA0400073FDE /* ReportView.swift in Sources */,
 				BCD816EB2F6A52390028AE50 /* OnboardingView.swift in Sources */,
 				BC706E642F8DC1350093C0B8 /* FriendService.swift in Sources */,
+				BC89E60A2FCEB6D50078C653 /* ReportViewModel.swift in Sources */,
 				BCD816DA2F6A419C0028AE50 /* ProfileView.swift in Sources */,
 				BCD816E72F6A43860028AE50 /* AlbumViewModel.swift in Sources */,
 				BCED9C202F6E6215008E47BB /* DualCameraService.swift in Sources */,
@@ -1179,6 +1319,7 @@
 				BC706E592F8D09950093C0B8 /* FriendRequestView.swift in Sources */,
 				BC706E512F8CEA450093C0B8 /* SuggestedFriendRow.swift in Sources */,
 				BCAAFF102F98911D00A6B597 /* VoiceRecorderSheet.swift in Sources */,
+				BC89E6022FCEB0030078C653 /* PublishPreviewViewModel.swift in Sources */,
 				BCD816E52F6A437D0028AE50 /* AlbumView.swift in Sources */,
 				BCAAFF0C2F9890FF00A6B597 /* CommentModels.swift in Sources */,
 				BCD10DB02F854CDA004CBC29 /* GuestbookAddView.swift in Sources */,
@@ -1216,20 +1357,27 @@
 				BCD8162B2F6936740028AE50 /* User.swift in Sources */,
 				BCCAD5FE2F6ABC3000ED71E0 /* SnapyTextField.swift in Sources */,
 				BC8A2C0D2FBDB22F00073FDE /* BlockDTO.swift in Sources */,
+				BC89E6082FCEB6C70078C653 /* ReportModels.swift in Sources */,
+				BC89E5ED2FCE73910078C653 /* StoryBottomBar.swift in Sources */,
 				BC1DC2FC2F68CF730016A4CD /* Date+Extensions.swift in Sources */,
 				BCA00F072FA1000100CARD01 /* FeedCardView.swift in Sources */,
+				BC89E6212FCEC18A0078C653 /* OAuthPhoneViewModel.swift in Sources */,
 				BC8A2C032FBD325600073FDE /* TermsContent.swift in Sources */,
+				BC89E5FE2FCE9A3F0078C653 /* ImageCommentSection.swift in Sources */,
 				BCA00F012FA0000100FEED01 /* FeedDTO.swift in Sources */,
 				BC8A2C0F2FBDFF2400073FDE /* BlockedUsersView.swift in Sources */,
 				BCA00F032FA0000100FEED02 /* FeedAPI.swift in Sources */,
 				BCA00F052FA0000100FEED03 /* FeedService.swift in Sources */,
 				BCA00F092FA2000100CMNT01 /* CommentDTO.swift in Sources */,
+				BC89E61F2FCEC15E0078C653 /* OAuthInfoViewModel.swift in Sources */,
 				BCA00F0B2FA2000100CMNT02 /* CommentAPI.swift in Sources */,
 				BC8A2CCE2FC5623D00073FDE /* ReportDTO.swift in Sources */,
 				BCA00F0D2FA2000100CMNT03 /* CommentService.swift in Sources */,
 				BC706F692F93E8B80093C0B8 /* StoryDTO.swift in Sources */,
 				BC1DC2FE2F68CF730016A4CD /* ImagePicker.swift in Sources */,
+				BC89E6282FCEC4F00078C653 /* FriendListViewModel.swift in Sources */,
 				BC64737D2F86B42C00FA15EA /* MoyaProvider.swift in Sources */,
+				BC89E6042FCEB4460078C653 /* ContactSyncViewModel.swift in Sources */,
 				BCD816D42F6A41810028AE50 /* CameraViewModel.swift in Sources */,
 				BC1DC2FF2F68CF730016A4CD /* AuthDTO.swift in Sources */,
 				BC706E4A2F8BF9B00093C0B8 /* ProfileDTO.swift in Sources */,

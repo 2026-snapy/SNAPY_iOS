@@ -10,11 +10,9 @@ import SwiftUI
 struct OAuthPhoneView: View {
     var onNext: () -> Void
     var onBack: (() -> Void)? = nil
+    @StateObject private var viewModel = OAuthPhoneViewModel()
     @State private var phone = ""
     @State private var code = ""
-    @State private var codeSent = false
-    @State private var isLoading = false
-    @State private var errorMessage: String?
 
     var body: some View {
         ZStack {
@@ -74,10 +72,10 @@ struct OAuthPhoneView: View {
                         text: $phone,
                         keyboardType: .phonePad
                     )
-                    .disabled(codeSent)
-                    .opacity(codeSent ? 0.6 : 1.0)
+                    .disabled(viewModel.codeSent)
+                    .opacity(viewModel.codeSent ? 0.6 : 1.0)
 
-                    if codeSent {
+                    if viewModel.codeSent {
                         SnapyTextField(
                             label: "인증번호",
                             placeholder: "6자리 인증번호 입력",
@@ -86,7 +84,7 @@ struct OAuthPhoneView: View {
                         )
 
                         Button {
-                            requestCode()
+                            Task { await viewModel.requestCode(phone: phone) }
                         } label: {
                             Text("인증번호 재발송")
                                 .font(.system(size: 13))
@@ -98,7 +96,7 @@ struct OAuthPhoneView: View {
                 .padding(.horizontal, 24)
                 .padding(.top, 40)
 
-                if let error = errorMessage {
+                if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.system(size: 14))
                         .foregroundColor(.red)
@@ -108,14 +106,17 @@ struct OAuthPhoneView: View {
 
                 Spacer()
 
-                if codeSent {
-                    SnapyButton(title: isLoading ? "확인 중..." : "확인", isEnabled: isValidCode && !isLoading) {
-                        verifyAndRegister()
+                if viewModel.codeSent {
+                    SnapyButton(title: viewModel.isLoading ? "확인 중..." : "확인", isEnabled: isValidCode && !viewModel.isLoading) {
+                        Task {
+                            let success = await viewModel.verifyAndRegister(phone: phone, code: code)
+                            if success { onNext() }
+                        }
                     }
                     .padding(.bottom, 24)
                 } else {
-                    SnapyButton(title: isLoading ? "발송 중..." : "인증번호 받기", isEnabled: isValidPhone && !isLoading) {
-                        requestCode()
+                    SnapyButton(title: viewModel.isLoading ? "발송 중..." : "인증번호 받기", isEnabled: isValidPhone && !viewModel.isLoading) {
+                        Task { await viewModel.requestCode(phone: phone) }
                     }
                     .padding(.bottom, 24)
                 }
@@ -134,48 +135,6 @@ struct OAuthPhoneView: View {
         code.filter { $0.isNumber }.count == 6
     }
 
-    private func requestCode() {
-        let digits = phone.filter { $0.isNumber }
-        isLoading = true
-        errorMessage = nil
-
-        Task {
-            do {
-                try await ProfileService.shared.requestPhoneCode(digits)
-                await MainActor.run {
-                    codeSent = true
-                    isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    errorMessage = error.localizedDescription
-                    isLoading = false
-                }
-            }
-        }
-    }
-
-    private func verifyAndRegister() {
-        let digits = phone.filter { $0.isNumber }
-        let codeDigits = code.filter { $0.isNumber }
-        isLoading = true
-        errorMessage = nil
-
-        Task {
-            do {
-                try await ProfileService.shared.updatePhone(digits, code: codeDigits)
-                await MainActor.run {
-                    isLoading = false
-                    onNext()
-                }
-            } catch {
-                await MainActor.run {
-                    errorMessage = error.localizedDescription
-                    isLoading = false
-                }
-            }
-        }
-    }
 }
 
 struct OAuthPhoneView_Previews: PreviewProvider {

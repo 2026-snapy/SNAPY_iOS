@@ -17,6 +17,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         return true
     }
 
+    // MARK: - 세로 화면 고정
+
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return .portrait
+    }
+
     // MARK: - 푸시 권한 요청
 
     private func requestPushPermission(_ application: UIApplication) {

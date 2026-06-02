@@ -66,6 +66,10 @@
 		BC706F702F9527F30093C0B8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F6F2F9527F20093C0B8 /* SettingsView.swift */; };
 		BC706F722F95280D0093C0B8 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC706F712F95280A0093C0B8 /* SettingsViewModel.swift */; };
 		BC89E5E32FCDD0A60078C653 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5E22FCDD0A40078C653 /* DeepLinkRouter.swift */; };
+		BC89E5E52FCE6ECF0078C653 /* AudioCommentPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5E42FCE6ECD0078C653 /* AudioCommentPlayer.swift */; };
+		BC89E5E72FCE6EDC0078C653 /* CommentImageViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5E62FCE6EDA0078C653 /* CommentImageViewer.swift */; };
+		BC89E5E92FCE6EF20078C653 /* CommentRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5E82FCE6EF00078C653 /* CommentRow.swift */; };
+		BC89E5EB2FCE706B0078C653 /* CommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5EA2FCE70690078C653 /* CommentViewModel.swift */; };
 		BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */; };
 		BC8A28CE2FB322DB00073FDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CD2FB322D500073FDE /* AppDelegate.swift */; };
 		BC8A28D02FB3231400073FDE /* PushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CF2FB3231200073FDE /* PushService.swift */; };
@@ -229,6 +233,10 @@
 		BC706F712F95280A0093C0B8 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		BC706F772F95A71B0093C0B8 /* SNAPY_iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SNAPY_iOS.entitlements; sourceTree = "<group>"; };
 		BC89E5E22FCDD0A40078C653 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
+		BC89E5E42FCE6ECD0078C653 /* AudioCommentPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCommentPlayer.swift; sourceTree = "<group>"; };
+		BC89E5E62FCE6EDA0078C653 /* CommentImageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentImageViewer.swift; sourceTree = "<group>"; };
+		BC89E5E82FCE6EF00078C653 /* CommentRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentRow.swift; sourceTree = "<group>"; };
+		BC89E5EA2FCE70690078C653 /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
 		BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSkeletonView.swift; sourceTree = "<group>"; };
 		BC8A28CD2FB322D500073FDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC8A28CF2FB3231200073FDE /* PushService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushService.swift; sourceTree = "<group>"; };
@@ -629,6 +637,10 @@
 		BCAAFF0A2F9890F000A6B597 /* Comment */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E5EA2FCE70690078C653 /* CommentViewModel.swift */,
+				BC89E5E82FCE6EF00078C653 /* CommentRow.swift */,
+				BC89E5E62FCE6EDA0078C653 /* CommentImageViewer.swift */,
+				BC89E5E42FCE6ECD0078C653 /* AudioCommentPlayer.swift */,
 				BCAAFF0F2F98911C00A6B597 /* VoiceRecorderSheet.swift */,
 				BCAAFF0D2F98911000A6B597 /* CommentSheetView.swift */,
 				BCAAFF0B2F9890F700A6B597 /* CommentModels.swift */,
@@ -1101,6 +1113,7 @@
 				BCCAD60C2F6B062F00ED71E0 /* PasswordView.swift in Sources */,
 				BCBCF4342FAC209C0058E92D /* GoogleLoginButton.swift in Sources */,
 				BC8A2C092FBDB1FF00073FDE /* BlockAPI.swift in Sources */,
+				BC89E5E72FCE6EDC0078C653 /* CommentImageViewer.swift in Sources */,
 				BCAA007F2F9A381E00A6B597 /* GuestbookDTO.swift in Sources */,
 				BCD815AF2F69346D0028AE50 /* MainTabView.swift in Sources */,
 				BC706E5F2F8DC0E20093C0B8 /* FriendDTO.swift in Sources */,
@@ -1116,6 +1129,7 @@
 				BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */,
 				BCAAFF162F98E1D500A6B597 /* PastMonthFeedView.swift in Sources */,
 				BC8A2C012FBCBA2300073FDE /* TermsAgreementView.swift in Sources */,
+				BC89E5EB2FCE706B0078C653 /* CommentViewModel.swift in Sources */,
 				BCBCF44C2FAC5EAF0058E92D /* OAuthInfoView.swift in Sources */,
 				BCD816BF2F69A8D30028AE50 /* AppleSignInButton.swift in Sources */,
 				BCED9C222F6E625A008E47BB /* PhotoStore.swift in Sources */,
@@ -1123,6 +1137,7 @@
 				BC6676402F797A9E009CBF8D /* AlbumTimeSlotCard.swift in Sources */,
 				BCBCF43F2FAC3DC50058E92D /* NotificationView.swift in Sources */,
 				BCBCF4402FAC3DC50058E92D /* NotificationViewModel.swift in Sources */,
+				BC89E5E52FCE6ECF0078C653 /* AudioCommentPlayer.swift in Sources */,
 				BCD10DAC2F854C94004CBC29 /* GuestbookFullView.swift in Sources */,
 				BC706E5B2F8D39700093C0B8 /* FriendProfileView.swift in Sources */,
 				BCCAD5822F6ABB4B00ED71E0 /* SnapyLoginView.swift in Sources */,
@@ -1194,6 +1209,7 @@
 				BCCAD6742F6B9F7500ED71E0 /* registerCompleteView.swift in Sources */,
 				BC8A28D72FB4168A00073FDE /* ShareCardViews.swift in Sources */,
 				BC8A2C0B2FBDB21C00073FDE /* BlockService.swift in Sources */,
+				BC89E5E92FCE6EF20078C653 /* CommentRow.swift in Sources */,
 				BC706DFD2F87C1FA0093C0B8 /* AlbumCalendarView.swift in Sources */,
 				BC706F6C2F93E8E40093C0B8 /* StoryAPI.swift in Sources */,
 				BCAAFF0E2F98911100A6B597 /* CommentSheetView.swift in Sources */,

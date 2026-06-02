@@ -7,200 +7,60 @@
 
 import SwiftUI
 import Kingfisher
-import PhotosUI
 
-/// 홈 피드와 프로필 피드 상세에서 공통으로 사용하는 피드 카드
 struct FeedCardView: View {
-    let albumId: Int                 // 서버 앨범 ID (댓글 조회에 사용)
+    let albumId: Int
     let profileImageSource: ProfileImageSource
     let displayName: String
     let handle: String
     let date: String
     let photos: [FeedCardPhoto]
 
-    // 스토리 테두리 (홈에서만 사용)
     var hasStory: Bool = false
     var isStorySeen: Bool = true
 
-    // 좋아요/댓글 상태
     @Binding var isLiked: Bool
     @Binding var likeCount: Int
     @Binding var commentCount: Int
 
-    // 콜백
     var onLike: (() -> Void)? = nil
     var onProfileImageTap: (() -> Void)? = nil
     var onNameTap: (() -> Void)? = nil
 
+    @StateObject private var viewModel: FeedCardViewModel
     @State private var currentPage = 0
     @State private var showComments = false
-    @State private var heartAnimations: [HeartAnimation] = []
-    @State private var shareImage: UIImage? = nil
-    @State private var heartTapCount: Int = 0
     @State private var showLikeList = false
     @State private var showReport = false
 
+    init(albumId: Int, profileImageSource: ProfileImageSource, displayName: String,
+         handle: String, date: String, photos: [FeedCardPhoto],
+         hasStory: Bool = false, isStorySeen: Bool = true,
+         isLiked: Binding<Bool>, likeCount: Binding<Int>, commentCount: Binding<Int>,
+         onLike: (() -> Void)? = nil, onProfileImageTap: (() -> Void)? = nil, onNameTap: (() -> Void)? = nil) {
+        self.albumId = albumId
+        self.profileImageSource = profileImageSource
+        self.displayName = displayName
+        self.handle = handle
+        self.date = date
+        self.photos = photos
+        self.hasStory = hasStory
+        self.isStorySeen = isStorySeen
+        self._isLiked = isLiked
+        self._likeCount = likeCount
+        self._commentCount = commentCount
+        self.onLike = onLike
+        self.onProfileImageTap = onProfileImageTap
+        self.onNameTap = onNameTap
+        self._viewModel = StateObject(wrappedValue: FeedCardViewModel(albumId: albumId, handle: handle))
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // MARK: 프로필 헤더
-            HStack(spacing: 14) {
-                Button {
-                    onProfileImageTap?()
-                } label: {
-                    profileImage
-                        .frame(width: 36, height: 36)
-                        .clipShape(Circle())
-                        .padding(3)
-                        .overlay(
-                            Group {
-                                if hasStory {
-                                    Circle()
-                                        .stroke(
-                                            isStorySeen
-                                                ? AnyShapeStyle(Color.customGray500)
-                                                : AnyShapeStyle(
-                                                    LinearGradient(
-                                                        colors: [Color(hex: "FFC83D"), Color(hex: "FF9F1C")],
-                                                        startPoint: .topLeading,
-                                                        endPoint: .bottomTrailing
-                                                    )
-                                                ),
-                                            lineWidth: 1.5
-                                        )
-                                }
-                            }
-                        )
-                }
-
-                Button {
-                    onNameTap?()
-                } label: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(displayName)
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.white)
-                        Text(handle)
-                            .font(.system(size: 12))
-                            .foregroundColor(.customGray300)
-                    }
-                }
-
-                Spacer()
-
-                Text(date)
-                    .font(.system(size: 13))
-                    .foregroundColor(.customGray300)
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-
-            // MARK: 사진 슬라이더
-            ZStack {
-                TabView(selection: $currentPage) {
-                    ForEach(Array(photos.enumerated()), id: \.offset) { index, photo in
-                        draggablePhotoView(for: photo)
-                            .tag(index)
-                    }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-
-                ForEach(heartAnimations) { heart in
-                    Image("Heart_img")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: heart.size, height: heart.size)
-                        .rotationEffect(.degrees(heart.rotation))
-                        .scaleEffect(heart.scale)
-                        .opacity(heart.opacity)
-                        .position(heart.position)
-                }
-            }
-            .frame(height: 540)
-            .contentShape(Rectangle())
-            .onTapGesture(count: 2) { location in
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                triggerHeartAnimation(at: location)
-                if !isLiked {
-                    isLiked = true
-                    likeCount += 1
-                    onLike?()
-                }
-            }
-
-            // MARK: 페이지 인디케이터
-            HStack(spacing: 5) {
-                if photos.count > 1 {
-                    ForEach(0..<photos.count, id: \.self) { index in
-                        Circle()
-                            .fill(index == currentPage ? Color.MainYellow : Color.customGray300)
-                            .frame(width: 6, height: 6)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 6)
-            .padding(.vertical, 14)
-
-            // MARK: 액션 버튼
-            HStack(spacing: 18) {
-                HStack(spacing: 6) {
-                    Button {
-                        let willLike = !isLiked
-                        if willLike {
-                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                        }
-                        isLiked.toggle()
-                        likeCount += isLiked ? 1 : -1
-                        onLike?()
-                    } label: {
-                        Image(systemName: isLiked ? "heart.fill" : "heart")
-                            .font(.system(size: 24))
-                            .foregroundColor(isLiked ? .red : .white)
-                    }
-                    Button {
-                        showLikeList = true
-                    } label: {
-                        Text("\(likeCount)")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(.white)
-                    }
-                }
-
-                HStack(spacing: 6) {
-                    Button {
-                        showComments = true
-                    } label: {
-                        Image("Chat_icon")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                    }
-                    Text("\(commentCount)")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.white)
-                }
-
-                Button {
-                    shareFeed()
-                } label: {
-                    Image(systemName: "paperplane")
-                        .font(.system(size: 20))
-                        .foregroundColor(.white)
-                }
-
-                Spacer()
-
-                Menu {
-                    Button("신고", role: .destructive) {
-                        showReport = true
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 20))
-                        .foregroundColor(.customGray300)
-                }
-            }
-            .padding(.horizontal, 14)
-            .padding(.bottom, 20)
+            profileHeader
+            photoSlider
+            pageIndicator
+            actionButtons
 
             ImageCommentSection(albumId: albumId)
                 .padding(.horizontal, 14)
@@ -220,23 +80,139 @@ struct FeedCardView: View {
                 .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: Binding(
-            get: { shareImage != nil },
-            set: { if !$0 { shareImage = nil } }
+            get: { viewModel.shareImage != nil },
+            set: { if !$0 { viewModel.shareImage = nil } }
         )) {
-            if let image = shareImage {
-                let shareURL = buildShareURL()
-                let text = "SNAPY 피드: @\(handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(shareURL)"
+            if let image = viewModel.shareImage {
+                let text = "SNAPY 피드: @\(handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(viewModel.shareURL)"
                 ShareSheetView(items: [image, text])
             }
         }
         .onAppear {
             guard albumId > 0, commentCount == 0 else { return }
-            Task {
-                if let result = try? await CommentService.shared.fetchComments(albumId: albumId, size: 100) {
-                    commentCount = result.content.count
+            Task { commentCount = await viewModel.loadCommentCount() }
+        }
+    }
+
+    // MARK: - 프로필 헤더
+
+    private var profileHeader: some View {
+        HStack(spacing: 14) {
+            Button { onProfileImageTap?() } label: {
+                profileImage
+                    .frame(width: 36, height: 36)
+                    .clipShape(Circle())
+                    .padding(3)
+                    .overlay(storyRing)
+            }
+
+            Button { onNameTap?() } label: {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(displayName).font(.system(size: 14, weight: .bold)).foregroundColor(.white)
+                    Text(handle).font(.system(size: 12)).foregroundColor(.customGray300)
+                }
+            }
+
+            Spacer()
+            Text(date).font(.system(size: 13)).foregroundColor(.customGray300)
+        }
+        .padding(.horizontal, 14).padding(.vertical, 10)
+    }
+
+    @ViewBuilder
+    private var storyRing: some View {
+        if hasStory {
+            Circle().stroke(
+                isStorySeen
+                    ? AnyShapeStyle(Color.customGray500)
+                    : AnyShapeStyle(LinearGradient(
+                        colors: [Color(hex: "FFC83D"), Color(hex: "FF9F1C")],
+                        startPoint: .topLeading, endPoint: .bottomTrailing)),
+                lineWidth: 1.5)
+        }
+    }
+
+    // MARK: - 사진 슬라이더
+
+    private var photoSlider: some View {
+        ZStack {
+            TabView(selection: $currentPage) {
+                ForEach(Array(photos.enumerated()), id: \.offset) { index, photo in
+                    draggablePhotoView(for: photo).tag(index)
+                }
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+
+            ForEach(viewModel.heartAnimations) { heart in
+                Image("Heart_img").resizable().scaledToFit()
+                    .frame(width: heart.size, height: heart.size)
+                    .rotationEffect(.degrees(heart.rotation))
+                    .scaleEffect(heart.scale).opacity(heart.opacity)
+                    .position(heart.position)
+            }
+        }
+        .frame(height: 540).contentShape(Rectangle())
+        .onTapGesture(count: 2) { location in
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            viewModel.triggerHeartAnimation(at: location)
+            if !isLiked { isLiked = true; likeCount += 1; onLike?() }
+        }
+    }
+
+    // MARK: - 페이지 인디케이터
+
+    private var pageIndicator: some View {
+        HStack(spacing: 5) {
+            if photos.count > 1 {
+                ForEach(0..<photos.count, id: \.self) { index in
+                    Circle().fill(index == currentPage ? Color.MainYellow : Color.customGray300)
+                        .frame(width: 6, height: 6)
                 }
             }
         }
+        .frame(maxWidth: .infinity).frame(height: 6).padding(.vertical, 14)
+    }
+
+    // MARK: - 액션 버튼
+
+    private var actionButtons: some View {
+        HStack(spacing: 18) {
+            HStack(spacing: 6) {
+                Button {
+                    if !isLiked { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
+                    isLiked.toggle(); likeCount += isLiked ? 1 : -1; onLike?()
+                } label: {
+                    Image(systemName: isLiked ? "heart.fill" : "heart")
+                        .font(.system(size: 24)).foregroundColor(isLiked ? .red : .white)
+                }
+                Button { showLikeList = true } label: {
+                    Text("\(likeCount)").font(.system(size: 17, weight: .semibold)).foregroundColor(.white)
+                }
+            }
+
+            HStack(spacing: 6) {
+                Button { showComments = true } label: {
+                    Image("Chat_icon").resizable().frame(width: 24, height: 24)
+                }
+                Text("\(commentCount)").font(.system(size: 17, weight: .semibold)).foregroundColor(.white)
+            }
+
+            Button {
+                let photo = photos.indices.contains(currentPage) ? photos[currentPage] : photos.first
+                viewModel.shareFeed(profileImageSource: profileImageSource, displayName: displayName, date: date, photo: photo)
+            } label: {
+                Image(systemName: "paperplane").font(.system(size: 20)).foregroundColor(.white)
+            }
+
+            Spacer()
+
+            Menu {
+                Button("신고", role: .destructive) { showReport = true }
+            } label: {
+                Image(systemName: "ellipsis").font(.system(size: 20)).foregroundColor(.customGray300)
+            }
+        }
+        .padding(.horizontal, 14).padding(.bottom, 20)
     }
 
     // MARK: - 프로필 이미지
@@ -246,265 +222,54 @@ struct FeedCardView: View {
         switch profileImageSource {
         case .url(let urlString):
             if let url = URL(string: urlString) {
-                KFImage(url)
-                    .resizable()
+                KFImage(url).resizable()
                     .downsampling(size: CGSize(width: 72, height: 72))
-                    .loadDiskFileSynchronously()
-                    .cacheOriginalImage()
-                    .placeholder { Color.customGray500 }
-                    .fade(duration: 0.15)
-                    .scaledToFill()
-            } else {
-                defaultProfileImage
-            }
+                    .loadDiskFileSynchronously().cacheOriginalImage()
+                    .placeholder { Color.customGray500 }.fade(duration: 0.15).scaledToFill()
+            } else { defaultProfileImage }
         case .uiImage(let image):
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
+            Image(uiImage: image).resizable().scaledToFill()
         case .asset(let name):
-            Image(name)
-                .resizable()
-                .scaledToFill()
+            Image(name).resizable().scaledToFill()
         case .none:
             defaultProfileImage
         }
     }
 
     private var defaultProfileImage: some View {
-        Image("Profile_img")
-            .resizable()
-            .scaledToFill()
+        Image("Profile_img").resizable().scaledToFill()
     }
 
-    // MARK: - 사진 (back 배경 + front 드래그 PIP)
+    // MARK: - 사진
 
     @ViewBuilder
     private func draggablePhotoView(for photo: FeedCardPhoto) -> some View {
         GeometryReader { geo in
             ZStack(alignment: .topLeading) {
                 backImageView(photo.backImageUrl, asset: photo.assetName)
-                    .frame(width: geo.size.width, height: geo.size.height)
-                    .clipped()
+                    .frame(width: geo.size.width, height: geo.size.height).clipped()
 
                 if let frontUrl = photo.frontImageUrl, let url = URL(string: frontUrl) {
-                    DraggablePIP(
-                        containerSize: geo.size,
-                        pipWidth: 120,
-                        pipHeight: 160,
-                        padding: 12
-                    ) {
-                        KFImage(url)
-                            .resizable()
-                            .placeholder { Color(white: 0.2) }
-                            .fade(duration: 0.2)
-                            .scaledToFill()
+                    DraggablePIP(containerSize: geo.size, pipWidth: 120, pipHeight: 160, padding: 12) {
+                        KFImage(url).resizable().placeholder { Color(white: 0.2) }.fade(duration: 0.2).scaledToFill()
                     }
                 }
             }
         }
     }
-
-    // MARK: - 공통 back 이미지
 
     @ViewBuilder
     private func backImageView(_ urlString: String?, asset: String?) -> some View {
         if let backUrl = urlString, let url = URL(string: backUrl) {
-            KFImage(url)
-                .resizable()
+            KFImage(url).resizable()
                 .downsampling(size: CGSize(width: 390, height: 540))
-                .placeholder { Color.customGray500 }
-                .fade(duration: 0.15)
-                .scaledToFill()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipped()
+                .placeholder { Color.customGray500 }.fade(duration: 0.15)
+                .scaledToFill().frame(maxWidth: .infinity, maxHeight: .infinity).clipped()
         } else if let asset, !asset.isEmpty {
-            Image(asset)
-                .resizable()
-                .scaledToFill()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipped()
+            Image(asset).resizable().scaledToFill()
+                .frame(maxWidth: .infinity, maxHeight: .infinity).clipped()
         } else {
             Color.customGray500
-        }
-    }
-
-    // MARK: - 공유
-
-    private func buildShareURL() -> String {
-        "https://snapy.krafte.net/share/album/\(albumId)?handle=\(handle)"
-    }
-
-    private func shareFeed() {
-        let photo = photos.indices.contains(currentPage) ? photos[currentPage] : photos.first
-
-        Task {
-            let profileImg: UIImage? = {
-                switch profileImageSource {
-                case .uiImage(let image): return image
-                default: return nil
-                }
-            }()
-
-            let profileUrl: String? = {
-                switch profileImageSource {
-                case .url(let url): return url
-                default: return nil
-                }
-            }()
-
-            let downloadedProfileImg = await downloadImage(from: profileUrl)
-            let finalProfileImg = profileImg ?? downloadedProfileImg
-            async let backImg = downloadImage(from: photo?.backImageUrl)
-            async let frontImg = downloadImage(from: photo?.frontImageUrl)
-
-            let card = FeedShareCard(
-                profileImage: finalProfileImg,
-                displayName: displayName,
-                handle: handle,
-                date: date,
-                backImage: await backImg,
-                frontImage: await frontImg
-            )
-            if let image = renderShareImage(card) {
-                shareImage = image
-            }
-        }
-    }
-
-    // MARK: - 더블탭 하트
-
-    private func triggerHeartAnimation(at location: CGPoint) {
-        heartTapCount += 1
-        let size: CGFloat = 60 + CGFloat(heartTapCount - 1) * 2
-        let heart = HeartAnimation(position: location, size: min(size, 120))
-        heartAnimations.append(heart)
-
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
-            if let idx = heartAnimations.firstIndex(where: { $0.id == heart.id }) {
-                heartAnimations[idx].scale = 1.2
-                heartAnimations[idx].opacity = 1.0
-            }
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            withAnimation(.easeOut(duration: 0.3)) {
-                if let idx = heartAnimations.firstIndex(where: { $0.id == heart.id }) {
-                    heartAnimations[idx].scale = 1.6
-                    heartAnimations[idx].opacity = 0
-                }
-            }
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            heartAnimations.removeAll { $0.id == heart.id }
-        }
-    }
-}
-
-// MARK: - 공용 데이터 모델
-
-enum ProfileImageSource {
-    case url(String)
-    case uiImage(UIImage)
-    case asset(String)
-    case none
-}
-
-struct FeedCardPhoto: Identifiable {
-    let id = UUID()
-    let frontImageUrl: String?
-    let backImageUrl: String?
-    let assetName: String?
-}
-
-// MARK: - 하트 애니메이션 모델
-
-struct HeartAnimation: Identifiable {
-    let id = UUID()
-    let position: CGPoint
-    let rotation: Double = Double.random(in: -30...30)
-    var size: CGFloat = 60
-    var scale: CGFloat = 0.0
-    var opacity: Double = 0.0
-}
-
-// MARK: - 이미지 댓글 섹션
-
-struct ImageCommentSection: View {
-    let albumId: Int
-    @State private var selectedPhotoItem: PhotosPickerItem? = nil
-    @State private var imageUrls: [String] = []
-    @State private var isUploading = false
-
-    var body: some View {
-        HStack(spacing: 12) {
-            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                Circle()
-                    .stroke(Color.customGray300, style: StrokeStyle(lineWidth: 1, dash: [4]))
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        Group {
-                            if isUploading {
-                                ProgressView()
-                                    .tint(.customGray300)
-                                    .scaleEffect(0.7)
-                            } else {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 16, weight: .medium))
-                                    .foregroundColor(.customGray300)
-                            }
-                        }
-                    )
-            }
-            .disabled(isUploading)
-            .onChange(of: selectedPhotoItem) { _, newItem in
-                guard let newItem else { return }
-                Task { await uploadPickedImage(item: newItem) }
-                selectedPhotoItem = nil
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(imageUrls, id: \.self) { urlString in
-                        if let url = URL(string: urlString) {
-                            KFImage(url)
-                                .resizable()
-                                .placeholder { Color.customDarkGray }
-                                .scaledToFill()
-                                .frame(width: 44, height: 44)
-                                .clipShape(Circle())
-                        }
-                    }
-                }
-            }
-        }
-        .onAppear {
-            Task { await loadImageComments() }
-        }
-    }
-
-    private func uploadPickedImage(item: PhotosPickerItem) async {
-        guard let data = try? await item.loadTransferable(type: Data.self),
-              let image = UIImage(data: data) else { return }
-        isUploading = true
-        do {
-            _ = try await CommentService.shared.uploadImage(albumId: albumId, image: image)
-            await loadImageComments()
-        } catch {
-            print("[ImageCommentSection] 업로드 실패: \(error)")
-        }
-        isUploading = false
-    }
-
-    private func loadImageComments() async {
-        guard albumId > 0 else { return }
-        do {
-            let result = try await CommentService.shared.fetchComments(albumId: albumId, size: 20)
-            imageUrls = result.content
-                .filter { $0.type == "IMAGE" }
-                .compactMap { $0.imageUrl }
-        } catch {
-            print("[ImageCommentSection] 로드 실패: \(error)")
         }
     }
 }

@@ -78,6 +78,8 @@
 		BC89E5FC2FCE9A250078C653 /* FeedCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FB2FCE9A240078C653 /* FeedCardViewModel.swift */; };
 		BC89E5FE2FCE9A3F0078C653 /* ImageCommentSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FD2FCE9A3E0078C653 /* ImageCommentSection.swift */; };
 		BC89E6002FCEA7F10078C653 /* StreakSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5FF2FCEA7F00078C653 /* StreakSheet.swift */; };
+		BC89E6022FCEB0030078C653 /* PublishPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6012FCEB0010078C653 /* PublishPreviewViewModel.swift */; };
+		BC89E6042FCEB4460078C653 /* ContactSyncViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E6032FCEB41D0078C653 /* ContactSyncViewModel.swift */; };
 		BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */; };
 		BC8A28CE2FB322DB00073FDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CD2FB322D500073FDE /* AppDelegate.swift */; };
 		BC8A28D02FB3231400073FDE /* PushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CF2FB3231200073FDE /* PushService.swift */; };
@@ -253,6 +255,8 @@
 		BC89E5FB2FCE9A240078C653 /* FeedCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCardViewModel.swift; sourceTree = "<group>"; };
 		BC89E5FD2FCE9A3E0078C653 /* ImageCommentSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCommentSection.swift; sourceTree = "<group>"; };
 		BC89E5FF2FCEA7F00078C653 /* StreakSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakSheet.swift; sourceTree = "<group>"; };
+		BC89E6012FCEB0010078C653 /* PublishPreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishPreviewViewModel.swift; sourceTree = "<group>"; };
+		BC89E6032FCEB41D0078C653 /* ContactSyncViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSyncViewModel.swift; sourceTree = "<group>"; };
 		BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSkeletonView.swift; sourceTree = "<group>"; };
 		BC8A28CD2FB322D500073FDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC8A28CF2FB3231200073FDE /* PushService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushService.swift; sourceTree = "<group>"; };
@@ -555,6 +559,7 @@
 		BC706E662F8DFDCD0093C0B8 /* Contact */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E6032FCEB41D0078C653 /* ContactSyncViewModel.swift */,
 				BC706E672F8DFDD60093C0B8 /* ContactSyncView.swift */,
 			);
 			path = Contact;
@@ -901,6 +906,7 @@
 		BCD816CD2F6A41500028AE50 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E6012FCEB0010078C653 /* PublishPreviewViewModel.swift */,
 				BC89E5F22FCE73DC0078C653 /* Story */,
 				BC706F622F90A6C80093C0B8 /* HomeFeedEndView.swift */,
 				BC706F602F906B5E0093C0B8 /* HomeHeader.swift */,
@@ -1217,6 +1223,7 @@
 				BC706E592F8D09950093C0B8 /* FriendRequestView.swift in Sources */,
 				BC706E512F8CEA450093C0B8 /* SuggestedFriendRow.swift in Sources */,
 				BCAAFF102F98911D00A6B597 /* VoiceRecorderSheet.swift in Sources */,
+				BC89E6022FCEB0030078C653 /* PublishPreviewViewModel.swift in Sources */,
 				BCD816E52F6A437D0028AE50 /* AlbumView.swift in Sources */,
 				BCAAFF0C2F9890FF00A6B597 /* CommentModels.swift in Sources */,
 				BCD10DB02F854CDA004CBC29 /* GuestbookAddView.swift in Sources */,
@@ -1270,6 +1277,7 @@
 				BC706F692F93E8B80093C0B8 /* StoryDTO.swift in Sources */,
 				BC1DC2FE2F68CF730016A4CD /* ImagePicker.swift in Sources */,
 				BC64737D2F86B42C00FA15EA /* MoyaProvider.swift in Sources */,
+				BC89E6042FCEB4460078C653 /* ContactSyncViewModel.swift in Sources */,
 				BCD816D42F6A41810028AE50 /* CameraViewModel.swift in Sources */,
 				BC1DC2FF2F68CF730016A4CD /* AuthDTO.swift in Sources */,
 				BC706E4A2F8BF9B00093C0B8 /* ProfileDTO.swift in Sources */,

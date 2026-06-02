@@ -12,12 +12,11 @@ struct RegisterProfileImageView: View {
     var showBackButton: Bool = false
     var onBack: (() -> Void)? = nil
 
+    @StateObject private var viewModel = RegisterProfileImageViewModel()
     @State private var profileImage: UIImage?
     @State private var bannerImage: UIImage?
     @State private var showProfilePicker = false
     @State private var showBannerPicker = false
-    @State private var isLoading = false
-    @State private var errorMessage: String?
 
     var body: some View {
         ZStack {
@@ -142,7 +141,7 @@ struct RegisterProfileImageView: View {
                 }
                 .padding(.top, 24)
 
-                if let error = errorMessage {
+                if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.system(size: 14))
                         .foregroundColor(.red)
@@ -169,9 +168,12 @@ struct RegisterProfileImageView: View {
                     }
 
                     Button {
-                        upload()
+                        Task {
+                            let success = await viewModel.upload(profileImage: profileImage, bannerImage: bannerImage)
+                            if success { onNext() }
+                        }
                     } label: {
-                        Text(isLoading ? "업로드 중..." : "다음")
+                        Text(viewModel.isLoading ? "업로드 중..." : "다음")
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(Color.backgroundBlack)
                             .frame(maxWidth: .infinity)
@@ -179,8 +181,8 @@ struct RegisterProfileImageView: View {
                             .background(Color.textWhite)
                             .clipShape(RoundedRectangle(cornerRadius: 28))
                     }
-                    .disabled(isLoading || (profileImage == nil && bannerImage == nil))
-                    .opacity((profileImage != nil || bannerImage != nil) && !isLoading ? 1.0 : 0.4)
+                    .disabled(viewModel.isLoading || (profileImage == nil && bannerImage == nil))
+                    .opacity((profileImage != nil || bannerImage != nil) && !viewModel.isLoading ? 1.0 : 0.4)
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 24)
@@ -194,30 +196,6 @@ struct RegisterProfileImageView: View {
         }
     }
 
-    private func upload() {
-        isLoading = true
-        errorMessage = nil
-
-        Task {
-            do {
-                if let image = profileImage {
-                    _ = try await ProfileService.shared.updateProfileImage(image)
-                }
-                if let image = bannerImage {
-                    _ = try await ProfileService.shared.updateBackgroundImage(image)
-                }
-                await MainActor.run {
-                    isLoading = false
-                    onNext()
-                }
-            } catch {
-                await MainActor.run {
-                    errorMessage = error.localizedDescription
-                    isLoading = false
-                }
-            }
-        }
-    }
 }
 
 struct RegisterProfileImageView_Previews: PreviewProvider {

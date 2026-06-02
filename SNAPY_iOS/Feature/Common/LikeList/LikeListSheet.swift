@@ -10,10 +10,7 @@ import Kingfisher
 
 struct LikeListSheet: View {
     let albumId: Int
-    @State private var likeUsers: [AlbumLikeUserData] = []
-    @State private var isLoading = true
-    @State private var myFriends: Set<String> = []
-    @State private var requestedHandles: Set<String> = []
+    @StateObject private var viewModel = LikeListSheetViewModel()
     @State private var selectedUser: AlbumLikeUserData? = nil
     @Environment(\.dismiss) private var dismiss
 
@@ -25,11 +22,11 @@ struct LikeListSheet: View {
                 .padding(.top, 24)
                 .padding(.bottom, 14)
 
-            if isLoading {
+            if viewModel.isLoading {
                 Spacer()
                 ProgressView().tint(.white)
                 Spacer()
-            } else if likeUsers.isEmpty {
+            } else if viewModel.likeUsers.isEmpty {
                 Spacer()
                 Text("아직 좋아요가 없습니다")
                     .font(.system(size: 15))
@@ -38,7 +35,7 @@ struct LikeListSheet: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        ForEach(likeUsers) { user in
+                        ForEach(viewModel.likeUsers) { user in
                             likeRow(user: user)
                         }
                     }
@@ -46,7 +43,7 @@ struct LikeListSheet: View {
             }
         }
         .task {
-            await loadData()
+            await viewModel.loadData(albumId: albumId)
         }
         .fullScreenCover(item: $selectedUser) { user in
             NavigationStack {
@@ -63,7 +60,7 @@ struct LikeListSheet: View {
 
     @ViewBuilder
     private func likeRow(user: AlbumLikeUserData) -> some View {
-        let isFriend = myFriends.contains(user.handle)
+        let isFriend = viewModel.myFriends.contains(user.handle)
         let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
         let isMe = user.handle == myHandle
 
@@ -125,7 +122,7 @@ struct LikeListSheet: View {
                         .padding(.vertical, 6)
                         .background(Color.customDarkGray)
                         .cornerRadius(6)
-                    } else if requestedHandles.contains(user.handle) {
+                    } else if viewModel.requestedHandles.contains(user.handle) {
                         Text("요청됨")
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundColor(.customGray300)
@@ -135,14 +132,7 @@ struct LikeListSheet: View {
                             .cornerRadius(6)
                     } else {
                         Button {
-                            Task {
-                                do {
-                                    try await FriendService.shared.sendRequest(handle: user.handle)
-                                    requestedHandles.insert(user.handle)
-                                } catch {
-                                    requestedHandles.insert(user.handle)
-                                }
-                            }
+                            viewModel.sendFriendRequest(handle: user.handle)
                         } label: {
                             Text("친구 추가")
                                 .font(.system(size: 13, weight: .semibold))
@@ -162,34 +152,4 @@ struct LikeListSheet: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - 데이터 로드
-
-    private func loadData() async {
-        let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
-
-        async let likesTask: [AlbumLikeUserData] = {
-            (try? await AlbumService.shared.fetchLikes(albumId: albumId)) ?? []
-        }()
-        async let friendsTask: [FriendData] = {
-            (try? await FriendService.shared.getFriends(handle: myHandle)) ?? []
-        }()
-
-        let likes = await likesTask
-        let friends = await friendsTask
-
-        likeUsers = likes.sorted { ($0.likedAt ?? "") > ($1.likedAt ?? "") }
-        myFriends = Set(friends.map { $0.handle })
-
-        // 친구가 아닌 유저들의 요청 상태 확인
-        for user in likeUsers {
-            if user.handle != myHandle && !myFriends.contains(user.handle) {
-                if let status = try? await FriendService.shared.getRequestStatus(handle: user.handle),
-                   status == .pending {
-                    requestedHandles.insert(user.handle)
-                }
-            }
-        }
-
-        isLoading = false
-    }
 }

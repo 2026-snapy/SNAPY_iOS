@@ -123,6 +123,7 @@ struct FeedDetailCard: View {
     let profileImageUrl: String?
     let profileAsset: String
 
+    @StateObject private var viewModel = ProfileFeedGridViewModel()
     @State private var isLiked: Bool
     @State private var likeCount: Int
     @State private var commentCount = 0
@@ -157,14 +158,10 @@ struct FeedDetailCard: View {
     }
 
     private func toggleLike() {
-        let albumId = post.id
         Task {
-            do {
-                let result = try await AlbumService.shared.toggleLike(albumId: albumId)
+            if let result = await viewModel.toggleLike(albumId: post.id) {
                 isLiked = result.liked
                 likeCount = result.likeCount
-            } catch {
-                print("[FeedDetailCard] 좋아요 실패: \(error)")
             }
         }
     }

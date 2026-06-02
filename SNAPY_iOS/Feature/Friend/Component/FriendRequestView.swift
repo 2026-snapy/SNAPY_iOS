@@ -9,10 +9,8 @@ import SwiftUI
 
 struct FriendRequestView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = FriendViewModel()
-
-    @State private var requests: [ReceivedFriendRequest] = []
-    @State private var isLoading = false
+    @StateObject private var viewModel = FriendRequestViewModel()
+    @StateObject private var friendVM = FriendViewModel()
 
     var body: some View {
         ZStack {
@@ -22,7 +20,7 @@ struct FriendRequestView: View {
                 VStack(alignment: .leading, spacing: 0) {
 
                     // MARK: 요청 섹션
-                    if requests.isEmpty {
+                    if viewModel.requests.isEmpty {
                         // 요청 없음
                         VStack(spacing: 8) {
                             Text("들어온 친구 요청이 없습니다")
@@ -39,11 +37,11 @@ struct FriendRequestView: View {
                         .transition(.opacity.combined(with: .move(edge: .top)))
                     } else {
                         // 요청 있음
-                        ForEach(requests) { request in
+                        ForEach(viewModel.requests) { request in
                             FriendRequestRow(
                                 request: request,
-                                onAccept: { withAnimation(.easeInOut(duration: 0.3)) { acceptRequest(request) } },
-                                onReject: { withAnimation(.easeInOut(duration: 0.3)) { rejectRequest(request) } }
+                                onAccept: { withAnimation(.easeInOut(duration: 0.3)) { viewModel.acceptRequest(request) } },
+                                onReject: { withAnimation(.easeInOut(duration: 0.3)) { viewModel.rejectRequest(request) } }
                             )
                             .transition(.opacity.combined(with: .offset(x: -50)))
                         }
@@ -62,22 +60,22 @@ struct FriendRequestView: View {
                         .padding(.top, 20)
                         .padding(.bottom, 12)
 
-                    if viewModel.isLoading {
+                    if friendVM.isLoading {
                         FriendSkeletonList()
-                    } else if viewModel.filteredFriends.isEmpty {
+                    } else if friendVM.filteredFriends.isEmpty {
                         Text("추천 친구가 없습니다")
                             .font(.system(size: 14))
                             .foregroundColor(.customGray300)
                             .frame(maxWidth: .infinity)
                             .padding(.top, 20)
                     } else {
-                        ForEach(viewModel.filteredFriends) { friend in
+                        ForEach(friendVM.filteredFriends) { friend in
                             SuggestedFriendRow(
                                 friend: friend,
-                                onAdd: { viewModel.sendRequest(to: friend) },
-                                onCancel: { viewModel.cancelRequest(to: friend) },
-                                onHide: { withAnimation(.easeInOut(duration: 0.3)) { viewModel.hideFriend(friend) } },
-                                onStatusCheck: { handle in viewModel.refreshRequestStatus(handle: handle) }
+                                onAdd: { friendVM.sendRequest(to: friend) },
+                                onCancel: { friendVM.cancelRequest(to: friend) },
+                                onHide: { withAnimation(.easeInOut(duration: 0.3)) { friendVM.hideFriend(friend) } },
+                                onStatusCheck: { handle in friendVM.refreshRequestStatus(handle: handle) }
                             )
                             .transition(.opacity.combined(with: .offset(x: -50)))
                         }
@@ -114,44 +112,8 @@ struct FriendRequestView: View {
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .task {
-            await loadRequests()
-            await viewModel.loadRecommendedFriends()
-        }
-    }
-
-    private func loadRequests() async {
-        isLoading = true
-        do {
-            requests = try await FriendService.shared.getReceivedRequests()
-        } catch {
-            print("[FriendRequestView] 받은 요청 로드 실패: \(error)")
-        }
-        isLoading = false
-    }
-
-    private func acceptRequest(_ request: ReceivedFriendRequest) {
-        Task {
-            do {
-                try await FriendService.shared.processRequest(requestId: request.requestId, action: .approve)
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    requests.removeAll { $0.id == request.id }
-                }
-            } catch {
-                print("[FriendRequestView] 수락 실패: \(error)")
-            }
-        }
-    }
-
-    private func rejectRequest(_ request: ReceivedFriendRequest) {
-        Task {
-            do {
-                try await FriendService.shared.processRequest(requestId: request.requestId, action: .reject)
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    requests.removeAll { $0.id == request.id }
-                }
-            } catch {
-                print("[FriendRequestView] 거절 실패: \(error)")
-            }
+            await viewModel.loadRequests()
+            await friendVM.loadRecommendedFriends()
         }
     }
 }

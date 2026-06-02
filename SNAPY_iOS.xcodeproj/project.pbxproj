@@ -73,6 +73,7 @@
 		BC89E5ED2FCE73910078C653 /* StoryBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5EC2FCE738F0078C653 /* StoryBottomBar.swift */; };
 		BC89E5EF2FCE73AD0078C653 /* StoryDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5EE2FCE73AA0078C653 /* StoryDetailViewModel.swift */; };
 		BC89E5F12FCE73CC0078C653 /* StoryLikeListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5F02FCE73CA0078C653 /* StoryLikeListSheet.swift */; };
+		BC89E5F82FCE772C0078C653 /* NotificationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC89E5F72FCE772A0078C653 /* NotificationRow.swift */; };
 		BC8A27CB2FB0EA3A00073FDE /* FriendSkeletonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */; };
 		BC8A28CE2FB322DB00073FDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CD2FB322D500073FDE /* AppDelegate.swift */; };
 		BC8A28D02FB3231400073FDE /* PushService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8A28CF2FB3231200073FDE /* PushService.swift */; };
@@ -243,6 +244,7 @@
 		BC89E5EC2FCE738F0078C653 /* StoryBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryBottomBar.swift; sourceTree = "<group>"; };
 		BC89E5EE2FCE73AA0078C653 /* StoryDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryDetailViewModel.swift; sourceTree = "<group>"; };
 		BC89E5F02FCE73CA0078C653 /* StoryLikeListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryLikeListSheet.swift; sourceTree = "<group>"; };
+		BC89E5F72FCE772A0078C653 /* NotificationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRow.swift; sourceTree = "<group>"; };
 		BC8A27CA2FB0EA3800073FDE /* FriendSkeletonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSkeletonView.swift; sourceTree = "<group>"; };
 		BC8A28CD2FB322D500073FDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC8A28CF2FB3231200073FDE /* PushService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushService.swift; sourceTree = "<group>"; };
@@ -669,6 +671,7 @@
 		BCBCF43E2FAC3DC50058E92D /* Notification */ = {
 			isa = PBXGroup;
 			children = (
+				BC89E5F72FCE772A0078C653 /* NotificationRow.swift */,
 				BCBCF43C2FAC3DC50058E92D /* NotificationView.swift */,
 				BCBCF43D2FAC3DC50058E92D /* NotificationViewModel.swift */,
 			);
@@ -1160,6 +1163,7 @@
 				BC89E5F12FCE73CC0078C653 /* StoryLikeListSheet.swift in Sources */,
 				BCCAD5822F6ABB4B00ED71E0 /* SnapyLoginView.swift in Sources */,
 				BC66763E2F797A99009CBF8D /* AlbumPhotoCard.swift in Sources */,
+				BC89E5F82FCE772C0078C653 /* NotificationRow.swift in Sources */,
 				BCD816CC2F6A414D0028AE50 /* HomeViewModel.swift in Sources */,
 				BCD816D62F6A418A0028AE50 /* FriendView.swift in Sources */,
 				BCD816CA2F6A41470028AE50 /* HomeView.swift in Sources */,

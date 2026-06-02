@@ -21,6 +21,9 @@ struct GuestbookFullView: View {
     @State private var showAddView = false
     @State private var requestNewImageAfterDismiss = false
 
+    // 이미지 자세히 보기
+    @State private var viewerEntry: GuestbookEntry? = nil
+
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 20), count: 3)
 
     var body: some View {
@@ -119,6 +122,9 @@ struct GuestbookFullView: View {
                 )
             }
         }
+        .fullScreenCover(item: $viewerEntry) { entry in
+            GuestbookImageViewer(entry: entry)
+        }
     }
 
     @ViewBuilder
@@ -140,6 +146,9 @@ struct GuestbookFullView: View {
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.backgroundBlack, lineWidth: 2))
                     .offset(y: 13)
+            }
+            .onTapGesture {
+                viewerEntry = entry
             }
         }
         .aspectRatio(9/16, contentMode: .fit)
@@ -181,6 +190,100 @@ struct GuestbookFullView: View {
             Image("Profile_img")
                 .resizable()
                 .scaledToFill()
+        }
+    }
+}
+
+// MARK: - 방명록 이미지 뷰어
+
+struct GuestbookImageViewer: View {
+    let entry: GuestbookEntry
+    @Environment(\.dismiss) private var dismiss
+    @State private var scale: CGFloat = 1.0
+    @State private var lastScale: CGFloat = 1.0
+    @State private var offset: CGSize = .zero
+    @State private var lastOffset: CGSize = .zero
+    @State private var dragOffset: CGSize = .zero
+
+    var body: some View {
+        ZStack {
+            Color.black
+                .opacity(1.0 - min(abs(dragOffset.height) / 300.0, 0.5))
+                .ignoresSafeArea()
+
+            imageContent
+                .scaledToFit()
+                .scaleEffect(scale)
+                .offset(x: offset.width, y: offset.height + dragOffset.height)
+                .opacity(1.0 - min(abs(dragOffset.height) / 300.0, 0.5))
+                .gesture(
+                    MagnifyGesture()
+                        .onChanged { value in scale = lastScale * value.magnification }
+                        .onEnded { _ in
+                            lastScale = scale
+                            if scale < 1.0 {
+                                withAnimation(.spring()) {
+                                    scale = 1.0; lastScale = 1.0
+                                    offset = .zero; lastOffset = .zero
+                                }
+                            }
+                        }
+                )
+                .simultaneousGesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if scale > 1.0 {
+                                offset = CGSize(
+                                    width: lastOffset.width + value.translation.width,
+                                    height: lastOffset.height + value.translation.height
+                                )
+                            } else {
+                                dragOffset = value.translation
+                            }
+                        }
+                        .onEnded { _ in
+                            if scale > 1.0 {
+                                lastOffset = offset
+                            } else {
+                                if abs(dragOffset.height) > 120 {
+                                    dismiss()
+                                } else {
+                                    withAnimation(.spring()) { dragOffset = .zero }
+                                }
+                            }
+                        }
+                )
+                .simultaneousGesture(
+                    TapGesture(count: 2)
+                        .onEnded {
+                            withAnimation(.spring()) {
+                                if scale > 1.0 {
+                                    scale = 1.0; lastScale = 1.0
+                                    offset = .zero; lastOffset = .zero
+                                } else {
+                                    scale = 2.5; lastScale = 2.5
+                                }
+                            }
+                        }
+                )
+        }
+    }
+
+    @ViewBuilder
+    private var imageContent: some View {
+        if let uiImage = entry.image {
+            Image(uiImage: uiImage)
+                .resizable()
+        } else if let url = entry.imageUrl, let imgUrl = URL(string: url) {
+            KFImage(imgUrl)
+                .resizable()
+                .placeholder { ProgressView().tint(.white) }
+                .fade(duration: 0.2)
+        } else if let name = entry.assetName {
+            Image(name)
+                .resizable()
+        } else {
+            Color(white: 0.2)
         }
     }
 }

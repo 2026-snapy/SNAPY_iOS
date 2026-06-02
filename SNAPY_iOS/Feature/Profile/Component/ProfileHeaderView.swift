@@ -99,9 +99,11 @@ struct ProfileHeaderView: View {
                         if let story = myStory {
                             showStory = true
                             SeenStoryStore.markSeen(story.storyIds)
+                        } else {
+                            showProfileViewer = true
                         }
                     }
-                    .onLongPressGesture {
+                    .onLongPressGesture(minimumDuration: 0.2) {
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         showProfileViewer = true
                     }

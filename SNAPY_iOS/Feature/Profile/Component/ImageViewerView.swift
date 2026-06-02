@@ -14,6 +14,7 @@ struct ImageViewerView: View {
     let assetName: String
     var horizontalPadding: CGFloat = 0
     var isCircle: Bool = false          // true: 프로필(원형), false: 배너(직사각)
+    var isFreeForm: Bool = false        // true: 원본 비율 유지 (댓글 이미지 등)
 
     @Environment(\.dismiss) private var dismiss
     @State private var scale: CGFloat = 1.0
@@ -32,25 +33,25 @@ struct ImageViewerView: View {
                 if let uiImage = image {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .scaledToFill()
+                        .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
                 } else if let url = imageUrl, let imgUrl = URL(string: url) {
                     KFImage(imgUrl)
                         .resizable()
                         .placeholder { Color.customDarkGray.overlay(ProgressView().tint(.white)) }
                         .fade(duration: 0.2)
-                        .scaledToFill()
+                        .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
                 } else {
                     Image(assetName)
                         .resizable()
-                        .scaledToFill()
+                        .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
                 }
             }
             .frame(
-                width: isCircle ? 300 : nil,
-                height: isCircle ? 300 : 230
+                width: isFreeForm ? nil : (isCircle ? 300 : nil),
+                height: isFreeForm ? nil : (isCircle ? 300 : 230)
             )
-            .frame(maxWidth: isCircle ? nil : .infinity)
-            .clipShape(isCircle ? AnyShape(Circle()) : AnyShape(RoundedRectangle(cornerRadius: 16)))
+            .frame(maxWidth: .infinity, maxHeight: isFreeForm ? .infinity : nil)
+            .clipShape(isCircle ? AnyShape(Circle()) : AnyShape(RoundedRectangle(cornerRadius: isFreeForm ? 0 : 16)))
             .padding(.horizontal, horizontalPadding)
             .scaleEffect(scale)
             .offset(x: offset.width, y: offset.height + dragOffset.height)
@@ -119,20 +120,6 @@ struct ImageViewerView: View {
                     }
             )
 
-            // 닫기 버튼 (고정 위치)
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
-                    .padding(12)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            .padding(.trailing, 20)
-            .padding(.top, 60)
         }
     }
 }

@@ -60,11 +60,18 @@ final class CommentService {
     // MARK: - 이미지 댓글 작성
 
     func uploadImage(albumId: Int, image: UIImage) async throws -> CommentUploadResponseData {
-        let resized = Self.resizeImage(image, maxDimension: 1024)
-        guard let imageData = resized.jpegData(compressionQuality: 0.7) else {
+        let resized = Self.resizeImage(image, maxDimension: 800)
+        // 용량 제한 맞춤: 압축률 조절하여 1MB 이하로
+        var quality: CGFloat = 0.6
+        var imageData = resized.jpegData(compressionQuality: quality)
+        while let data = imageData, data.count > 1_000_000, quality > 0.1 {
+            quality -= 0.1
+            imageData = resized.jpegData(compressionQuality: quality)
+        }
+        guard let finalData = imageData else {
             throw CommentError.serverError("이미지 변환 실패")
         }
-        let response = try await requestWithRefresh(.uploadImage(albumId: albumId, imageData: imageData))
+        let response = try await requestWithRefresh(.uploadImage(albumId: albumId, imageData: finalData))
         guard (200..<300).contains(response.statusCode) else {
             throw CommentError.serverError("서버 오류 (\(response.statusCode))")
         }

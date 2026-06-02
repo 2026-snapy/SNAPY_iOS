@@ -43,6 +43,18 @@ final class DualCameraService: NSObject, ObservableObject {
 
     // 멀티캠 지원 여부 체크
     private func configureSession() {
+        // 기존 세션 정리
+        if let existing = multiCamSession {
+            existing.stopRunning()
+            existing.inputs.forEach { existing.removeInput($0) }
+            existing.outputs.forEach { existing.removeOutput($0) }
+        }
+        multiCamSession = nil
+        backConnection = nil
+        frontConnection = nil
+        backCameraOutput = AVCapturePhotoOutput()
+        frontCameraOutput = AVCapturePhotoOutput()
+
         guard AVCaptureMultiCamSession.isMultiCamSupported else {
             print("MultiCam not supported, falling back to single camera")
             configureSingleCameraSession()
@@ -180,10 +192,17 @@ final class DualCameraService: NSObject, ObservableObject {
             self.capturedFrontPhoto = nil
             self.pendingCaptures = 2
 
-            // MainActor에서 delegate 전달 - ObservableObject의 @MainActor 요구사항
-            DispatchQueue.main.async {
-                self.backCameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
-                self.frontCameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+            let backOutput = self.backCameraOutput
+            let frontOutput = self.frontCameraOutput
+
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self,
+                      let session = self.multiCamSession, session.isRunning else {
+                    completion(nil, nil)
+                    return
+                }
+                backOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+                frontOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
             }
         }
     }

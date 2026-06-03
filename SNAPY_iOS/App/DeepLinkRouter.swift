@@ -20,6 +20,7 @@ final class DeepLinkRouter: ObservableObject {
     ///                 messiofcoding://album/329
     ///                 messiofcoding://profile/kwonjh
     func handleURL(_ url: URL) {
+        print("[DeepLink] handleURL 호출: \(url.absoluteString)")
         // host가 path 역할을 하는 경우 (messiofcoding://story/132)
         // → host = "story", path = "/132"
         // host가 도메인인 경우 (https://snapy.krafte.net/share/album/138)
@@ -43,6 +44,7 @@ final class DeepLinkRouter: ObservableObject {
            let id = Int(pathComponents[idx + 1]) {
             let handle = URLComponents(string: url.absoluteString)?
                 .queryItems?.first(where: { $0.name == "handle" })?.value
+            print("[DeepLink] 앨범 딥링크 → albumId=\(id), handle=\(handle ?? "nil")")
             pendingDestination = .album(id: id, handle: handle)
             return
         }

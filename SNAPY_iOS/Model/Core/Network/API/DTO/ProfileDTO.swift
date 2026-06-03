@@ -19,6 +19,16 @@ struct ProfileData: Codable {
     let maxStreak: Int?
     let blocked: Bool?
     let blockedBy: Bool?
+    let pastAlbums: [ProfilePastAlbum]?
+}
+
+struct ProfilePastAlbum: Codable, Identifiable {
+    let year: Int
+    let month: Int
+    let thumbnailUrl: String?
+
+    var id: Int { year * 100 + month }
+    var displayText: String { "\(month)월" }
 }
 
 typealias ProfileResponse = BaseResponse<ProfileData>

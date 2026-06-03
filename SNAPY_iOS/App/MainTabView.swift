@@ -190,68 +190,98 @@ struct DeepLinkAlbumView: View {
     @State private var isLiked = false
     @State private var likeCount = 0
     @State private var commentCount = 0
+    @State private var profileName: String = ""
+    @State private var profileImageUrl: String? = nil
+    @State private var showProfile = false
 
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color.black.ignoresSafeArea()
 
-            if isLoading {
-                VStack(spacing: 16) {
-                    ProgressView()
-                    Text("불러오는 중...")
-                        .foregroundColor(.customGray300)
-                }
-            } else if let error = errorMessage {
-                VStack(spacing: 16) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 40))
-                        .foregroundColor(.customGray300)
-                    Text(error)
-                        .foregroundColor(.customGray300)
-                    Button("닫기") { dismiss() }
-                        .foregroundColor(.white)
-                        .padding(.top, 12)
-                }
-            } else if let album = albumData {
-                ZStack(alignment: .topLeading) {
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            Spacer().frame(height: 56)
+                if isLoading {
+                    VStack(spacing: 16) {
+                        ProgressView()
+                        Text("불러오는 중...")
+                            .foregroundColor(.customGray300)
+                    }
+                } else if let error = errorMessage {
+                    VStack(spacing: 16) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.system(size: 40))
+                            .foregroundColor(.customGray300)
+                        Text(error)
+                            .foregroundColor(.customGray300)
+                        Button("닫기") { dismiss() }
+                            .foregroundColor(.white)
+                            .padding(.top, 12)
+                    }
+                } else if let album = albumData {
+                    ZStack(alignment: .topLeading) {
+                        ScrollView {
+                            VStack(spacing: 0) {
+                                Spacer().frame(height: 56)
 
-                            FeedCardView(
-                                albumId: album.albumId,
-                                profileImageSource: .asset("Profile_img"),
-                                displayName: "",
-                                handle: handle ?? "",
-                                date: album.albumDate,
-                                photos: album.photos.map { photo in
-                                    FeedCardPhoto(
-                                        frontImageUrl: photo.frontImageUrl,
-                                        backImageUrl: photo.backImageUrl,
-                                        assetName: nil
-                                    )
-                                },
-                                isLiked: $isLiked,
-                                likeCount: $likeCount,
-                                commentCount: $commentCount
-                            )
+                                FeedCardView(
+                                    albumId: album.albumId,
+                                    profileImageSource: profileImageSource,
+                                    displayName: profileName,
+                                    handle: handle ?? "",
+                                    date: album.albumDate,
+                                    photos: album.photos.map { photo in
+                                        FeedCardPhoto(
+                                            frontImageUrl: photo.frontImageUrl,
+                                            backImageUrl: photo.backImageUrl,
+                                            assetName: nil
+                                        )
+                                    },
+                                    isLiked: $isLiked,
+                                    likeCount: $likeCount,
+                                    commentCount: $commentCount,
+                                    onProfileImageTap: { navigateToProfile() },
+                                    onNameTap: { navigateToProfile() }
+                                )
+                            }
                         }
-                    }
 
-                    // 뒤로가기 버튼
-                    Button { dismiss() } label: {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 22, weight: .semibold))
-                            .foregroundStyle(Color.primary)
-                            .padding(2)
+                        // 뒤로가기 버튼
+                        Button { dismiss() } label: {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 22, weight: .semibold))
+                                .foregroundStyle(Color.primary)
+                                .padding(2)
+                        }
+                        .buttonStyle(.glass)
+                        .padding(.leading, 16)
+                        .padding(.top, 12)
                     }
-                    .buttonStyle(.glass)
-                    .padding(.leading, 16)
-                    .padding(.top, 12)
+                }
+            }
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(isPresented: $showProfile) {
+                if let handle, !handle.isEmpty {
+                    FriendProfileView(name: profileName, handle: handle, profileImageUrl: profileImageUrl)
                 }
             }
         }
         .task {
+            print("[DeepLinkAlbumView] .task 시작 — albumId=\(albumId), handle=\(handle ?? "nil")")
+
+            // 프로필 로드 (handle이 있으면)
+            if let handle, !handle.isEmpty {
+                do {
+                    let profile = try await ProfileService.shared.fetchUserProfile(handle: handle)
+                    profileName = profile.username
+                    profileImageUrl = profile.profileImageUrl
+                    print("[DeepLinkAlbumView] 프로필 로드 성공 — name=\(profile.username), imgUrl=\(profile.profileImageUrl ?? "nil")")
+                } catch {
+                    print("[DeepLinkAlbumView] 프로필 로드 실패: \(error)")
+                }
+            } else {
+                print("[DeepLinkAlbumView] handle이 nil 또는 비어있음 — 프로필 로드 스킵")
+            }
+
+            // 앨범 로드
             do {
                 let data = try await AlbumService.shared.fetchAlbumAsDaily(albumId: albumId)
                 isLiked = data.liked ?? false
@@ -262,6 +292,18 @@ struct DeepLinkAlbumView: View {
             }
             isLoading = false
         }
+    }
+
+    private var profileImageSource: ProfileImageSource {
+        if let url = profileImageUrl, !url.isEmpty {
+            return .url(url)
+        }
+        return .asset("Profile_img")
+    }
+
+    private func navigateToProfile() {
+        guard let handle, !handle.isEmpty else { return }
+        showProfile = true
     }
 }
 

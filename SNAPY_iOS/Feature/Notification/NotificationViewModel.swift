@@ -234,19 +234,40 @@ final class NotificationViewModel: ObservableObject {
     private func loadAndShowFeed(albumId: Int, handle: String, name: String, profileUrl: String?) {
         Task {
             do {
-                let detail = try await AlbumService.shared.fetchAlbumAsDaily(albumId: albumId)
+                // 앨범 로드 + 프로필 정보 보충 병렬 처리
+                async let albumTask = AlbumService.shared.fetchAlbumAsDaily(albumId: albumId)
+                async let profileTask = loadProfileIfNeeded(handle: handle, name: name, profileUrl: profileUrl)
+
+                let detail = try await albumTask
+                let (resolvedName, resolvedProfileUrl) = await profileTask
+
                 guard !detail.photos.isEmpty else { return }
                 feedPost = FeedPost(
                     id: albumId, thumbnailImage: detail.photos.first?.backImageUrl ?? "",
                     photos: detail.photos, date: detail.albumDate, rawDate: detail.albumDate,
                     isLiked: detail.liked ?? false, likeCount: detail.likeCount ?? 0
                 )
-                feedHandle = handle; feedName = name; feedProfileUrl = profileUrl
+                feedHandle = handle
+                feedName = resolvedName
+                feedProfileUrl = resolvedProfileUrl
                 showFeedDetail = true
             } catch {
                 expiredAlertMessage = "게시물을 찾을 수 없습니다."
                 showExpiredAlert = true
             }
+        }
+    }
+
+    private func loadProfileIfNeeded(handle: String, name: String, profileUrl: String?) async -> (String, String?) {
+        // 프로필 URL이 이미 있고 이름도 유효하면 그대로 사용
+        if profileUrl != nil && !name.isEmpty && name != "나" {
+            return (name, profileUrl)
+        }
+        do {
+            let profile = try await ProfileService.shared.fetchUserProfile(handle: handle)
+            return (profile.username, profile.profileImageUrl)
+        } catch {
+            return (name, profileUrl)
         }
     }
 

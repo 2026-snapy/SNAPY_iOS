@@ -232,7 +232,8 @@ struct DeepLinkAlbumView: View {
                                         FeedCardPhoto(
                                             frontImageUrl: photo.frontImageUrl,
                                             backImageUrl: photo.backImageUrl,
-                                            assetName: nil
+                                            assetName: nil,
+                                            type: photo.type
                                         )
                                     },
                                     isLiked: $isLiked,

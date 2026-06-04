@@ -36,7 +36,7 @@ struct HomeFeedCard: View {
             handle: post.handle,
             date: post.date,
             photos: post.photos.map {
-                FeedCardPhoto(frontImageUrl: $0.frontImageUrl, backImageUrl: $0.backImageUrl, assetName: $0.assetName)
+                FeedCardPhoto(frontImageUrl: $0.frontImageUrl, backImageUrl: $0.backImageUrl, assetName: $0.assetName, type: $0.type)
             },
             hasStory: post.hasStory,
             isStorySeen: post.isStorySeen,

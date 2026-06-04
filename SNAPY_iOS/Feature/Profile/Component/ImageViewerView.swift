@@ -13,82 +13,91 @@ struct ImageViewerView: View {
     let imageUrl: String?
     let assetName: String
     var horizontalPadding: CGFloat = 0
-    var isCircle: Bool = false          // true: 프로필(원형), false: 배너(직사각)
-    var isFreeForm: Bool = false        // true: 원본 비율 유지 (댓글 이미지 등)
+    var isCircle: Bool = false
+    var isFreeForm: Bool = false
 
     @Environment(\.dismiss) private var dismiss
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
-    @State private var dragOffset: CGSize = .zero  // dismiss용 드래그
+    @State private var dragOffset: CGSize = .zero
+    @State private var imageFrame: CGSize = .zero
+    @State private var screenSize: CGSize = .zero
+
+    private let maxZoom: CGFloat = 5.0
 
     var body: some View {
-        ZStack {
-            Color.black.opacity(1.0 - min(abs(dragOffset.height) / 300.0, 0.5))
-                .ignoresSafeArea()
+        GeometryReader { screen in
+            ZStack {
+                Color.black.opacity(1.0 - min(abs(dragOffset.height) / 300.0, 0.5))
+                    .ignoresSafeArea()
 
-            // 확대/축소 + 드래그 가능한 이미지
-            Group {
-                if let uiImage = image {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
-                } else if let url = imageUrl, let imgUrl = URL(string: url) {
-                    KFImage(imgUrl)
-                        .resizable()
-                        .placeholder { Color.customDarkGray.overlay(ProgressView().tint(.white)) }
-                        .fade(duration: 0.2)
-                        .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
-                } else {
-                    Image(assetName)
-                        .resizable()
-                        .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
+                Group {
+                    if let uiImage = image {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
+                    } else if let url = imageUrl, let imgUrl = URL(string: url) {
+                        KFImage(imgUrl)
+                            .resizable()
+                            .placeholder { Color.customDarkGray.overlay(ProgressView().tint(.white)) }
+                            .fade(duration: 0.2)
+                            .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
+                    } else {
+                        Image(assetName)
+                            .resizable()
+                            .aspectRatio(contentMode: isFreeForm ? .fit : .fill)
+                    }
                 }
+                .frame(
+                    width: isFreeForm ? nil : (isCircle ? 300 : nil),
+                    height: isFreeForm ? nil : (isCircle ? 300 : 230)
+                )
+                .frame(maxWidth: .infinity, maxHeight: isFreeForm ? .infinity : nil)
+                .clipShape(isCircle ? AnyShape(Circle()) : AnyShape(RoundedRectangle(cornerRadius: isFreeForm ? 0 : 16)))
+                .padding(.horizontal, horizontalPadding)
+                .background(
+                    GeometryReader { geo in
+                        Color.clear.onAppear { imageFrame = geo.size }
+                    }
+                )
+                .scaleEffect(scale)
+                .offset(x: offset.width, y: offset.height + dragOffset.height)
+                .opacity(1.0 - min(abs(dragOffset.height) / 300.0, 0.5))
+
             }
-            .frame(
-                width: isFreeForm ? nil : (isCircle ? 300 : nil),
-                height: isFreeForm ? nil : (isCircle ? 300 : 230)
-            )
-            .frame(maxWidth: .infinity, maxHeight: isFreeForm ? .infinity : nil)
-            .clipShape(isCircle ? AnyShape(Circle()) : AnyShape(RoundedRectangle(cornerRadius: isFreeForm ? 0 : 16)))
-            .padding(.horizontal, horizontalPadding)
-            .scaleEffect(scale)
-            .offset(x: offset.width, y: offset.height + dragOffset.height)
-            .opacity(1.0 - min(abs(dragOffset.height) / 300.0, 0.5))
+            .onAppear { screenSize = screen.size }
             .gesture(
-                // 핀치 줌
                 MagnifyGesture()
                     .onChanged { value in
-                        scale = lastScale * value.magnification
+                        let newScale = min(lastScale * value.magnification, maxZoom)
+                        scale = newScale
                     }
                     .onEnded { _ in
-                        lastScale = scale
-                        // 최소 1배
                         if scale < 1.0 {
-                            withAnimation(.spring()) {
-                                scale = 1.0
-                                lastScale = 1.0
-                                offset = .zero
-                                lastOffset = .zero
-                            }
+                            resetZoom()
+                        } else {
+                            lastScale = scale
+                            clampOffset()
                         }
                     }
             )
             .simultaneousGesture(
-                // 드래그 (확대 시 이동 / 1배율 시 dismiss)
                 DragGesture()
                     .onChanged { value in
                         if scale > 1.0 {
-                            offset = CGSize(
+                            let rawOffset = CGSize(
                                 width: lastOffset.width + value.translation.width,
                                 height: lastOffset.height + value.translation.height
                             )
+                            // 드래그 중 실시간 경계 제한
+                            offset = clampedOffset(rawOffset)
                         } else {
                             dragOffset = value.translation
                         }
                     }
-                    .onEnded { value in
+                    .onEnded { _ in
                         if scale > 1.0 {
                             lastOffset = offset
                         } else {
@@ -103,23 +112,58 @@ struct ImageViewerView: View {
                     }
             )
             .simultaneousGesture(
-                // 더블 탭 줌
                 TapGesture(count: 2)
                     .onEnded {
-                        withAnimation(.spring()) {
-                            if scale > 1.0 {
-                                scale = 1.0
-                                lastScale = 1.0
-                                offset = .zero
-                                lastOffset = .zero
-                            } else {
+                        if scale > 1.0 {
+                            resetZoom()
+                        } else {
+                            withAnimation(.spring()) {
                                 scale = 2
                                 lastScale = 2
                             }
                         }
                     }
             )
-
         }
+    }
+
+    // MARK: - 줌 리셋
+
+    private func resetZoom() {
+        withAnimation(.spring()) {
+            scale = 1.0
+            lastScale = 1.0
+            offset = .zero
+            lastOffset = .zero
+        }
+    }
+
+    // MARK: - 경계 제한 (값 반환)
+
+    private func clampedOffset(_ raw: CGSize) -> CGSize {
+        let imgW = imageFrame.width > 0 ? imageFrame.width : screenSize.width
+        let imgH = imageFrame.height > 0 ? imageFrame.height : screenSize.height
+        let scrW = screenSize.width > 0 ? screenSize.width : UIScreen.main.bounds.width
+        let scrH = screenSize.height > 0 ? screenSize.height : UIScreen.main.bounds.height
+
+        let maxX = max((imgW * scale - scrW) / 2, 0)
+        let maxY = max((imgH * scale - scrH) / 2, 0)
+
+        return CGSize(
+            width: min(max(raw.width, -maxX), maxX),
+            height: min(max(raw.height, -maxY), maxY)
+        )
+    }
+
+    // MARK: - 현재 offset 클램프 (애니메이션)
+
+    private func clampOffset() {
+        let clamped = clampedOffset(offset)
+        if clamped != offset {
+            withAnimation(.spring()) {
+                offset = clamped
+            }
+        }
+        lastOffset = clamped
     }
 }

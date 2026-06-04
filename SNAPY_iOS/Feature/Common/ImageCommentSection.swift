@@ -14,6 +14,7 @@ struct ImageCommentSection: View {
     @State private var selectedPhotoItem: PhotosPickerItem? = nil
     @State private var imageUrls: [String] = []
     @State private var isUploading = false
+    @State private var selectedImageUrl: IdentifiableString? = nil
 
     var body: some View {
         HStack(spacing: 12) {
@@ -46,12 +47,16 @@ struct ImageCommentSection: View {
                 HStack(spacing: 12) {
                     ForEach(imageUrls, id: \.self) { urlString in
                         if let url = URL(string: urlString) {
-                            KFImage(url)
-                                .resizable()
-                                .placeholder { Color.customDarkGray }
-                                .scaledToFill()
-                                .frame(width: 44, height: 44)
-                                .clipShape(Circle())
+                            Button {
+                                selectedImageUrl = IdentifiableString(value: urlString)
+                            } label: {
+                                KFImage(url)
+                                    .resizable()
+                                    .placeholder { Color.customDarkGray }
+                                    .scaledToFill()
+                                    .frame(width: 44, height: 44)
+                                    .clipShape(Circle())
+                            }
                         }
                     }
                 }
@@ -59,6 +64,9 @@ struct ImageCommentSection: View {
         }
         .onAppear {
             Task { await loadImageComments() }
+        }
+        .fullScreenCover(item: $selectedImageUrl) { item in
+            CommentImageViewer(imageUrl: item.value)
         }
     }
 

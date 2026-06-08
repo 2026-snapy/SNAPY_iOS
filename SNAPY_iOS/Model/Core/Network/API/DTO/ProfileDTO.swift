@@ -20,6 +20,16 @@ struct ProfileData: Codable {
     let blocked: Bool?
     let blockedBy: Bool?
     let pastAlbums: [ProfilePastAlbum]?
+    let feedVisibility: String?
+    let pastAlbumVisibility: String?
+
+    var feedVisibilityEnum: Visibility {
+        Visibility(rawValue: feedVisibility ?? "") ?? .friendsOnly
+    }
+
+    var pastAlbumVisibilityEnum: Visibility {
+        Visibility(rawValue: pastAlbumVisibility ?? "") ?? .friendsOnly
+    }
 }
 
 struct ProfilePastAlbum: Codable, Identifiable {

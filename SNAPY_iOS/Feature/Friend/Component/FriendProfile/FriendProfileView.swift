@@ -82,6 +82,10 @@ struct FriendProfileView: View {
                         blockedBySection
                     } else if viewModel.currentFriend {
                         friendContentSection
+                    } else if viewModel.feedVisibility == .onlyMe && !viewModel.isLoading {
+                        privateSection
+                    } else if viewModel.feedVisibility == .publicAll && !viewModel.isLoading {
+                        friendContentSection
                     } else if !viewModel.isLoading {
                         nonFriendSection
                     }
@@ -390,6 +394,26 @@ struct FriendProfileView: View {
                 FriendFeedSection(viewModel: viewModel)
             }
         }
+    }
+
+    // MARK: - 비공개 안내
+
+    @ViewBuilder
+    private var privateSection: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "lock.fill")
+                .font(.system(size: 40))
+                .foregroundColor(.customGray300)
+                .padding(.bottom, 8)
+            Text("비공개 프로필입니다")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.textWhite)
+            Text("이 사용자의 콘텐츠를 볼 수 없습니다.")
+                .font(.system(size: 14))
+                .foregroundColor(.customGray300)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 80)
     }
 
     // MARK: - 비친구 안내

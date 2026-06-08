@@ -28,6 +28,8 @@ final class FriendProfileViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var isBlocked = false
     @Published var isBlockedBy = false
+    @Published var feedVisibility: Visibility = .friendsOnly
+    @Published var pastAlbumVisibility: Visibility = .friendsOnly
 
     @Published var feedPosts: [FeedPost] = []
     @Published var friendStory: StoryItem? = nil
@@ -62,7 +64,7 @@ final class FriendProfileViewModel: ObservableObject {
         await loadFriendCount()
         await loadMutualFriends()
 
-        if currentFriend {
+        if currentFriend || feedVisibility == .publicAll {
             await loadFriendFeed()
         }
 
@@ -82,6 +84,8 @@ final class FriendProfileViewModel: ObservableObject {
             maxStreak = profile.maxStreak ?? 0
             isBlocked = profile.blocked ?? false
             isBlockedBy = profile.blockedBy ?? false
+            feedVisibility = profile.feedVisibilityEnum
+            pastAlbumVisibility = profile.pastAlbumVisibilityEnum
             let albums = (profile.pastAlbums ?? []).sorted { ($0.year * 100 + $0.month) > ($1.year * 100 + $1.month) }
             pastAlbums = albums
             pastMonths = albums.map { PastMonthSummary(id: $0.id, month: $0.month, year: $0.year, thumbnailUrl: $0.thumbnailUrl) }

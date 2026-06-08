@@ -148,7 +148,7 @@ struct FeedDetailCard: View {
             handle: handle,
             date: post.date,
             photos: post.photos.map {
-                FeedCardPhoto(frontImageUrl: $0.frontImageUrl, backImageUrl: $0.backImageUrl, assetName: nil)
+                FeedCardPhoto(frontImageUrl: $0.frontImageUrl, backImageUrl: $0.backImageUrl, assetName: nil, type: $0.type)
             },
             isLiked: $isLiked,
             likeCount: $likeCount,

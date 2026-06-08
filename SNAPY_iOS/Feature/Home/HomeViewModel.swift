@@ -17,6 +17,14 @@ struct FeedPhoto: Identifiable {
     let frontImageUrl: String?   // 전면 카메라 (PIP)
     let backImageUrl: String?    // 후면 카메라 (배경)
     let assetName: String?       // 로컬 에셋 이름 (mock용)
+    let type: String?            // "MORNING", "LUNCH", "DINNER", "FREE_1", "FREE_2"
+
+    init(frontImageUrl: String?, backImageUrl: String?, assetName: String?, type: String? = nil) {
+        self.frontImageUrl = frontImageUrl
+        self.backImageUrl = backImageUrl
+        self.assetName = assetName
+        self.type = type
+    }
 }
 
 struct HomeFeedPost: Identifiable {
@@ -382,7 +390,8 @@ final class HomeViewModel: ObservableObject {
                         FeedPhoto(
                             frontImageUrl: photo.frontImageUrl,
                             backImageUrl: photo.backImageUrl,
-                            assetName: nil
+                            assetName: nil,
+                            type: photo.type
                         )
                     },
                     isLiked: item.liked ?? false,
@@ -501,7 +510,8 @@ final class HomeViewModel: ObservableObject {
             guard photo.backImageUrl != nil || photo.frontImageUrl != nil else { return nil }
             return FeedPhoto(frontImageUrl: photo.frontImageUrl,
                              backImageUrl: photo.backImageUrl,
-                             assetName: nil)
+                             assetName: nil,
+                             type: photo.type)
         }
         guard !feedPhotos.isEmpty else { return }
 

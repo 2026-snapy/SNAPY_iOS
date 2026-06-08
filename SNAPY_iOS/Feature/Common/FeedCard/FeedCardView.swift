@@ -254,6 +254,23 @@ struct FeedCardView: View {
                         KFImage(url).resizable().placeholder { Color(white: 0.2) }.fade(duration: 0.2).scaledToFill()
                     }
                 }
+
+                // 시간대 라벨
+                if let label = photo.mealLabel {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Text(label)
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(.ultraThinMaterial, in: Capsule())
+                            .padding(12)
+                        }
+                    }
+                }
             }
         }
     }

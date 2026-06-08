@@ -39,6 +39,7 @@ final class SettingsViewModel: ObservableObject {
 
         Task {
             do {
+                print("[Settings] 피드 공개 범위 변경 요청: \(visibility.rawValue)")
                 try await ProfileService.shared.updateFeedVisibility(visibility)
             } catch {
                 print("[Settings] 피드 공개 범위 변경 실패: \(error)")

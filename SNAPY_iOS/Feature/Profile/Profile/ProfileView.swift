@@ -77,7 +77,9 @@ struct ProfileView: View {
                                     streakCount: viewModel.streakCount
                                 )
                                 if let image = renderShareImage(card) {
-                                    shareImage = image
+                                    let shareURL = "https://snapy.krafte.net/share/profile/\(viewModel.handle)"
+                                    let text = "SNAPY 프로필: @\(viewModel.handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(shareURL)"
+                                    presentShareSheet(items: [image, text])
                                 }
                             }
                         } label: {
@@ -110,16 +112,6 @@ struct ProfileView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: .didPublishAlbum)) { _ in
                 Task { await viewModel.loadFeed() }
-            }
-            .sheet(isPresented: Binding(
-                get: { shareImage != nil },
-                set: { if !$0 { shareImage = nil } }
-            )) {
-                if let image = shareImage {
-                    let shareURL = "https://snapy.krafte.net/share/profile/\(viewModel.handle)"
-                    let text = "SNAPY 프로필: @\(viewModel.handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(shareURL)"
-                    ShareSheetView(items: [image, text])
-                }
             }
         }
     }

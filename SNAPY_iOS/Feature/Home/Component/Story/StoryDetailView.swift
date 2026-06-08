@@ -88,16 +88,6 @@ struct StoryDetailView: View {
             .onChange(of: viewModel.currentImageIndex) { _, _ in
                 viewModel.loadLikesForMyStory()
             }
-            .sheet(isPresented: Binding(
-                get: { viewModel.shareImage != nil },
-                set: { if !$0 { viewModel.shareImage = nil; viewModel.isPaused = false } }
-            )) {
-                if let image = viewModel.shareImage {
-                    let shareURL = "https://snapy.krafte.net/share/story/\(viewModel.currentStory.storyId)"
-                    let text = "SNAPY 스토리: @\(viewModel.currentStory.username)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(shareURL)"
-                    ShareSheetView(items: [image, text])
-                }
-            }
             .navigationDestination(isPresented: Binding(
                 get: { navProfileHandle != nil },
                 set: { if !$0 { navProfileHandle = nil; viewModel.startTimer() } }

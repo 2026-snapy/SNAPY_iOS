@@ -324,3 +324,19 @@ struct ShareSheetView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
+
+// MARK: - UIKit 직접 present 방식 (작은 화면 호환)
+
+func presentShareSheet(items: [Any], onDismiss: (() -> Void)? = nil) {
+    guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+          let rootVC = windowScene.windows.first?.rootViewController else { return }
+    // 최상위 VC 찾기
+    var topVC = rootVC
+    while let presented = topVC.presentedViewController { topVC = presented }
+
+    let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
+    activityVC.completionWithItemsHandler = { _, _, _, _ in
+        onDismiss?()
+    }
+    topVC.present(activityVC, animated: true)
+}

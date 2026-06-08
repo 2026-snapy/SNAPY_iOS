@@ -84,15 +84,6 @@ struct FeedCardView: View {
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
-        .sheet(isPresented: Binding(
-            get: { viewModel.shareImage != nil },
-            set: { if !$0 { viewModel.shareImage = nil } }
-        )) {
-            if let image = viewModel.shareImage {
-                let text = "SNAPY 피드: @\(handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(viewModel.shareURL)"
-                ShareSheetView(items: [image, text])
-            }
-        }
         .onAppear {
             guard albumId > 0, commentCount == 0 else { return }
             Task { commentCount = await viewModel.loadCommentCount() }

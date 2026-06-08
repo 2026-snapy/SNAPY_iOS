@@ -33,6 +33,11 @@ struct FeedCardView: View {
     @State private var showLikeList = false
     @State private var showReport = false
 
+    private var isMyPost: Bool {
+        let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
+        return !myHandle.isEmpty && myHandle == handle
+    }
+
     init(albumId: Int, profileImageSource: ProfileImageSource, displayName: String,
          handle: String, date: String, photos: [FeedCardPhoto],
          hasStory: Bool = false, isStorySeen: Bool = true,
@@ -206,10 +211,13 @@ struct FeedCardView: View {
 
             Spacer()
 
-            Menu {
-                Button("신고", role: .destructive) { showReport = true }
-            } label: {
-                Image(systemName: "ellipsis").font(.system(size: 20)).foregroundColor(.customGray300)
+            // TODO: 임시 처리 — 내 피드에서는 메뉴 숨김. 피드 비활성화 API 추가 시 메뉴에 비활성화 옵션 넣을 예정
+            if !isMyPost {
+                Menu {
+                    Button("신고", role: .destructive) { showReport = true }
+                } label: {
+                    Image(systemName: "ellipsis").font(.system(size: 20)).foregroundColor(.customGray300)
+                }
             }
         }
         .padding(.horizontal, 14).padding(.bottom, 20)

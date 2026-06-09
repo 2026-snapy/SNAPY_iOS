@@ -7,20 +7,34 @@
 
 import SwiftUI
 
+// MARK: - 네비게이션 목적지
+
+enum HomeNavDestination: Hashable, Identifiable {
+    case profile(handle: String, name: String, imageUrl: String?)
+
+    var id: String {
+        switch self {
+        case .profile(let handle, _, _): return "profile_\(handle)"
+        }
+    }
+}
+
 struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
 
-    // 스토리 전체화면 표시용 (피드에서 탭 — 해당 유저 스토리만)
+    // 프로필 이동
+    @State private var profileDestination: HomeNavDestination? = nil
+    // 스토리 전체화면 표시용
     @State private var singleStoryItem: StoryItem? = nil
-    // 프로필 네비게이션용
-    @State private var profileNavHandle: String? = nil
-    @State private var profileNavName: String = ""
-    @State private var profileNavImage: String? = nil
     // Pull-to-refresh
     @State private var isRefreshing = false
     // 알림
     @State private var showNotification = false
     @State private var unreadNotificationCount: Int64 = 0
+    // 게시하기
+    @State private var showPublish = false
+    // 최초 로드 여부
+    @State private var hasLoaded = false
 
     var body: some View {
         NavigationStack {
@@ -91,7 +105,6 @@ struct HomeView: View {
                         GeometryReader { geo in
                             Color.clear
                                 .onChange(of: geo.frame(in: .global).minY) { _, newValue in
-                                    // 헤더 높이(~41) + 여유 → 70pt 이상 당기면 새로고침
                                     if newValue > 140 && !isRefreshing {
                                         triggerRefresh()
                                     }
@@ -101,7 +114,9 @@ struct HomeView: View {
                 }
                 // 홈 화면 최초 진입 시 로드
                 .onAppear {
-                    // myHandle이 없으면 프로필에서 가져와서 저장
+                    guard !hasLoaded else { return }
+                    hasLoaded = true
+
                     if UserDefaults.standard.string(forKey: "myHandle") == nil {
                         Task {
                             if let profile = try? await ProfileService.shared.fetchMyProfile() {
@@ -109,7 +124,6 @@ struct HomeView: View {
                             }
                         }
                     }
-                    // 디바이스 토큰 서버 등록
                     if let deviceToken = UserDefaults.standard.string(forKey: "deviceToken") {
                         Task { await PushService.shared.registerToken(deviceToken) }
                     }
@@ -124,7 +138,6 @@ struct HomeView: View {
                 }
                 .onChange(of: showNotification) { _, isShowing in
                     if !isShowing {
-                        // 알림 화면에서 돌아오면 카운트 갱신
                         Task {
                             unreadNotificationCount = (try? await NotificationService.shared.getUnreadCount()) ?? 0
                         }
@@ -132,8 +145,8 @@ struct HomeView: View {
                 }
 
                 // 게시 버튼
-                NavigationLink {
-                    PublishPreviewView(homeViewModel: viewModel)
+                Button {
+                    showPublish = true
                 } label: {
                     Image(systemName: "paperplane.fill")
                         .font(.system(size: 20))
@@ -145,17 +158,20 @@ struct HomeView: View {
                 .padding(.trailing, 14)
                 .padding(.bottom, 24)
             }
-            // 프로필 네비게이션
-            .navigationDestination(isPresented: Binding(
-                get: { profileNavHandle != nil },
-                set: { if !$0 { profileNavHandle = nil } }
-            )) {
-                if let handle = profileNavHandle {
+            // 프로필
+            .navigationDestination(item: $profileDestination) { destination in
+                if case .profile(let handle, let name, let imageUrl) = destination {
                     FriendProfileView(
-                        name: profileNavName,
+                        name: name,
                         handle: handle,
-                        profileImageUrl: profileNavImage
+                        profileImageUrl: imageUrl
                     )
+                }
+            }
+            // 게시하기
+            .fullScreenCover(isPresented: $showPublish) {
+                NavigationStack {
+                    PublishPreviewView(homeViewModel: viewModel)
                 }
             }
             // 알림 화면
@@ -203,9 +219,8 @@ struct HomeView: View {
     // MARK: - 이름 탭 (무조건 프로필)
 
     private func navigateToProfile(post: HomeFeedPost) {
-        profileNavName = post.displayName
-        profileNavImage = post.profileImage.isEmpty ? nil : post.profileImage
-        profileNavHandle = post.handle
+        let imageUrl = post.profileImage.isEmpty ? nil : post.profileImage
+        profileDestination = .profile(handle: post.handle, name: post.displayName, imageUrl: imageUrl)
     }
 }
 

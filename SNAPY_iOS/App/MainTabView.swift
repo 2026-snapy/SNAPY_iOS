@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab: Int = 0
+    @State private var previousTab: Int = 0
     @State private var showCamera: Bool = false
     @State private var toastMessage: String?
     @State private var deepLinkAlbumId: Int?
@@ -73,8 +74,10 @@ struct MainTabView: View {
         .animation(.easeInOut(duration: 0.3), value: toastMessage)
         .onChange(of: selectedTab) {
             if selectedTab == 2 {
+                selectedTab = previousTab // 이전 탭으로 복구 (0으로 고정하지 않음)
                 tryOpenCamera()
-                selectedTab = 0
+            } else {
+                previousTab = selectedTab
             }
         }
         .fullScreenCover(isPresented: $showCamera, onDismiss: {

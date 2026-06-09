@@ -140,7 +140,7 @@ struct PublishPreviewView: View {
                 .frame(maxWidth: .infinity).frame(height: 52)
             }
             .disabled(viewModel.isPublishing || viewModel.todayAlbumId == nil || viewModel.isAlreadyPublished)
-            .padding(.horizontal, 24).padding(.bottom, 50)
+            .padding(.horizontal, 24).padding(.bottom, 70)
         }
     }
 

@@ -161,14 +161,51 @@ final class DualCameraService: NSObject, ObservableObject {
                 self?.isRunning = true
             }
         }
+        observeSessionInterruption()
     }
 
     // 카메라 세션 중지
     func stopSession() {
+        removeSessionObservers()
         sessionQueue.async { [weak self] in
             self?.multiCamSession?.stopRunning()
             DispatchQueue.main.async {
                 self?.isRunning = false
+            }
+        }
+    }
+
+    // MARK: - 세션 중단/복구 감지
+
+    private func observeSessionInterruption() {
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(sessionWasInterrupted),
+            name: .AVCaptureSessionWasInterrupted, object: multiCamSession
+        )
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(sessionInterruptionEnded),
+            name: .AVCaptureSessionInterruptionEnded, object: multiCamSession
+        )
+    }
+
+    private func removeSessionObservers() {
+        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: nil)
+    }
+
+    @objc private func sessionWasInterrupted(_ notification: Notification) {
+        print("[Camera] 세션 중단됨")
+        DispatchQueue.main.async { [weak self] in
+            self?.isRunning = false
+        }
+    }
+
+    @objc private func sessionInterruptionEnded(_ notification: Notification) {
+        print("[Camera] 세션 복구됨")
+        sessionQueue.async { [weak self] in
+            self?.multiCamSession?.startRunning()
+            DispatchQueue.main.async {
+                self?.isRunning = true
             }
         }
     }

@@ -33,6 +33,11 @@ struct FeedCardView: View {
     @State private var showLikeList = false
     @State private var showReport = false
 
+    private var isMyPost: Bool {
+        let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
+        return !myHandle.isEmpty && myHandle == handle
+    }
+
     init(albumId: Int, profileImageSource: ProfileImageSource, displayName: String,
          handle: String, date: String, photos: [FeedCardPhoto],
          hasStory: Bool = false, isStorySeen: Bool = true,
@@ -78,15 +83,6 @@ struct FeedCardView: View {
             LikeListSheet(albumId: albumId)
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: Binding(
-            get: { viewModel.shareImage != nil },
-            set: { if !$0 { viewModel.shareImage = nil } }
-        )) {
-            if let image = viewModel.shareImage {
-                let text = "SNAPY 피드: @\(handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(viewModel.shareURL)"
-                ShareSheetView(items: [image, text])
-            }
         }
         .onAppear {
             guard albumId > 0, commentCount == 0 else { return }
@@ -206,10 +202,13 @@ struct FeedCardView: View {
 
             Spacer()
 
-            Menu {
-                Button("신고", role: .destructive) { showReport = true }
-            } label: {
-                Image(systemName: "ellipsis").font(.system(size: 20)).foregroundColor(.customGray300)
+            // TODO: 임시 처리 — 내 피드에서는 메뉴 숨김. 피드 비활성화 API 추가 시 메뉴에 비활성화 옵션 넣을 예정
+            if !isMyPost {
+                Menu {
+                    Button("신고", role: .destructive) { showReport = true }
+                } label: {
+                    Image(systemName: "ellipsis").font(.system(size: 20)).foregroundColor(.customGray300)
+                }
             }
         }
         .padding(.horizontal, 14).padding(.bottom, 20)

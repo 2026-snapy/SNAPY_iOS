@@ -117,9 +117,11 @@ extension ProfileAPI: TargetType {
 
         case .updateFeedVisibility(let v):
             let body = UpdateVisibilityRequest(visibility: v.rawValue)
+            print("[ProfileAPI] feedVisibility 요청 body: \(v.rawValue)")
             return .requestJSONEncodable(body)
         case .updatePastAlbumVisibility(let v):
             let body = UpdateVisibilityRequest(visibility: v.rawValue)
+            print("[ProfileAPI] pastAlbumVisibility 요청 body: \(v.rawValue)")
             return .requestJSONEncodable(body)
         case .requestPhoneCode(let phone):
             return .requestParameters(

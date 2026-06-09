@@ -67,7 +67,8 @@ final class FeedCardViewModel: ObservableObject {
                 frontImage: await frontImg
             )
             if let image = renderShareImage(card) {
-                shareImage = image
+                let text = "SNAPY 피드: @\(self.handle)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(self.shareURL)"
+                presentShareSheet(items: [image, text])
             }
         }
     }

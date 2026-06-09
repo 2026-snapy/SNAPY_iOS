@@ -225,7 +225,11 @@ final class StoryDetailViewModel: ObservableObject {
                 frontImage: await frontImg
             )
             if let image = renderShareImage(card) {
-                shareImage = image
+                let shareURL = "https://snapy.krafte.net/share/story/\(story.storyId)"
+                let text = "SNAPY 스토리: @\(story.username)\n\nSNAPY에서 당신의 일상을 공유해보세요!\n\n\(shareURL)"
+                presentShareSheet(items: [image, text]) { [weak self] in
+                    self?.isPaused = false
+                }
             }
         }
     }

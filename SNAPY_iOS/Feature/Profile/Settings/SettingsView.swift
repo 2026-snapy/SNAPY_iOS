@@ -59,13 +59,6 @@ struct SettingsView: View {
                             viewModel.setFeedVisibility(.friendsOnly)
                         }
 
-                        settingToggleRow(
-                            title: "비공개",
-                            isOn: viewModel.feedVisibility == .onlyMe
-                        ) {
-                            viewModel.setFeedVisibility(.onlyMe)
-                        }
-
                         // MARK: - 과거 앨범
                         sectionHeader("과거 앨범")
                             .padding(.top, 16)
@@ -92,7 +85,7 @@ struct SettingsView: View {
                         }
 
                         // 안내 문구
-                        Text("공개: 모든 사용자가 볼 수 있습니다.\n친구만: 승인된 친구들만 볼 수 있습니다.\n비공개: 나만 볼 수 있습니다.\n설정 변경 전 업로드된 모든 콘텐츠에도 동일하게 적용됩니다.")
+                        Text("계정을 친구 공개로 설정하면, 승인된 친구들만 회원님의 피드, 스토리, 과거 앨범을 볼 수 있습니다. 설정 변경 전 업로드된 모든 콘텐츠에도 동일하게 적용됩니다.")
                             .font(.system(size: 13))
                             .foregroundColor(.customGray200)
                             .padding(.horizontal, 20)

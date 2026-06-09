@@ -98,7 +98,16 @@ final class CameraViewModel: ObservableObject {
         isCapturing = true
 
         if dualCamera.isMultiCamSupported && dualCamera.isRunning {
+            // 촬영 타임아웃 — 3초 내 콜백이 안 오면 isCapturing 해제
+            let captureTimeout = DispatchWorkItem { [weak self] in
+                guard let self = self, self.isCapturing else { return }
+                print("[Camera] 촬영 타임아웃 — isCapturing 해제")
+                self.isCapturing = false
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: captureTimeout)
+
             dualCamera.capturePhotos { [weak self] backImage, frontImage in
+                captureTimeout.cancel()
                 DispatchQueue.main.async {
                     guard let self = self else { return }
                     // 촬영 실패 시 (연결 끊김 등) 무시

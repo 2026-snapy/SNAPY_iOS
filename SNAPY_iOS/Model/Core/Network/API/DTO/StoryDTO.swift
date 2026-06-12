@@ -48,6 +48,7 @@ struct StoryPhotoSet: Codable, Identifiable {
     private enum CodingKeys: String, CodingKey {
         case type, frontImageUrl, backImageUrl, createdAt
     }
+
 }
 
 // MARK: - 좋아요 토글 (POST /api/stories/{storyId}/photos/{type}/likes)

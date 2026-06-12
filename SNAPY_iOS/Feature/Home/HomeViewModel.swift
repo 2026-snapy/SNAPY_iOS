@@ -45,6 +45,7 @@ struct HomeFeedPost: Identifiable {
 extension String {
     /// 이미지 문자열이 URL인지 (http/https로 시작) — 피드/스토리에서 asset vs URL 분기에 사용
     var isImageURL: Bool { hasPrefix("http") }
+
 }
 
 struct StoryItem: Identifiable {

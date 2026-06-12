@@ -32,6 +32,7 @@ struct FeedCardView: View {
     @State private var showComments = false
     @State private var showLikeList = false
     @State private var showReport = false
+    @State private var swappedPhotoIDs: Set<UUID> = []
 
     private var isMyPost: Bool {
         let myHandle = UserDefaults.standard.string(forKey: "myHandle") ?? ""
@@ -243,12 +244,46 @@ struct FeedCardView: View {
 
     @ViewBuilder
     private func draggablePhotoView(for photo: FeedCardPhoto) -> some View {
+        let isSwapped = swappedPhotoIDs.contains(photo.id)
+
         GeometryReader { geo in
             ZStack(alignment: .topLeading) {
+                // 풀사이즈: back 이미지
                 backImageView(photo.backImageUrl, asset: photo.assetName)
                     .frame(width: geo.size.width, height: geo.size.height).clipped()
+                    .opacity(isSwapped ? 0 : 1)
 
+                // 풀사이즈: front 이미지 (스왑 시 표시)
                 if let frontUrl = photo.frontImageUrl, let url = URL(string: frontUrl) {
+                    KFImage(url).resizable()
+                        .downsampling(size: CGSize(width: 390, height: 540))
+                        .placeholder { Color.customGray500 }.fade(duration: 0.15)
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height).clipped()
+                        .opacity(isSwapped ? 1 : 0)
+                }
+
+                // PIP: 양쪽 이미지를 겹쳐서 크로스페이드
+                if let frontUrl = photo.frontImageUrl, let fUrl = URL(string: frontUrl),
+                   let backUrl = photo.backImageUrl, let bUrl = URL(string: backUrl) {
+                    DraggablePIP(containerSize: geo.size, pipWidth: 120, pipHeight: 160, padding: 12) {
+                        ZStack {
+                            KFImage(fUrl).resizable().placeholder { Color(white: 0.2) }.fade(duration: 0.2).scaledToFill()
+                                .opacity(isSwapped ? 0 : 1)
+                            KFImage(bUrl).resizable().placeholder { Color(white: 0.2) }.fade(duration: 0.2).scaledToFill()
+                                .opacity(isSwapped ? 1 : 0)
+                        }
+                    } onTap: {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        withAnimation(.spring(response: 0.15, dampingFraction: 1)) {
+                            if swappedPhotoIDs.contains(photo.id) {
+                                swappedPhotoIDs.remove(photo.id)
+                            } else {
+                                swappedPhotoIDs.insert(photo.id)
+                            }
+                        }
+                    }
+                } else if let frontUrl = photo.frontImageUrl, let url = URL(string: frontUrl) {
                     DraggablePIP(containerSize: geo.size, pipWidth: 120, pipHeight: 160, padding: 12) {
                         KFImage(url).resizable().placeholder { Color(white: 0.2) }.fade(duration: 0.2).scaledToFill()
                     }

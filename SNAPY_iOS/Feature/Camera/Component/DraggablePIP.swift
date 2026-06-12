@@ -20,6 +20,7 @@ struct DraggablePIP<Content: View>: View {
     let pipHeight: CGFloat
     let padding: CGFloat
     @ViewBuilder let content: () -> Content
+    var onTap: (() -> Void)? = nil
 
     @State private var currentCorner: PIPCorner = .topLeading
     @State private var dragOffset: CGSize = .zero
@@ -32,6 +33,9 @@ struct DraggablePIP<Content: View>: View {
             .shadow(color: .black.opacity(0.5), radius: 5)
             .offset(x: cornerPosition.x + dragOffset.width,
                     y: cornerPosition.y + dragOffset.height)
+            .onTapGesture {
+                onTap?()
+            }
             .gesture(
                 DragGesture()
                     .onChanged { value in

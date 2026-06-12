@@ -139,6 +139,7 @@ struct GuestbookFullView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .frame(width: w, height: h)
+            .contentShape(RoundedRectangle(cornerRadius: 10))
             .overlay(alignment: .bottom) {
                 authorAvatar(for: entry)
                     .frame(width: 30, height: 30)

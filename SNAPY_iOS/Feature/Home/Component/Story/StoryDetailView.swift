@@ -36,6 +36,7 @@ struct StoryDetailView: View {
     @State private var isDraggingH: Bool = false
     @State private var dragY: CGFloat = 0.0
     @State private var isDraggingV: Bool = false
+    @State private var isPhotoSwapped: Bool = false
 
     private let pageGap: CGFloat = 6
 
@@ -87,6 +88,7 @@ struct StoryDetailView: View {
             }
             .onChange(of: viewModel.currentImageIndex) { _, _ in
                 viewModel.loadLikesForMyStory()
+                isPhotoSwapped = false
             }
             .navigationDestination(isPresented: Binding(
                 get: { navProfileHandle != nil },
@@ -165,6 +167,30 @@ struct StoryDetailView: View {
                         .onTapGesture { viewModel.goToNext() }
                 }
                 Color.clear.frame(height: 120).contentShape(Rectangle()).onTapGesture { }
+            }
+
+            // PIP 전후면 전환 (좌/우 탭 영역 위에 배치)
+            if let photo = photos.isEmpty ? nil : photos[safeImageIndex],
+               let frontUrl = photo.frontImageUrl, let fUrl = URL(string: frontUrl),
+               let backUrl = photo.backImageUrl, let bUrl = URL(string: backUrl) {
+                ZStack {
+                    KFImage(fUrl).resizable().placeholder { Color.customGray500 }.fade(duration: 0.2)
+                        .scaledToFill().opacity(isPhotoSwapped ? 0 : 1)
+                    KFImage(bUrl).resizable().placeholder { Color.customGray500 }.fade(duration: 0.2)
+                        .scaledToFill().opacity(isPhotoSwapped ? 1 : 0)
+                }
+                .frame(width: 130, height: 180).clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.black.opacity(0.3), lineWidth: 1))
+                .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(.top, 80).padding(.leading, 14)
+                .onTapGesture {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    withAnimation(.spring(response: 0.15, dampingFraction: 1)) {
+                        isPhotoSwapped.toggle()
+                    }
+                }
             }
 
             if !viewModel.hideUI {
@@ -256,14 +282,38 @@ struct StoryDetailView: View {
     @ViewBuilder
     private func storyPhotoContent(photo: StoryPhotoSet?, size: CGSize) -> some View {
         ZStack(alignment: .topLeading) {
+            // 풀사이즈: back 이미지
             if let backUrl = photo?.backImageUrl, let url = URL(string: backUrl) {
                 KFImage(url).resizable().placeholder { Color.customGray500 }.fade(duration: 0.2)
                     .scaledToFill().frame(width: size.width, height: size.height).clipped()
+                    .opacity(isPhotoSwapped ? 0 : 1)
             } else {
                 Color.customGray500.frame(width: size.width, height: size.height)
             }
 
+            // 풀사이즈: front 이미지 (스왑 시 표시)
             if let frontUrl = photo?.frontImageUrl, let url = URL(string: frontUrl) {
+                KFImage(url).resizable().placeholder { Color.customGray500 }.fade(duration: 0.2)
+                    .scaledToFill().frame(width: size.width, height: size.height).clipped()
+                    .opacity(isPhotoSwapped ? 1 : 0)
+            }
+
+            // PIP (탭 불가능한 표시 전용 - 탭 전환은 storyPage에서 처리)
+            if let frontUrl = photo?.frontImageUrl, let fUrl = URL(string: frontUrl),
+               let backUrl = photo?.backImageUrl, let bUrl = URL(string: backUrl) {
+                ZStack {
+                    KFImage(fUrl).resizable().placeholder { Color.customGray500 }.fade(duration: 0.2)
+                        .scaledToFill().opacity(isPhotoSwapped ? 0 : 1)
+                    KFImage(bUrl).resizable().placeholder { Color.customGray500 }.fade(duration: 0.2)
+                        .scaledToFill().opacity(isPhotoSwapped ? 1 : 0)
+                }
+                .frame(width: 130, height: 180).clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.black.opacity(0.3), lineWidth: 1))
+                .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                .padding(.top, 80).padding(.leading, 14)
+                .allowsHitTesting(false)
+            } else if let frontUrl = photo?.frontImageUrl, let url = URL(string: frontUrl) {
                 KFImage(url).resizable().placeholder { Color.customGray500 }.fade(duration: 0.2)
                     .scaledToFill().frame(width: 130, height: 180).clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 14))

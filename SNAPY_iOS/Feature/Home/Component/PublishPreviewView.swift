@@ -162,10 +162,15 @@ struct PublishPreviewView: View {
 
 private struct PublishPhotoCard: View {
     let photo: PhotoData
+    @State private var isSwapped = false
 
     var body: some View {
         GeometryReader { geo in
+            let pipWidth = geo.size.width * 0.32
+            let pipHeight = geo.size.width * 0.42
+
             ZStack(alignment: .topLeading) {
+                // 풀사이즈: back 이미지
                 KFImage(URL(string: photo.backImageUrl ?? ""))
                     .resizable()
                     .placeholder {
@@ -178,17 +183,45 @@ private struct PublishPhotoCard: View {
                     .frame(width: geo.size.width, height: geo.size.height)
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .opacity(isSwapped ? 0 : 1)
 
+                // 풀사이즈: front 이미지 (스왑 시 표시)
                 KFImage(URL(string: photo.frontImageUrl ?? ""))
                     .resizable()
-                    .placeholder { Color.white.opacity(0.1) }
+                    .placeholder {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.white.opacity(0.08))
+                            .overlay(ProgressView().tint(.white))
+                    }
                     .fade(duration: 0.2)
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: geo.size.width * 0.32, height: geo.size.width * 0.42)
+                    .frame(width: geo.size.width, height: geo.size.height)
                     .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.black.opacity(0.4), lineWidth: 1))
-                    .padding(12)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .opacity(isSwapped ? 1 : 0)
+
+                // PIP: 양쪽 이미지를 겹쳐서 크로스페이드
+                DraggablePIP(containerSize: geo.size, pipWidth: pipWidth, pipHeight: pipHeight, padding: 12) {
+                    ZStack {
+                        KFImage(URL(string: photo.frontImageUrl ?? ""))
+                            .resizable()
+                            .placeholder { Color.white.opacity(0.1) }
+                            .fade(duration: 0.2)
+                            .aspectRatio(contentMode: .fill)
+                            .opacity(isSwapped ? 0 : 1)
+                        KFImage(URL(string: photo.backImageUrl ?? ""))
+                            .resizable()
+                            .placeholder { Color.white.opacity(0.1) }
+                            .fade(duration: 0.2)
+                            .aspectRatio(contentMode: .fill)
+                            .opacity(isSwapped ? 1 : 0)
+                    }
+                } onTap: {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    withAnimation(.spring(response: 0.15, dampingFraction: 1)) {
+                        isSwapped.toggle()
+                    }
+                }
             }
         }
     }

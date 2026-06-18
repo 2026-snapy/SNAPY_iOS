@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PhotoPreviewView: View {
     @EnvironmentObject var cameraVM: CameraViewModel
+    @State private var isSwapped = false
 
     private var lastPhoto: (front: UIImage?, back: UIImage?)? {
         cameraVM.capturedPhotos.last
@@ -20,20 +21,57 @@ struct PhotoPreviewView: View {
             // 듀얼캠
             GeometryReader { geo in
                 ZStack(alignment: .topLeading) {
-                    // 후면 카메라 (메인)
+                    let mainImage = isSwapped ? lastPhoto?.front : lastPhoto?.back
+                    let pipImage = isSwapped ? lastPhoto?.back : lastPhoto?.front
+
+                    // 풀사이즈: back 이미지
                     if let backImage = lastPhoto?.back {
                         Image(uiImage: backImage)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: geo.size.width, height: geo.size.height)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .opacity(isSwapped ? 0 : 1)
                     } else {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(Color(white: 0.15))
                     }
 
-                    // 전면 카메라 (드래그 가능)
+                    // 풀사이즈: front 이미지 (스왑 시 표시)
                     if let frontImage = lastPhoto?.front {
+                        Image(uiImage: frontImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: geo.size.width, height: geo.size.height)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .opacity(isSwapped ? 1 : 0)
+                    }
+
+                    // PIP: 양쪽 이미지를 겹쳐서 크로스페이드
+                    if let frontImage = lastPhoto?.front, let backImage = lastPhoto?.back {
+                        DraggablePIP(
+                            containerSize: geo.size,
+                            pipWidth: 120,
+                            pipHeight: 160,
+                            padding: 12
+                        ) {
+                            ZStack {
+                                Image(uiImage: frontImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .opacity(isSwapped ? 0 : 1)
+                                Image(uiImage: backImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .opacity(isSwapped ? 1 : 0)
+                            }
+                        } onTap: {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                            withAnimation(.spring(response: 0.15, dampingFraction: 1)) {
+                                isSwapped.toggle()
+                            }
+                        }
+                    } else if let frontImage = lastPhoto?.front {
                         DraggablePIP(
                             containerSize: geo.size,
                             pipWidth: 120,

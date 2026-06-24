@@ -35,7 +35,7 @@ struct FriendFeedSection: View {
                     profileImageUrl: viewModel.profileImageUrl,
                     profileAsset: "Profile_img"
                 )) {
-                    feedThumbnail(post.thumbnailImage)
+                    feedThumbnail(post.thumbnailImage, likeCount: post.likeCount)
                 }
             }
 
@@ -86,7 +86,7 @@ struct FriendFeedSection: View {
                                     profileImageUrl: viewModel.profileImageUrl,
                                     profileAsset: "Profile_img"
                                 )) {
-                                    feedThumbnail(post.thumbnailImage)
+                                    feedThumbnail(post.thumbnailImage, likeCount: post.likeCount)
                                 }
                             }
                         }
@@ -105,22 +105,42 @@ struct FriendFeedSection: View {
     // MARK: - 썸네일
 
     @ViewBuilder
-    private func feedThumbnail(_ url: String) -> some View {
+    private func feedThumbnail(_ url: String, likeCount: Int) -> some View {
         GeometryReader { geo in
-            if url.hasPrefix("http"), let imgUrl = URL(string: url) {
-                KFImage(imgUrl)
-                    .resizable()
-                    .placeholder { Color(white: 0.15) }
-                    .fade(duration: 0.2)
-                    .scaledToFill()
-                    .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
-                    .clipped()
-            } else if !url.isEmpty {
-                Image(url).resizable().scaledToFill()
-                    .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
-                    .clipped()
-            } else {
-                Color(white: 0.15)
+            ZStack(alignment: .bottom) {
+                if url.hasPrefix("http"), let imgUrl = URL(string: url) {
+                    KFImage(imgUrl)
+                        .resizable()
+                        .placeholder { Color(white: 0.15) }
+                        .fade(duration: 0.2)
+                        .scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
+                        .clipped()
+                } else if !url.isEmpty {
+                    Image(url).resizable().scaledToFill()
+                        .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
+                        .clipped()
+                } else {
+                    Color(white: 0.15)
+                }
+
+                LinearGradient(
+                    colors: [.clear, .black.opacity(0.45)],
+                    startPoint: .center,
+                    endPoint: .bottom
+                )
+
+                HStack(spacing: 4) {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 13))
+                        .foregroundColor(.white)
+                    Text("\(likeCount)")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                .padding(.leading, 8)
+                .padding(.bottom, 8)
             }
         }
         .aspectRatio(3.0/4.0, contentMode: .fit)
